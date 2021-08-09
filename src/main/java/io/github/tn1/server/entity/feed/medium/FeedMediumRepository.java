@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MediumRepository extends JpaRepository<Medium, Long> {
+public interface FeedMediumRepository extends JpaRepository<FeedMedium, Long> {
 }

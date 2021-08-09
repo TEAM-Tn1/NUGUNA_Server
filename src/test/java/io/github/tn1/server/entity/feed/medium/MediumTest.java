@@ -5,12 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class MediumTest {
+class FeedMediumTest {
 
     @Test
-    @DisplayName("Builder를 활용하여 Medium객체를 생성하는 메소드")
+    @DisplayName("Builder를 활용하여 FeedMedium객체를 생성하는 메소드")
     void createByBuilder() {
         //given
         Feed feed = Feed.builder()
@@ -18,7 +16,7 @@ class MediumTest {
                 .build();
         String path = "경로";
         //then
-        Medium medium = Medium.builder()
+        FeedMedium medium = FeedMedium.builder()
                 .feed(feed)
                 .path(path)
                 .build();

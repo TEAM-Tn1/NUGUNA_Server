@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity(name = "tbl_report_medium")
-public class Medium {
+public class ReportMedium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Medium {
     private Report report;
 
     @Builder
-    public Medium(String path, Report report) {
+    public ReportMedium(String path, Report report) {
         this.path = path;
         this.report = report;
     }

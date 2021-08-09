@@ -1,7 +1,7 @@
 package io.github.tn1.server.entity.report;
 
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
-import io.github.tn1.server.entity.report.medium.Medium;
+import io.github.tn1.server.entity.report.medium.ReportMedium;
 import io.github.tn1.server.entity.report.result.Result;
 import io.github.tn1.server.entity.user.User;
 import lombok.Builder;
@@ -43,7 +43,7 @@ public class Report {
     private Result result;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "report")
-    private Set<Medium> medium = new HashSet<>();
+    private Set<ReportMedium> medium = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
     private FeedReport feedReport;

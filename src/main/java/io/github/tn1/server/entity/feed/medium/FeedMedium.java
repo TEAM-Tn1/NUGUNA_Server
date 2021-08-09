@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity(name = "tbl_feed_medium")
-public class Medium {
+public class FeedMedium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Medium {
     private Feed feed;
 
     @Builder
-    public Medium(String path, Feed feed) {
+    public FeedMedium(String path, Feed feed) {
         this.path = path;
         this.feed = feed;
     }

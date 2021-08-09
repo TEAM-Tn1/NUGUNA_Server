@@ -5,12 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class MediumTest {
+class ReportMediumTest {
 
     @Test
-    @DisplayName("Builder를 활용하여 Medium객체를 생성하는 메소드")
+    @DisplayName("Builder를 활용하여 ReportMedium객체를 생성하는 메소드")
     void createByBuilder() {
         //given
         Report report = Report.builder()
@@ -20,7 +18,7 @@ class MediumTest {
         String path = "자료위치";
 
         //when
-        Medium medium = Medium.builder()
+        ReportMedium medium = ReportMedium.builder()
                 .report(report)
                 .path(path)
                 .build();

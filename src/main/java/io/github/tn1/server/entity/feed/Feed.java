@@ -1,7 +1,7 @@
 package io.github.tn1.server.entity.feed;
 
 import io.github.tn1.server.entity.feed.group.Group;
-import io.github.tn1.server.entity.feed.medium.Medium;
+import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.like.Like;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
@@ -42,7 +42,7 @@ public class Feed {
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
-    private Set<Medium> media = new HashSet<>();
+    private Set<FeedMedium> media = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed")
     private Group group;
