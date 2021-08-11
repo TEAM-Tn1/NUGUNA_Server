@@ -1,6 +1,6 @@
 package io.github.tn1.server.security.jwt;
 
-import io.github.tn1.server.security.auth.AuthDetailsService;
+import io.github.tn1.server.security.jwt.auth.AuthDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
