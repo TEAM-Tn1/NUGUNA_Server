@@ -1,4 +1,4 @@
-package io.github.tn1.server.security.auth;
+package io.github.tn1.server.security.jwt.auth;
 
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.UserNotFoundException;
