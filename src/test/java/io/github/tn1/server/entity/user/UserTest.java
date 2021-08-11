@@ -14,10 +14,12 @@ class UserTest {
         //given
         String email = "test@gmail.com";
         String accountNumber = "47------------KB";
+        Role role = Role.ROLE_USER;
 
         // when
         User user = User.builder()
                 .email(email)
+                .role(role)
                 .gcn("2114")
                 .accountNumber(accountNumber)
                 .name("이**")
@@ -27,7 +29,8 @@ class UserTest {
         // then
         Assertions.assertAll(
                 () -> Assertions.assertEquals(email, user.getEmail()),
-                () -> Assertions.assertEquals(accountNumber, user.getAccountNumber())
+                () -> Assertions.assertEquals(accountNumber, user.getAccountNumber()),
+                () -> Assertions.assertEquals(role, user.getRole())
         );
     }
 
