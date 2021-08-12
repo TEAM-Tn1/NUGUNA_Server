@@ -95,4 +95,15 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public User changeNameAndGcn(String name, String gcn) {
+        this.name = name;
+        this.gcn = gcn;
+        return this;
+    }
+
+    public boolean writeAllInformation() {
+        return roomNumber != null && accountNumber != null;
+    }
+
 }

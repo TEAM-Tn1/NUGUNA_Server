@@ -6,6 +6,7 @@ import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public TokenResponse login(@RequestBody LoginRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
         return userService.login(request);
     }
 
