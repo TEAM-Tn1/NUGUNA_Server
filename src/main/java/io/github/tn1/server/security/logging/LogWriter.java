@@ -23,7 +23,7 @@ public class LogWriter {
     @Value("${logging.name}")
     private String logFileName;
 
-    @Value("${logging.path}")
+    @Value("${logging.file.path}")
     private String logPath;
 
     @Value("${logging.size}")
