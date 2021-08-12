@@ -6,6 +6,7 @@ import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.entity.refresh_token.RefreshToken;
 import io.github.tn1.server.entity.refresh_token.RefreshTokenRepository;
+import io.github.tn1.server.entity.user.Role;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.UserNotFoundException;
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
                 .email(response.getEmail())
                 .name(response.getName())
                 .gcn(response.getGcn())
+                .role(Role.ROLE_USER)
                 .build()
         );
 
