@@ -46,12 +46,15 @@ public class User implements UserDetails {
     @Column(length = 4096)
     private String deviceToken;
 
+    @Column(columnDefinition = "BIT(1) default true")
+    private boolean alarm;
+
     private LocalDate blackDate;
 
     @Builder
     public User(String email, String name, Role role,
                 String gcn, String roomNumber, String accountNumber,
-                String deviceToken, LocalDate blackDate) {
+                String deviceToken, boolean alarm, LocalDate blackDate) {
         this.email = email;
         this.name = name;
         this.role = role;
@@ -59,6 +62,7 @@ public class User implements UserDetails {
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
         this.deviceToken = deviceToken;
+        this.alarm = alarm;
         this.blackDate = blackDate;
     }
 
