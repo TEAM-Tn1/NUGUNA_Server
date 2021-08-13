@@ -10,7 +10,8 @@ import lombok.Getter;
 public enum ErrorCode {
 
     USER_NOT_FOUND(404, "User not found."),
-    INVALID_TOKEN(401, "Invalid token.");
+    INVALID_TOKEN(401, "Invalid token."),
+    EXPIRED_REFRESHTOKEN(401, "Expired refresh token.");
 
     private final int status;
     private final String message;

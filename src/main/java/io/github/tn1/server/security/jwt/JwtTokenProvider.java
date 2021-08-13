@@ -1,5 +1,6 @@
 package io.github.tn1.server.security.jwt;
 
+import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.security.jwt.auth.AuthDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -58,10 +59,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean isRefreshToken(String token) {
-        return getTokenBody(token).get("type").equals("refresh");
-    }
-
     public String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader(header);
         if(bearer != null && bearer.length() > 7 && bearer.startsWith(prefix)) {
@@ -79,6 +76,14 @@ public class JwtTokenProvider {
         UserDetails userDetails = authDetailsService
                 .loadUserByUsername(getTokenSubject(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public String parseRefreshToken(String token) {
+        Claims claims = getTokenBody(token);
+        if (claims.get("type").equals("refresh")) {
+            return claims.getSubject();
+        }
+        throw new InvalidTokenException();
     }
 
     private Claims getTokenBody(String token) {
