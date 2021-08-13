@@ -3,6 +3,7 @@ package io.github.tn1.server.entity.user;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.like.Like;
 import io.github.tn1.server.entity.question.Question;
+import io.github.tn1.server.entity.tag_notification.TagNotification;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +70,9 @@ public class User implements UserDetails {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Feed> feeds = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<TagNotification> tagNotifications = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
