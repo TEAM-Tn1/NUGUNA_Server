@@ -19,11 +19,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             filterChain.doFilter(request, response);
-        }catch (BlackedException e) {
+        }catch (ServerException e) {
             ErrorCode errorCode = e.getErrorCode();
             ErrorResponse errorResponse =
                     new ErrorResponse(errorCode.getStatus(), errorCode.getMessage());
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setStatus(errorCode.getStatus());
             response.setContentType("application/json");
             response.getWriter().write(errorResponse.toString());
         }
