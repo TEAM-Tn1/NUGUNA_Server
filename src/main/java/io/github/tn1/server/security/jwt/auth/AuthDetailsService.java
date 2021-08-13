@@ -22,7 +22,7 @@ public class AuthDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user =  userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new);
-        if(user.getBlackDate().isAfter(LocalDate.now()))
+        if(user.getBlackDate() != null && user.getBlackDate().isAfter(LocalDate.now()))
             throw new BlackedException();
         return user;
     }
