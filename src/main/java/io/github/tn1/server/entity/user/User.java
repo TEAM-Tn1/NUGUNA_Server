@@ -73,7 +73,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
@@ -99,6 +99,12 @@ public class User implements UserDetails {
     public User changeNameAndGcn(String name, String gcn) {
         this.name = name;
         this.gcn = gcn;
+        return this;
+    }
+
+    public User writeInformation(String roomNumber, String accountNumber) {
+        this.roomNumber = roomNumber;
+        this.accountNumber = accountNumber;
         return this;
     }
 

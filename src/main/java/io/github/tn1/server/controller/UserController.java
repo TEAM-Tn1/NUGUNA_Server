@@ -1,11 +1,13 @@
 package io.github.tn1.server.controller;
 
+import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,12 @@ public class UserController {
     @PutMapping("/auth")
     public TokenResponse tokenRefresh(@RequestBody RefreshTokenRequest request) {
         return userService.tokenRefresh(request);
+    }
+
+    @PatchMapping("/information")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void patchInformation(@RequestBody InformationRequest request) {
+        userService.modifyInformation(request);
     }
 
 }
