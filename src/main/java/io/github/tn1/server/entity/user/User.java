@@ -1,5 +1,6 @@
 package io.github.tn1.server.entity.user;
 
+import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.like.Like;
 import io.github.tn1.server.entity.question.Question;
@@ -123,6 +124,10 @@ public class User implements UserDetails {
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
         return this;
+    }
+
+    public UserInformationResponse getInformation() {
+        return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber);
     }
 
     public boolean writeAllInformation() {

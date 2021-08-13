@@ -5,6 +5,7 @@ import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
+import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchInformation(@RequestBody InformationRequest request) {
         userService.modifyInformation(request);
+    }
+
+    @GetMapping("/{email}")
+    public UserInformationResponse getInformation(@PathVariable("email") String email) {
+        return userService.getInformation(email);
     }
 
 }

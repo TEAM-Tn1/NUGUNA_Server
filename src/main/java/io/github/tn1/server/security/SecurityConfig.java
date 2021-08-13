@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PUT, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/users/information").hasAnyRole(roles)
+                .antMatchers(HttpMethod.GET, "/users/{email}").hasAnyRole(roles)
                 .anyRequest().authenticated()
                 .and().apply(new FilterConfigure(jwtTokenProvider, exceptionHandlerFilter))
                 .and().addFilterAfter(requestLogger, FilterSecurityInterceptor.class);

@@ -5,6 +5,7 @@ import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
+import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.entity.refresh_token.RefreshToken;
 import io.github.tn1.server.entity.refresh_token.RefreshTokenRepository;
 import io.github.tn1.server.entity.user.Role;
@@ -77,17 +78,17 @@ public class UserServiceImpl implements UserService {
                             .changeNameAndGcn(response.getName(), response.getGcn())
             ).writeAllInformation())
                 status = HttpStatus.OK;
+        } else {
+            userRepository.save(
+                    User.builder()
+                            .email(response.getEmail())
+                            .name(response.getName())
+                            .gcn(response.getGcn())
+                            .role(Role.ROLE_USER)
+                            .build()
+            );
         }
-
-        userRepository.save(
-                User.builder()
-                .email(response.getEmail())
-                .name(response.getName())
-                .gcn(response.getGcn())
-                .role(Role.ROLE_USER)
-                .build()
-        );
-
+        
         TokenResponse token = getToken(response.getEmail());
 
         return new ResponseEntity<>(new TokenResponse(
@@ -115,6 +116,13 @@ public class UserServiceImpl implements UserService {
                         user.writeInformation(request.getRoomNumber(), request.getAccountNumber())
                 ))
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserInformationResponse getInformation(String email) {
+        return userRepository.findById(email)
+                .orElseThrow(UserNotFoundException::new)
+                .getInformation();
     }
 
     private TokenResponse getToken(String email) {

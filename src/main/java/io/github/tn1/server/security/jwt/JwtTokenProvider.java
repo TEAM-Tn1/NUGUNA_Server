@@ -1,8 +1,11 @@
 package io.github.tn1.server.security.jwt;
 
+import io.github.tn1.server.exception.ExpiredAccessTokenException;
+import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.security.jwt.auth.AuthDetailsService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -79,16 +82,28 @@ public class JwtTokenProvider {
     }
 
     public String parseRefreshToken(String token) {
-        Claims claims = getTokenBody(token);
-        if (claims.get("type").equals("refresh")) {
-            return claims.getSubject();
+        try{
+
+            Claims claims = Jwts.parser().setSigningKey(getSecretKey())
+                    .parseClaimsJws(token).getBody();
+            if (claims.get("type").equals("refresh")) {
+                return claims.getSubject();
+            }
+            throw new InvalidTokenException();
+
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredRefreshTokenException();
         }
-        throw new InvalidTokenException();
     }
 
     private Claims getTokenBody(String token) {
-        return Jwts.parser().setSigningKey(getSecretKey())
-                .parseClaimsJws(token).getBody();
+        try {
+            return Jwts.parser().setSigningKey(getSecretKey())
+                    .parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredAccessTokenException();
+        }
+
     }
 
     private String getTokenSubject(String token) {
