@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.user;
 
+import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
@@ -12,6 +13,7 @@ import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.exception.UserNotFoundException;
+import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.utils.api.client.DsmAuthClient;
 import io.github.tn1.server.utils.api.dto.DsmAuthTokenRequest;
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final DsmAuthClient dsmAuthClient;
+    private final UserFacade userFacade;
 
     @Override
     public OAuthLinkResponse getOAuthLink() {
@@ -103,6 +106,15 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(ExpiredRefreshTokenException::new);
         }
         throw new InvalidTokenException();
+    }
+
+    @Override
+    public void modifyInformation(InformationRequest request) {
+        userRepository.findById(userFacade.getEmail())
+                .map(user -> userRepository.save(
+                        user.writeInformation(request.getRoomNumber(), request.getAccountNumber())
+                ))
+                .orElseThrow(UserNotFoundException::new);
     }
 
     private TokenResponse getToken(String email) {
