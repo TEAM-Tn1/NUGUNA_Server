@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,15 +42,23 @@ public class User implements UserDetails {
     @Column(length = 20)
     private String accountNumber;
 
+    @Column(length = 4096)
+    private String deviceToken;
+
+    private LocalDate blackDate;
+
     @Builder
     public User(String email, String name, Role role,
-                String gcn, String roomNumber, String accountNumber) {
+                String gcn, String roomNumber, String accountNumber,
+                String deviceToken, LocalDate blackDate) {
         this.email = email;
         this.name = name;
         this.role = role;
         this.gcn = gcn;
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
+        this.deviceToken = deviceToken;
+        this.blackDate = blackDate;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

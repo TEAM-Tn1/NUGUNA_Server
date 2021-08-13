@@ -1,6 +1,7 @@
 package io.github.tn1.server.security;
 
 import io.github.tn1.server.entity.user.Role;
+import io.github.tn1.server.error.exception.ExceptionHandlerFilter;
 import io.github.tn1.server.security.jwt.FilterConfigure;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.security.logging.RequestLogger;
@@ -19,6 +20,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final RequestLogger requestLogger;
 
     private static final String[] roles = {"USER", "ADMIN"};
@@ -37,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/users/information").hasAnyRole(roles)
                 .anyRequest().authenticated()
-                .and().apply(new FilterConfigure(jwtTokenProvider))
+                .and().apply(new FilterConfigure(jwtTokenProvider, exceptionHandlerFilter))
                 .and().addFilterAfter(requestLogger, FilterSecurityInterceptor.class);
+
     }
 }
