@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.user;
 
+import io.github.tn1.server.dto.user.TokenVo;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
@@ -63,11 +64,6 @@ public class UserServiceImpl implements UserService {
         InformationResponse response = dsmAuthClient
                 .getInformation("Bearer " + accessToken);
 
-        String refreshToken = jwtTokenProvider.generateRefreshToken(response.getEmail());
-        refreshTokenRepository.findById(response.getEmail())
-                .or(() -> Optional.of(new RefreshToken(response.getEmail(), refreshToken, refreshExp)))
-                .ifPresent(token -> refreshTokenRepository.save(token.update(refreshToken, refreshExp)));
-
         HttpStatus status = HttpStatus.CREATED;
 
         if(userRepository.findById(response.getEmail()).isPresent()) {
@@ -88,9 +84,11 @@ public class UserServiceImpl implements UserService {
                 .build()
         );
 
+        TokenVo token = getToken(response.getEmail());
+
         return new ResponseEntity<>(new TokenResponse(
-                jwtTokenProvider.generateAccessToken(response.getEmail()),
-                refreshToken, response.getEmail()
+                token.getAccessToken(),
+                token.getRefreshToken(), response.getEmail()
         ), status);
     }
 
@@ -98,4 +96,15 @@ public class UserServiceImpl implements UserService {
     public TokenResponse tokenRefresh(RefreshTokenRequest request) {
         return null;
     }
+
+    private TokenVo getToken(String email) {
+        String accessToken = jwtTokenProvider.generateAccessToken(email);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(email);
+        refreshTokenRepository.findById(email)
+                .or(() -> Optional.of(new RefreshToken(email, refreshToken, refreshExp)))
+                .ifPresent(token -> refreshTokenRepository.save(token.update(refreshToken, refreshExp)));
+
+        return new TokenVo(accessToken, refreshToken);
+    }
+
 }
