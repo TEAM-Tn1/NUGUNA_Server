@@ -1,6 +1,5 @@
 package io.github.tn1.server.service.user;
 
-import io.github.tn1.server.dto.user.TokenVo;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
@@ -10,6 +9,8 @@ import io.github.tn1.server.entity.refresh_token.RefreshTokenRepository;
 import io.github.tn1.server.entity.user.Role;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
+import io.github.tn1.server.exception.ExpiredRefreshTokenException;
+import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.utils.api.client.DsmAuthClient;
@@ -84,27 +85,34 @@ public class UserServiceImpl implements UserService {
                 .build()
         );
 
-        TokenVo token = getToken(response.getEmail());
+        TokenResponse token = getToken(response.getEmail());
 
         return new ResponseEntity<>(new TokenResponse(
                 token.getAccessToken(),
-                token.getRefreshToken(), response.getEmail()
+                token.getRefreshToken(), token.getEmail()
         ), status);
     }
 
     @Override
     public TokenResponse tokenRefresh(RefreshTokenRequest request) {
-        return null;
+        if (jwtTokenProvider.validateToken(request.getRefreshToken())){
+            String email = jwtTokenProvider
+                    .parseRefreshToken(request.getRefreshToken());
+            return refreshTokenRepository.findById(email)
+                    .map(token -> getToken(token.getEmail()))
+                    .orElseThrow(ExpiredRefreshTokenException::new);
+        }
+        throw new InvalidTokenException();
     }
 
-    private TokenVo getToken(String email) {
+    private TokenResponse getToken(String email) {
         String accessToken = jwtTokenProvider.generateAccessToken(email);
         String refreshToken = jwtTokenProvider.generateRefreshToken(email);
         refreshTokenRepository.findById(email)
                 .or(() -> Optional.of(new RefreshToken(email, refreshToken, refreshExp)))
                 .ifPresent(token -> refreshTokenRepository.save(token.update(refreshToken, refreshExp)));
 
-        return new TokenVo(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, email);
     }
 
 }
