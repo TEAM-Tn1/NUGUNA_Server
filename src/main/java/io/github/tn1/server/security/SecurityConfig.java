@@ -1,7 +1,6 @@
 package io.github.tn1.server.security;
 
-import io.github.tn1.server.entity.user.Role;
-import io.github.tn1.server.error.exception.ExceptionHandlerFilter;
+import io.github.tn1.server.error.ExceptionHandlerFilter;
 import io.github.tn1.server.security.jwt.FilterConfigure;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.security.logging.RequestLogger;

@@ -1,6 +1,6 @@
 package io.github.tn1.server.security.jwt;
 
-import io.github.tn1.server.error.exception.ExceptionHandlerFilter;
+import io.github.tn1.server.error.ExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
