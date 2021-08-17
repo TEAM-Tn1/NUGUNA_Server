@@ -134,4 +134,8 @@ public class User implements UserDetails {
         return roomNumber != null && accountNumber != null;
     }
 
+    public boolean haveDeviceToken() {
+        return deviceToken != null;
+    }
+
 }

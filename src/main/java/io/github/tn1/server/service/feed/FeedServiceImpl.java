@@ -2,6 +2,7 @@ package io.github.tn1.server.service.feed;
 
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
+import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
@@ -11,6 +12,8 @@ import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.UserNotFoundException;
+import io.github.tn1.server.security.facade.UserFacade;
+import io.github.tn1.server.utils.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeedServiceImpl implements FeedService {
 
+    private final UserFacade userFacade;
+    private final FcmService fcmService;
     private final FeedRepository feedRepository;
     private final LikeRepository likeRepository;
     private final FeedMediumRepository feedMediumRepository;
@@ -29,6 +34,28 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public void postCarrotFeed(PostCarrotRequest request) {
+        User user = userRepository.findById(userFacade.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        Feed feed = feedRepository.save(
+                Feed.builder()
+                        .title(request.getTitle())
+                        .description(request.getDescription())
+                        .price(request.getPrice())
+                        .user(user)
+                        .build()
+        );
+
+        request.getTags().forEach(tag ->{
+                    tagRepository.save(
+                            Tag.builder()
+                                    .feed(feed)
+                                    .tag(tag)
+                                    .build()
+                    );
+                    fcmService.sendTagNotification(tag, feed);
+                }
+        );
 
     }
 

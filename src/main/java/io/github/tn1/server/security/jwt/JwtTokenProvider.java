@@ -4,10 +4,7 @@ import io.github.tn1.server.exception.ExpiredAccessTokenException;
 import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.security.jwt.auth.AuthDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -102,6 +99,8 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             throw new ExpiredAccessTokenException();
+        } catch (MalformedJwtException e) {
+            throw new InvalidTokenException();
         }
 
     }
