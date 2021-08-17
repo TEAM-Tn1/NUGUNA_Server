@@ -38,20 +38,11 @@ public class Feed {
     @JoinColumn(name = "email")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
-    private Set<Tag> tags = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
-    private Set<FeedMedium> media = new HashSet<>();
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed")
     private Group group;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
     private Set<Like> likes = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
-    private Set<FeedReport> feedReports = new HashSet<>();
 
     @Builder
     public Feed(String title, String description, Integer price,

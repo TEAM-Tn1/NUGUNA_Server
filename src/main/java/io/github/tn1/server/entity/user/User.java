@@ -67,18 +67,6 @@ public class User implements UserDetails {
         this.blackDate = blackDate;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Question> questions = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Like> likes = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Feed> feeds = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<TagNotification> tagNotifications = new HashSet<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.name()));
