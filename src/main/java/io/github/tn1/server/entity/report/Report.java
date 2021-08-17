@@ -42,9 +42,6 @@ public class Report {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
     private Result result;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "report")
-    private Set<ReportMedium> medium = new HashSet<>();
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
     private FeedReport feedReport;
 
