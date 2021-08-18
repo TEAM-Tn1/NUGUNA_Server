@@ -19,7 +19,7 @@ class QuestionResultTest {
                 .build();
         //when
         QuestionResult questionResult = QuestionResult.builder()
-                .reason("test")
+                .reason(reason)
                 .question(question)
                 .build();
         //then
