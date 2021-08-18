@@ -55,4 +55,19 @@ public class Feed extends BaseTimeEntity {
         this.user = user;
     }
 
+    public Feed setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Feed setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Feed setPrice(Integer price) {
+        this.price = price;
+        return this;
+    }
+
 }
