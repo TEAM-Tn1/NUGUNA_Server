@@ -19,6 +19,8 @@ public class Group {
 
     private Integer headCount;
 
+    private Integer currentCount;
+
     private LocalDate recruitmentDate;
 
     @OneToOne(fetch = FetchType.LAZY)
