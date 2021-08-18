@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.feed;
 
+import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
@@ -11,6 +12,9 @@ import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
+import io.github.tn1.server.exception.FeedNotFoundException;
+import io.github.tn1.server.exception.NotYourFeedException;
+import io.github.tn1.server.exception.TooManyTagsException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.utils.fcm.FcmService;
@@ -34,6 +38,10 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public void postCarrotFeed(PostCarrotRequest request) {
+
+        if(request.getTags().size() > 5)
+            throw new TooManyTagsException();
+
         User user = userRepository.findById(userFacade.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -46,6 +54,7 @@ public class FeedServiceImpl implements FeedService {
                         .build()
         );
 
+
         request.getTags().forEach(tag ->{
                     tagRepository.save(
                             Tag.builder()
@@ -57,6 +66,25 @@ public class FeedServiceImpl implements FeedService {
                 }
         );
 
+    }
+
+    @Override
+    public void modifyCarrotFeed(ModifyCarrotRequest request) {
+        User user = userRepository.findById(userFacade.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        Feed feed = feedRepository.findById(request.getFeedId())
+                .orElseThrow(FeedNotFoundException::new);
+
+        if(!feed.getUser().getEmail().equals(user.getEmail()))
+            throw new NotYourFeedException();
+
+        feed
+                .setTitle(request.getTitle())
+                .setDescription(request.getDescription())
+                .setPrice(request.getPrice());
+
+        feedRepository.save(feed);
     }
 
     @Override
