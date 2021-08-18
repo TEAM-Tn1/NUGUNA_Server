@@ -1,5 +1,6 @@
 package io.github.tn1.server.entity.feed;
 
+import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.tag.Tag;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Entity(name = "tbl_feed")
-public class Feed {
+public class Feed extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

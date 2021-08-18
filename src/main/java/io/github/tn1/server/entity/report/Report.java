@@ -1,7 +1,7 @@
 package io.github.tn1.server.entity.report;
 
+import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
-import io.github.tn1.server.entity.report.medium.ReportMedium;
 import io.github.tn1.server.entity.report.result.Result;
 import io.github.tn1.server.entity.user.User;
 import lombok.Builder;
@@ -9,13 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor
 @Entity(name = "tbl_report")
-public class Report {
+public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
