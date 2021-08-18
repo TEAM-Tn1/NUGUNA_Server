@@ -1,5 +1,6 @@
 package io.github.tn1.server.entity.report.result;
 
+import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.Report;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity(name = "tbl_report_result")
-public class Result {
+public class Result extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
