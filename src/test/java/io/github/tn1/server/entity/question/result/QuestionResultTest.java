@@ -25,7 +25,7 @@ class QuestionResultTest {
         //then
         Assertions.assertAll(
                 () -> Assertions.assertEquals(reason, questionResult.getReason()),
-                () -> Assertions.assertEquals(question, questionResult)
+                () -> Assertions.assertEquals(question, questionResult.getQuestion())
         );
     }
 
