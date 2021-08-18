@@ -1,6 +1,7 @@
 package io.github.tn1.server.entity.question.result;
 
 import io.github.tn1.server.entity.question.Question;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,5 +22,11 @@ public class QuestionResult {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @Builder
+    public QuestionResult(String reason, Question question) {
+        this.reason = reason;
+        this.question = question;
+    }
 
 }
