@@ -88,6 +88,21 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public void removeFeed(Long id) {
+        User user = userRepository.findById(userFacade.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        Feed feed = feedRepository.findById(id)
+                .orElseThrow(FeedNotFoundException::new);
+
+        if(!feed.getUser().getEmail().equals(user.getEmail()))
+            throw new NotYourFeedException();
+
+        feedRepository.deleteById(id);
+
+    }
+
+    @Override
     public List<WriteFeedResponse> getWriteFeed(String email) {
         User user = userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new);
