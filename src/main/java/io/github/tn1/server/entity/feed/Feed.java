@@ -39,11 +39,20 @@ public class Feed extends BaseTimeEntity {
     @JoinColumn(name = "email")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+    private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+    private Set<FeedMedium> media = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private Group group;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+    private Set<FeedReport> feedReports = new HashSet<>();
 
     @Builder
     public Feed(String title, String description, Integer price,
