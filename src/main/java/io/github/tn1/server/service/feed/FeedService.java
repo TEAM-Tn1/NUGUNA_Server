@@ -9,5 +9,6 @@ import java.util.List;
 public interface FeedService {
     void postCarrotFeed(PostCarrotRequest request);
     void modifyCarrotFeed(ModifyCarrotRequest request);
+    void removeFeed(Long id);
     List<WriteFeedResponse> getWriteFeed(String email);
 }
