@@ -1,10 +1,7 @@
 package io.github.tn1.server.error;
 
-import io.github.tn1.server.error.ErrorResponse;
 import io.github.tn1.server.error.exception.ErrorCode;
 import io.github.tn1.server.error.exception.ServerException;
-import io.github.tn1.server.exception.BlackedException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
