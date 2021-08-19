@@ -29,6 +29,12 @@ public class FeedController {
         feedService.modifyCarrotFeed(request);
     }
 
+    @DeleteMapping("/{feed_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeCarrotFeed(@PathVariable(name = "feed_id") Long feedId) {
+        feedService.removeFeed(feedId);
+    }
+
     @GetMapping("/{email}")
     public List<WriteFeedResponse> getWriteFeed(@PathVariable("email") String email) {
         return feedService.getWriteFeed(email);
