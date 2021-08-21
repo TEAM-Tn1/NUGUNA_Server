@@ -30,16 +30,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .csrf().disable()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/users/oauth").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PUT, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/users/information").hasAnyRole(roles)
-                .antMatchers(HttpMethod.GET, "/users/{email}").hasAnyRole(roles)
+                .antMatchers(HttpMethod.GET, "/users/{email}").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/feed/{email}").hasAnyRole(roles)
+                .antMatchers(HttpMethod.GET, "/feed/{email}").permitAll()
                 .antMatchers(HttpMethod.POST, "/feed/carrot").hasAnyRole(roles)
                 .antMatchers(HttpMethod.PATCH, "/feed/carrot").hasAnyRole(roles)
                 .antMatchers(HttpMethod.DELETE, "/feed/{feed_id}").hasAnyRole(roles)
