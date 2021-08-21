@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,7 @@ public class WriteFeedResponse {
     private String photo;
     private Integer headCount;
     private LocalDate date;
+    private LocalDateTime lastModifyDate;
     private boolean like;
     private Integer count;
     private boolean isUsedItem;
@@ -27,6 +29,10 @@ public class WriteFeedResponse {
     public void setGroupFeed(Integer headCount, LocalDate date) {
         this.headCount = headCount;
         this.date = date;
+    }
+
+    public void setLike(boolean value) {
+        this.like = value;
     }
 
 }
