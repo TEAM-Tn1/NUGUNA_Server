@@ -35,7 +35,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public void postCarrotFeed(PostCarrotRequest request) {
 
-        if(request.getTags().size() > 5)
+        if(request.getTags() != null && request.getTags().size() > 5)
             throw new TooManyTagsException();
 
         User user = userRepository.findById(UserFacade.getEmail())
@@ -47,6 +47,7 @@ public class FeedServiceImpl implements FeedService {
                         .description(request.getDescription())
                         .price(request.getPrice())
                         .user(user)
+                        .isUsedItem(true)
                         .build()
         );
 
@@ -100,10 +101,13 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public List<WriteFeedResponse> getWriteFeed(String email) {
-        User user = userRepository.findById(email)
+        User writer = userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new);
 
-        return feedRepository.findByUser(user)
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElse(null);
+
+        return feedRepository.findByUser(writer)
                 .stream().map(feed -> {
                     FeedMedium medium = feedMediumRepository
                             .findTopByFeedOrderById(feed);
@@ -116,8 +120,8 @@ public class FeedServiceImpl implements FeedService {
                                     tagRepository.findByFeedOrderById(feed)
                                             .stream().map(Tag::getTag).collect(Collectors.toList()))
                             .photo(medium != null ? medium.getPath() : null)
-                            .like(likeRepository.findByUserAndFeed(user, feed).isPresent())
                             .count(feed.getLikes().size())
+                            .lastModifyDate(feed.getUpdatedDate())
                             .isUsedItem(feed.isUsedItem())
                             .build();
                     if (!feed.isUsedItem()) {
@@ -126,6 +130,8 @@ public class FeedServiceImpl implements FeedService {
                                 feed.getGroup().getRecruitmentDate()
                         );
                     }
+                    if(user != null)
+                        response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
                     return response;
                 }).collect(Collectors.toList());
     }
