@@ -11,6 +11,7 @@ import io.github.tn1.server.entity.refresh_token.RefreshTokenRepository;
 import io.github.tn1.server.entity.user.Role;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
+import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
 import io.github.tn1.server.exception.UserNotFoundException;
@@ -49,7 +50,6 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final DsmAuthClient dsmAuthClient;
-    private final UserFacade userFacade;
 
     @Override
     public OAuthLinkResponse getOAuthLink() {
@@ -111,11 +111,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void modifyInformation(InformationRequest request) {
-        userRepository.findById(userFacade.getEmail())
+        userRepository.findById(UserFacade.getEmail())
                 .map(user -> userRepository.save(
                         user.writeInformation(request.getRoomNumber(), request.getAccountNumber())
                 ))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(CredentialsNotFoundException::new);
     }
 
     @Override

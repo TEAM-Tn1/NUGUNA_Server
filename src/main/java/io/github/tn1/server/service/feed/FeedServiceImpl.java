@@ -12,10 +12,7 @@ import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.FeedNotFoundException;
-import io.github.tn1.server.exception.NotYourFeedException;
-import io.github.tn1.server.exception.TooManyTagsException;
-import io.github.tn1.server.exception.UserNotFoundException;
+import io.github.tn1.server.exception.*;
 import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.utils.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeedServiceImpl implements FeedService {
 
-    private final UserFacade userFacade;
     private final FcmService fcmService;
     private final FeedRepository feedRepository;
     private final LikeRepository likeRepository;
@@ -42,8 +38,8 @@ public class FeedServiceImpl implements FeedService {
         if(request.getTags().size() > 5)
             throw new TooManyTagsException();
 
-        User user = userRepository.findById(userFacade.getEmail())
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElseThrow(CredentialsNotFoundException::new);
 
         Feed feed = feedRepository.save(
                 Feed.builder()
@@ -70,8 +66,8 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public void modifyCarrotFeed(ModifyCarrotRequest request) {
-        User user = userRepository.findById(userFacade.getEmail())
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElseThrow(CredentialsNotFoundException::new);
 
         Feed feed = feedRepository.findById(request.getFeedId())
                 .orElseThrow(FeedNotFoundException::new);
@@ -89,8 +85,8 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public void removeFeed(Long id) {
-        User user = userRepository.findById(userFacade.getEmail())
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElseThrow(CredentialsNotFoundException::new);
 
         Feed feed = feedRepository.findById(id)
                 .orElseThrow(FeedNotFoundException::new);
