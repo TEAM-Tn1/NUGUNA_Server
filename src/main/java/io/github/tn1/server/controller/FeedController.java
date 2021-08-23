@@ -2,6 +2,7 @@ package io.github.tn1.server.controller;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
+import io.github.tn1.server.dto.feed.response.CarrotFeedResponse;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,15 @@ public class FeedController {
         feedService.modifyCarrotFeed(request);
     }
 
+    @GetMapping("/carrot")
+    public List<CarrotFeedResponse> getCarrotFeed(@RequestParam("page") int page,
+                                                  @RequestParam("range") int range) {
+        return feedService.getCarrotFeed(page, range);
+    }
+
     @DeleteMapping("/{feed_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeCarrotFeed(@PathVariable(name = "feed_id") Long feedId) {
+    public void removeFeed(@PathVariable(name = "feed_id") Long feedId) {
         feedService.removeFeed(feedId);
     }
 
