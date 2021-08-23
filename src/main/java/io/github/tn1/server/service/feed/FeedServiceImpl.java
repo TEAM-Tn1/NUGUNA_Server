@@ -2,6 +2,7 @@ package io.github.tn1.server.service.feed;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
+import io.github.tn1.server.dto.feed.response.CarrotFeedResponse;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
@@ -16,6 +17,8 @@ import io.github.tn1.server.exception.*;
 import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.utils.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,6 +85,37 @@ public class FeedServiceImpl implements FeedService {
                 .setPrice(request.getPrice());
 
         feedRepository.save(feed);
+    }
+
+    @Override
+    public List<CarrotFeedResponse> getCarrotFeed(int page, int range) {
+
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElse(null);
+
+        return feedRepository.findByIsUsedItem(true, PageRequest.of(page, range, Sort.by("id").descending()))
+                .stream()
+                .map(feed -> {
+                    FeedMedium medium = feedMediumRepository
+                            .findTopByFeedOrderById(feed);
+                    CarrotFeedResponse response;
+                    response = CarrotFeedResponse.builder()
+                            .feedId(feed.getId())
+                            .title(feed.getTitle())
+                            .price(feed.getPrice())
+                            .lastModifyDate(feed.getUpdatedDate())
+                            .count(feed.getLikes().size())
+                            .description(feed.getDescription())
+                            .photo(medium != null ? medium.getPath() : null)
+                            .tags(tagRepository.findByFeedOrderById(feed)
+                                    .stream().map(Tag::getTag).collect(Collectors.toList()))
+                            .build();
+                    if(user != null) {
+                        response.setLike(likeRepository.findByUserAndFeed(user, feed)
+                                .isPresent());
+                    }
+                    return response;
+                }).collect(Collectors.toList());
     }
 
     @Override
