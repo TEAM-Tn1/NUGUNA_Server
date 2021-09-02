@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FeedMediumRepository extends JpaRepository<FeedMedium, Long> {
     FeedMedium findTopByFeedOrderById(Feed feed);
-
+    int countByFeed(Feed feed);
 }
