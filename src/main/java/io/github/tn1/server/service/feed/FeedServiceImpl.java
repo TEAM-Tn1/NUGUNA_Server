@@ -16,10 +16,12 @@ import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.*;
 import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.utils.fcm.FcmService;
+import io.github.tn1.server.utils.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class FeedServiceImpl implements FeedService {
 
     private final FcmService fcmService;
+    private final S3Service s3Service;
     private final FeedRepository feedRepository;
     private final LikeRepository likeRepository;
     private final FeedMediumRepository feedMediumRepository;
@@ -168,6 +171,31 @@ public class FeedServiceImpl implements FeedService {
                         response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
                     return response;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void uploadPhoto(List<MultipartFile> files, Long feedId) {
+        User user = userRepository.findById(UserFacade.getEmail())
+                .orElseThrow(CredentialsNotFoundException::new);
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        if(!feed.getUser().getEmail().equals(user.getEmail()))
+            throw new NotYourFeedException();
+
+        if(files == null)
+            throw new FileEmptyException();
+
+        if(files.size() + feedMediumRepository.countByFeed(feed) > 5)
+            throw new TooManyFilesException();
+
+        files.forEach(file ->
+                    feedMediumRepository.save(FeedMedium.builder()
+                            .feed(feed)
+                            .path(s3Service.upload(file))
+                            .build())
+                );
     }
 
 }

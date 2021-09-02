@@ -8,6 +8,7 @@ import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,6 +46,12 @@ public class FeedController {
     @GetMapping("/{email}")
     public List<WriteFeedResponse> getWriteFeed(@PathVariable("email") String email) {
         return feedService.getWriteFeed(email);
+    }
+
+    @PostMapping("/{feed_id}/photo")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadPhoto(@RequestPart List<MultipartFile> files, @PathVariable("feed_id") Long feedId) {
+        feedService.uploadPhoto(files, feedId);
     }
 
 }

@@ -4,6 +4,7 @@ import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.CarrotFeedResponse;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface FeedService {
     List<CarrotFeedResponse> getCarrotFeed(int page, int range);
     void removeFeed(Long id);
     List<WriteFeedResponse> getWriteFeed(String email);
+    void uploadPhoto(List<MultipartFile> files, Long feedId);
 }
