@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CarrotFeedResponse {
+public class FeedResponse {
 
     private Long feedId;
     private String title;

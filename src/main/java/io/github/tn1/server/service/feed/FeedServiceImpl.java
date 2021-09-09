@@ -2,7 +2,7 @@ package io.github.tn1.server.service.feed;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
-import io.github.tn1.server.dto.feed.response.CarrotFeedResponse;
+import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
@@ -91,7 +91,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<CarrotFeedResponse> getCarrotFeed(int page, int range) {
+    public List<FeedResponse> getCarrotFeed(int page, int range) {
 
         User user = userRepository.findById(UserFacade.getEmail())
                 .orElse(null);
@@ -101,8 +101,8 @@ public class FeedServiceImpl implements FeedService {
                 .map(feed -> {
                     FeedMedium medium = feedMediumRepository
                             .findTopByFeedOrderById(feed);
-                    CarrotFeedResponse response;
-                    response = CarrotFeedResponse.builder()
+                    FeedResponse response;
+                    response = FeedResponse.builder()
                             .feedId(feed.getId())
                             .title(feed.getTitle())
                             .price(feed.getPrice())
@@ -145,32 +145,8 @@ public class FeedServiceImpl implements FeedService {
                 .orElse(null);
 
         return feedRepository.findByUser(writer)
-                .stream().map(feed -> {
-                    FeedMedium medium = feedMediumRepository
-                            .findTopByFeedOrderById(feed);
-                    WriteFeedResponse response = WriteFeedResponse.builder()
-                            .feedId(feed.getId())
-                            .title(feed.getTitle())
-                            .description(feed.getDescription())
-                            .price(feed.getPrice())
-                            .tags(
-                                    tagRepository.findByFeedOrderById(feed)
-                                            .stream().map(Tag::getTag).collect(Collectors.toList()))
-                            .photo(medium != null ? medium.getPath() : null)
-                            .count(feed.getLikes().size())
-                            .lastModifyDate(feed.getUpdatedDate())
-                            .isUsedItem(feed.isUsedItem())
-                            .build();
-                    if (!feed.isUsedItem()) {
-                        response.setGroupFeed(
-                                feed.getGroup().getHeadCount(),
-                                feed.getGroup().getRecruitmentDate()
-                        );
-                    }
-                    if(user != null)
-                        response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
-                    return response;
-                }).collect(Collectors.toList());
+                .stream().map(feed -> feedToFeedResponse(feed, user))
+				.collect(Collectors.toList());
     }
 
     @Override
@@ -197,5 +173,44 @@ public class FeedServiceImpl implements FeedService {
                             .build())
                 );
     }
+
+	@Override
+	public List<FeedResponse> getLikedCarrot() {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(UserNotFoundException::new);
+		return user.getLikes()
+				.stream().filter(like -> like.getFeed().isUsedItem())
+				.map(like -> {
+					Feed feed = like.getFeed();
+					return feedToFeedResponse(feed, user);
+				}).collect(Collectors.toList());
+	}
+
+	private WriteFeedResponse feedToFeedResponse(Feed feed,User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
+		WriteFeedResponse response = WriteFeedResponse.WriteFeedResponseBuilder()
+				.feedId(feed.getId())
+				.title(feed.getTitle())
+				.description(feed.getDescription())
+				.price(feed.getPrice())
+				.tags(
+						tagRepository.findByFeedOrderById(feed)
+								.stream().map(Tag::getTag).collect(Collectors.toList()))
+				.photo(medium != null ? medium.getPath() : null)
+				.count(feed.getLikes().size())
+				.lastModifyDate(feed.getUpdatedDate())
+				.isUsedItem(feed.isUsedItem())
+				.build();
+		if (!feed.isUsedItem()) {
+			response.setGroupFeed(
+					feed.getGroup().getHeadCount(),
+					feed.getGroup().getRecruitmentDate()
+			);
+		}
+		if(user != null)
+			response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
+		return response;
+	}
 
 }

@@ -1,31 +1,32 @@
 package io.github.tn1.server.dto.feed.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import lombok.Getter;
+
 @Getter
-@Builder
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class WriteFeedResponse {
-    private Long feedId;
-    private String title;
-    private String description;
-    private Integer price;
-    private List<String> tags;
-    private String photo;
+public class WriteFeedResponse extends FeedResponse {
+
     private Integer headCount;
     private LocalDate date;
-    private LocalDateTime lastModifyDate;
-    private boolean like;
-    private Integer count;
     private boolean isUsedItem;
+
+    @Builder(builderMethodName = "WriteFeedResponseBuilder")
+    public WriteFeedResponse(Long feedId, String title, String description,
+			Integer price, List<String> tags, String photo,
+			LocalDateTime lastModifyDate, boolean like, Integer count,
+			Integer headCount, LocalDate date, boolean isUsedItem) {
+    	super(feedId, title, description, price,
+				tags, photo, lastModifyDate, like, count);
+    	this.headCount = headCount;
+    	this.date = date;
+    	this.isUsedItem = isUsedItem;
+	}
 
     public void setGroupFeed(Integer headCount, LocalDate date) {
         this.headCount = headCount;
@@ -33,7 +34,7 @@ public class WriteFeedResponse {
     }
 
     public void setLike(boolean value) {
-        this.like = value;
+        super.setLike(value);
     }
 
 }

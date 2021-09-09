@@ -2,7 +2,7 @@ package io.github.tn1.server.controller;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
-import io.github.tn1.server.dto.feed.response.CarrotFeedResponse;
+import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class FeedController {
     }
 
     @GetMapping("/carrot")
-    public List<CarrotFeedResponse> getCarrotFeed(@RequestParam("page") int page,
+    public List<FeedResponse> getCarrotFeed(@RequestParam("page") int page,
                                                   @RequestParam("range") int range) {
         return feedService.getCarrotFeed(page, range);
     }
@@ -53,5 +53,11 @@ public class FeedController {
     public void uploadPhoto(@RequestPart List<MultipartFile> files, @PathVariable("feed_id") Long feedId) {
         feedService.uploadPhoto(files, feedId);
     }
+
+    @GetMapping("/me/like/carrot")
+	public List<FeedResponse> getLikedCarrot() {
+    	return feedService.getLikedCarrot();
+	}
+
 
 }
