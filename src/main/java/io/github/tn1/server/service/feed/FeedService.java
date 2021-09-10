@@ -16,5 +16,5 @@ public interface FeedService {
     List<WriteFeedResponse> getWriteFeed(String email);
     void uploadPhoto(List<MultipartFile> files, Long feedId);
     List<FeedResponse> getLikedCarrot();
-    void removePhoto(Long feedId, String path);
+    void removePhoto(String path);
 }
