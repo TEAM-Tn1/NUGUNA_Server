@@ -99,7 +99,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             throw new ExpiredAccessTokenException();
-        } catch (MalformedJwtException e) {
+        } catch (MalformedJwtException | SignatureException e) {
             throw new InvalidTokenException();
         }
 
