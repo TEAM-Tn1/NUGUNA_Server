@@ -52,7 +52,7 @@ public class User implements UserDetails {
 
     private LocalDate blackDate;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<Like> likes = new HashSet<>();
 
     @Builder

@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Value("${jwt.refresh.exp}")
     private Long refreshExp;
 
-    private static String OAUTH_BASE_URI="https://developer.dsmkr.com/";
+    private static String OAUTH_BASE_URI="https://dsm-auth.vercel.app/";
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;

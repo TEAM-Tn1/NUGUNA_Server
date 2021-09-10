@@ -19,6 +19,7 @@ public enum ErrorCode {
     BLACKED(403, "User was blacked."),
     USER_NOT_FOUND(404, "User not found."),
     FEED_NOT_FOUND(404, "Feed not found."),
+	MEDIUM_NOT_FOUND(404, "Medium not found."),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags.");
 

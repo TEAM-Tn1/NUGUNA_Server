@@ -109,7 +109,7 @@ public class FeedServiceImpl implements FeedService {
                             .lastModifyDate(feed.getUpdatedDate())
                             .count(feed.getLikes().size())
                             .description(feed.getDescription())
-                            .photo(medium != null ? medium.getPath() : null)
+                            .photo(medium != null ? s3Service.getObjectUrl(medium.getFileName()) : null)
                             .tags(tagRepository.findByFeedOrderById(feed)
                                     .stream().map(Tag::getTag).collect(Collectors.toList()))
                             .build();
@@ -169,7 +169,7 @@ public class FeedServiceImpl implements FeedService {
         files.forEach(file ->
                     feedMediumRepository.save(FeedMedium.builder()
                             .feed(feed)
-                            .path(s3Service.upload(file))
+                            .fileName(s3Service.upload(file))
                             .build())
                 );
     }
@@ -186,6 +186,21 @@ public class FeedServiceImpl implements FeedService {
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public void removePhoto(String fileName) {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
+				.orElseThrow(MediumNotFoundException::new);
+
+		if(!medium.getFeed().getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
+
+		s3Service.delete(medium.getFileName());
+		feedMediumRepository.delete(medium);
+	}
+
 	private WriteFeedResponse feedToFeedResponse(Feed feed,User user) {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
@@ -197,7 +212,7 @@ public class FeedServiceImpl implements FeedService {
 				.tags(
 						tagRepository.findByFeedOrderById(feed)
 								.stream().map(Tag::getTag).collect(Collectors.toList()))
-				.photo(medium != null ? medium.getPath() : null)
+				.photo(medium != null ? s3Service.getObjectUrl(medium.getFileName()) : null)
 				.count(feed.getLikes().size())
 				.lastModifyDate(feed.getUpdatedDate())
 				.isUsedItem(feed.isUsedItem())

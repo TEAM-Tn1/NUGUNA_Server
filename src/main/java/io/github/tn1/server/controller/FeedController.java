@@ -59,5 +59,11 @@ public class FeedController {
     	return feedService.getLikedCarrot();
 	}
 
+	@DeleteMapping("/photo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletePhoto(@RequestParam("file_name") String fileName) {
+    	feedService.removePhoto(fileName);
+	}
+
 
 }

@@ -17,15 +17,15 @@ public class FeedMedium {
     private Long id;
 
     @Column(length = 150)
-    private String path;
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
     @Builder
-    public FeedMedium(String path, Feed feed) {
-        this.path = path;
+    public FeedMedium(String fileName, Feed feed) {
+        this.fileName = fileName;
         this.feed = feed;
     }
 

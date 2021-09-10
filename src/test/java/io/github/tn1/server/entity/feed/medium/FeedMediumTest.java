@@ -14,16 +14,16 @@ class FeedMediumTest {
         Feed feed = Feed.builder()
                 .title("제목")
                 .build();
-        String path = "경로";
+        String fileName = "name";
         //then
         FeedMedium medium = FeedMedium.builder()
                 .feed(feed)
-                .path(path)
+                .fileName(fileName)
                 .build();
         //when
         Assertions.assertAll(
                 () -> Assertions.assertEquals(feed, medium.getFeed()),
-                () -> Assertions.assertEquals(path, medium.getPath())
+                () -> Assertions.assertEquals(fileName, medium.getFileName())
         );
     }
 
