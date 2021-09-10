@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class TagNotification {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 10)
