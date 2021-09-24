@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class OAuthLinkResponse {
-    private String link;
+    private final String link;
 }

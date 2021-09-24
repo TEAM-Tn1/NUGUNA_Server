@@ -1,5 +1,7 @@
 package io.github.tn1.server.service.user;
 
+import java.util.Optional;
+
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
@@ -21,12 +23,11 @@ import io.github.tn1.server.utils.api.client.DsmAuthClient;
 import io.github.tn1.server.utils.api.dto.DsmAuthTokenRequest;
 import io.github.tn1.server.utils.api.dto.InformationResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Value("${jwt.refresh.exp}")
     private Long refreshExp;
 
-    private static String OAUTH_BASE_URI="https://dsm-auth.vercel.app/";
+    private static final String OAUTH_BASE_URI="https://dsm-auth.vercel.app/";
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;

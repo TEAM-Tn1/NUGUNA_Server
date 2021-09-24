@@ -1,6 +1,8 @@
-package io.github.tn1.server.security.jwt;
+package io.github.tn1.server.config;
 
 import io.github.tn1.server.error.ExceptionHandlerFilter;
+import io.github.tn1.server.security.jwt.JwtTokenFilter;
+import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.security.logging.RequestLogger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -9,7 +11,7 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
-public class FilterConfigure extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class FilterConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ExceptionHandlerFilter exceptionHandlerFilter;

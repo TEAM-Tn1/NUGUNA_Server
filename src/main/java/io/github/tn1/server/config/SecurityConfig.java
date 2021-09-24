@@ -1,17 +1,16 @@
-package io.github.tn1.server.security;
+package io.github.tn1.server.config;
 
 import io.github.tn1.server.error.ExceptionHandlerFilter;
-import io.github.tn1.server.security.jwt.FilterConfigure;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.security.logging.RequestLogger;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 @Configuration
 @EnableWebSecurity
@@ -45,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, "/feed/carrot").hasAnyRole(roles)
                 .antMatchers(HttpMethod.DELETE, "/feed/{feed_id}").hasAnyRole(roles)
                 .anyRequest().authenticated()
-                .and().apply(new FilterConfigure(jwtTokenProvider, exceptionHandlerFilter, requestLogger));
+                .and().apply(new FilterConfig(jwtTokenProvider, exceptionHandlerFilter, requestLogger));
 
     }
 }
