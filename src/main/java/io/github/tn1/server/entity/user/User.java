@@ -1,23 +1,28 @@
 package io.github.tn1.server.entity.user;
 
-import io.github.tn1.server.dto.user.response.UserInformationResponse;
-import io.github.tn1.server.entity.feed.Feed;
-import io.github.tn1.server.entity.like.Like;
-import io.github.tn1.server.entity.question.Question;
-import io.github.tn1.server.entity.tag_notification.TagNotification;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import io.github.tn1.server.dto.user.response.UserInformationResponse;
+import io.github.tn1.server.entity.like.Like;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @NoArgsConstructor
@@ -53,7 +58,7 @@ public class User implements UserDetails {
     private LocalDate blackDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private Set<Like> likes = new HashSet<>();
+	private final Set<Like> likes = new HashSet<>();
 
     @Builder
     public User(String email, String name, Role role,

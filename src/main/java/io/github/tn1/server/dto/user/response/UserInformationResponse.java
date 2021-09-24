@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserInformationResponse {
-    private String email;
-    private String name;
-    private String gcn;
-    private String roomNumber;
-    private String accountNumber;
+    private final String email;
+    private final String name;
+    private final String gcn;
+    private final String roomNumber;
+    private final String accountNumber;
 }

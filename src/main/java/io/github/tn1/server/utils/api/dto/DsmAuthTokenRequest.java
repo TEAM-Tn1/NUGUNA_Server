@@ -9,8 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DsmAuthTokenRequest {
 
-    private String clientId;
-    private String clientSecret;
-    private String code;
+    private final String clientId;
+    private final String clientSecret;
+    private final String code;
 
 }

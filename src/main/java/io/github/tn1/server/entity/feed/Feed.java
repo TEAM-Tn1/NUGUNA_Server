@@ -1,5 +1,20 @@
 package io.github.tn1.server.entity.feed;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
@@ -10,10 +25,6 @@ import io.github.tn1.server.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -40,19 +51,19 @@ public class Feed extends BaseTimeEntity {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-    private Set<Tag> tags = new HashSet<>();
+    private final Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-    private Set<FeedMedium> media = new HashSet<>();
+    private final Set<FeedMedium> media = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private Group group;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-    private Set<Like> likes = new HashSet<>();
+    private final Set<Like> likes = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-    private Set<FeedReport> feedReports = new HashSet<>();
+    private final Set<FeedReport> feedReports = new HashSet<>();
 
     @Builder
     public Feed(String title, String description, Integer price,

@@ -14,7 +14,7 @@ public class WriteFeedResponse extends FeedResponse {
 
     private Integer headCount;
     private LocalDate date;
-    private boolean isUsedItem;
+    private final boolean isUsedItem;
 
     @Builder(builderMethodName = "WriteFeedResponseBuilder")
     public WriteFeedResponse(Long feedId, String title, String description,
