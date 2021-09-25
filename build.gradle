@@ -32,6 +32,8 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
 
+	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.5.4'
+
     implementation 'org.apache.poi:poi:3.16'
 
 	testImplementation 'com.h2database:h2'
