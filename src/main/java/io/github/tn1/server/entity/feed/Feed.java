@@ -22,12 +22,13 @@ import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.like.Like;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
 import io.github.tn1.server.entity.user.User;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_feed")
 public class Feed extends BaseTimeEntity {
 

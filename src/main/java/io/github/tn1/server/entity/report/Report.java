@@ -1,17 +1,28 @@
 package io.github.tn1.server.entity.report;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
 import io.github.tn1.server.entity.report.result.Result;
 import io.github.tn1.server.entity.user.User;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_report")
 public class Report extends BaseTimeEntity {
 

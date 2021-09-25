@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 
 import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.entity.like.Like;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_user")
 public class User implements UserDetails {
 
