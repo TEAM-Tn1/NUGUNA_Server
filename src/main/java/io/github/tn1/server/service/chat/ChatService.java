@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.chat;
 
+import io.github.tn1.server.dto.chat.response.JoinResponse;
 import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.chat.member.MemberRepository;
 import io.github.tn1.server.entity.chat.room.Room;
@@ -25,7 +26,7 @@ public class ChatService {
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
 
-	public String joinRoom(Long feedId) {
+	public JoinResponse joinRoom(Long feedId) {
 		User currentUser = userRepository.findById(UserFacade.getEmail())
 				.orElseThrow(UserNotFoundException::new);
 		Feed feed = feedRepository.findById(feedId)
@@ -48,7 +49,7 @@ public class ChatService {
 						.room(room)
 						.build()
 		);
-		return room.getId();
+		return new JoinResponse(room.getId());
 	}
 
 }
