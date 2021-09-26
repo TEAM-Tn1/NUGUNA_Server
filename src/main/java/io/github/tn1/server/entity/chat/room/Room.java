@@ -2,6 +2,8 @@ package io.github.tn1.server.entity.chat.room;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,10 +37,18 @@ public class Room {
 	@JoinColumn(name = "feed_id")
 	private Feed feed;
 
+	@Enumerated(EnumType.STRING)
+	@Column(length = 6)
+	private RoomType type;
+
+	private String photoUrl;
+
 	@Builder
-	public Room(User user, Feed feed) {
+	public Room(User user, Feed feed, RoomType type, String photoUrl) {
 		this.headUser = user;
 		this.feed = feed;
+		this.type = type;
+		this.photoUrl = photoUrl;
 	}
 
 }
