@@ -1,4 +1,4 @@
-package io.github.tn1.server.dto.chat;
+package io.github.tn1.server.dto.chat.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
