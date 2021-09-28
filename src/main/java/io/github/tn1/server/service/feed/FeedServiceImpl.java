@@ -1,125 +1,40 @@
 package io.github.tn1.server.service.feed;
 
-import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
-import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.github.tn1.server.dto.feed.response.FeedResponse;
-import io.github.tn1.server.dto.feed.response.WriteFeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
-import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.*;
+import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.FeedNotFoundException;
+import io.github.tn1.server.exception.FileEmptyException;
+import io.github.tn1.server.exception.MediumNotFoundException;
+import io.github.tn1.server.exception.NotYourFeedException;
+import io.github.tn1.server.exception.TooManyFilesException;
+import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.security.facade.UserFacade;
-import io.github.tn1.server.utils.fcm.FcmService;
-import io.github.tn1.server.utils.s3.S3Service;
+import io.github.tn1.server.utils.feed.FeedUtil;
+import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FeedServiceImpl implements FeedService {
 
-    private final FcmService fcmService;
-    private final S3Service s3Service;
+    private final S3Util s3Util;
     private final FeedRepository feedRepository;
-    private final LikeRepository likeRepository;
     private final FeedMediumRepository feedMediumRepository;
-    private final TagRepository tagRepository;
     private final UserRepository userRepository;
-
-    @Override
-    public void postCarrotFeed(PostCarrotRequest request) {
-
-        if(request.getTags() != null && request.getTags().size() > 5)
-            throw new TooManyTagsException();
-
-        User user = userRepository.findById(UserFacade.getEmail())
-                .orElseThrow(CredentialsNotFoundException::new);
-
-        Feed feed = feedRepository.save(
-                Feed.builder()
-                        .title(request.getTitle())
-                        .description(request.getDescription())
-                        .price(request.getPrice())
-                        .user(user)
-                        .isUsedItem(true)
-                        .build()
-        );
-
-
-        request.getTags().forEach(tag ->{
-                    tagRepository.save(
-                            Tag.builder()
-                                    .feed(feed)
-                                    .tag(tag)
-                                    .build()
-                    );
-                    fcmService.sendTagNotification(tag, feed);
-                }
-        );
-
-    }
-
-    @Override
-    public void modifyCarrotFeed(ModifyCarrotRequest request) {
-        User user = userRepository.findById(UserFacade.getEmail())
-                .orElseThrow(CredentialsNotFoundException::new);
-
-        Feed feed = feedRepository.findById(request.getFeedId())
-                .orElseThrow(FeedNotFoundException::new);
-
-        if(!feed.getUser().getEmail().equals(user.getEmail()))
-            throw new NotYourFeedException();
-
-        feed
-                .setTitle(request.getTitle())
-                .setDescription(request.getDescription())
-                .setPrice(request.getPrice());
-
-        feedRepository.save(feed);
-    }
-
-    @Override
-    public List<FeedResponse> getCarrotFeed(int page, int range) {
-
-        User user = userRepository.findById(UserFacade.getEmail())
-                .orElse(null);
-
-        return feedRepository.findByIsUsedItem(true, PageRequest.of(page, range, Sort.by("id").descending()))
-                .stream()
-                .map(feed -> {
-                    FeedMedium medium = feedMediumRepository
-                            .findTopByFeedOrderById(feed);
-                    FeedResponse response;
-                    response = FeedResponse.builder()
-                            .feedId(feed.getId())
-                            .title(feed.getTitle())
-                            .price(feed.getPrice())
-                            .lastModifyDate(feed.getUpdatedDate())
-                            .count(feed.getLikes().size())
-                            .description(feed.getDescription())
-                            .photo(medium != null ? s3Service.getObjectUrl(medium.getFileName()) : null)
-                            .tags(tagRepository.findByFeedOrderById(feed)
-                                    .stream().map(Tag::getTag).collect(Collectors.toList()))
-                            .build();
-                    if(user != null) {
-                        response.setLike(likeRepository.findByUserAndFeed(user, feed)
-                                .isPresent());
-                    }
-                    return response;
-                }).collect(Collectors.toList());
-    }
 
     @Override
     public void removeFeed(Long id) {
@@ -137,7 +52,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<WriteFeedResponse> getWriteFeed(String email) {
+    public List<FeedResponse> getWriteFeed(String email) {
         User writer = userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -145,7 +60,7 @@ public class FeedServiceImpl implements FeedService {
                 .orElse(null);
 
         return feedRepository.findByUser(writer)
-                .stream().map(feed -> feedToFeedResponse(feed, user))
+                .stream().map(feed -> FeedUtil.feedToFeedResponse(feed, user))
 				.collect(Collectors.toList());
     }
 
@@ -169,22 +84,10 @@ public class FeedServiceImpl implements FeedService {
         files.forEach(file ->
                     feedMediumRepository.save(FeedMedium.builder()
                             .feed(feed)
-                            .fileName(s3Service.upload(file))
+                            .fileName(s3Util.upload(file))
                             .build())
                 );
     }
-
-	@Override
-	public List<FeedResponse> getLikedCarrot() {
-		User user = userRepository.findById(UserFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
-		return user.getLikes()
-				.stream().filter(like -> like.getFeed().isUsedItem())
-				.map(like -> {
-					Feed feed = like.getFeed();
-					return feedToFeedResponse(feed, user);
-				}).collect(Collectors.toList());
-	}
 
 	@Override
 	public void removePhoto(String fileName) {
@@ -197,35 +100,8 @@ public class FeedServiceImpl implements FeedService {
 		if(!medium.getFeed().getUser().getEmail().equals(user.getEmail()))
 			throw new NotYourFeedException();
 
-		s3Service.delete(medium.getFileName());
+		s3Util.delete(medium.getFileName());
 		feedMediumRepository.delete(medium);
-	}
-
-	private WriteFeedResponse feedToFeedResponse(Feed feed,User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
-		WriteFeedResponse response = WriteFeedResponse.WriteFeedResponseBuilder()
-				.feedId(feed.getId())
-				.title(feed.getTitle())
-				.description(feed.getDescription())
-				.price(feed.getPrice())
-				.tags(
-						tagRepository.findByFeedOrderById(feed)
-								.stream().map(Tag::getTag).collect(Collectors.toList()))
-				.photo(medium != null ? s3Service.getObjectUrl(medium.getFileName()) : null)
-				.count(feed.getLikes().size())
-				.lastModifyDate(feed.getUpdatedDate())
-				.isUsedItem(feed.isUsedItem())
-				.build();
-		if (!feed.isUsedItem()) {
-			response.setGroupFeed(
-					feed.getGroup().getHeadCount(),
-					feed.getGroup().getRecruitmentDate()
-			);
-		}
-		if(user != null)
-			response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
-		return response;
 	}
 
 }
