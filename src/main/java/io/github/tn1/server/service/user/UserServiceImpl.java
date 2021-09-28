@@ -5,6 +5,7 @@ import java.util.Optional;
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
+import io.github.tn1.server.dto.user.response.AccountResponse;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.dto.user.response.UserInformationResponse;
@@ -126,7 +127,14 @@ public class UserServiceImpl implements UserService {
                 .getInformation();
     }
 
-    private TokenResponse getToken(String email) {
+	@Override
+	public AccountResponse getAccount() {
+		return new AccountResponse(userRepository.findById(UserFacade.getEmail())
+				.map(User::getAccountNumber)
+				.orElseThrow(CredentialsNotFoundException::new));
+	}
+
+	private TokenResponse getToken(String email) {
         String accessToken = jwtTokenProvider.generateAccessToken(email);
         String refreshToken = jwtTokenProvider.generateRefreshToken(email);
         refreshTokenRepository.findById(email)
