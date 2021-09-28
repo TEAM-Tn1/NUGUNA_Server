@@ -20,7 +20,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class FcmService {
+public class FcmUtil {
 
     private static final String FIREBASE_CONFIG_PATH = "tn1-server-firebase-adminsdk.json";
 
