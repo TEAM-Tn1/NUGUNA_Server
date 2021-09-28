@@ -21,7 +21,7 @@ import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.RoomNotFoundException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.security.facade.UserFacade;
-import io.github.tn1.server.utils.s3.S3Service;
+import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class ChatService {
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
 
-	private final S3Service s3Service;
+	private final S3Util s3Util;
 
 	public JoinResponse joinRoom(Long feedId) {
 		User currentUser = userRepository.findById(UserFacade.getEmail())
@@ -56,7 +56,7 @@ public class ChatService {
 					.user(feed.getUser())
 					.type(RoomType.CARROT)
 					.photoUrl(medium != null ?
-							s3Service.getObjectUrl(medium.getFileName()) : null)
+							s3Util.getObjectUrl(medium.getFileName()) : null)
 					.build());
 		} else {
 			room = roomRepository.findByFeed(feed)
