@@ -129,9 +129,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public AccountResponse getAccount() {
-		return new AccountResponse(userRepository.findById(UserFacade.getEmail())
+		return new AccountResponse(userRepository
+				.findById(UserFacade.getEmail())
 				.map(User::getAccountNumber)
-				.orElseThrow(CredentialsNotFoundException::new));
+				.orElse(null));
 	}
 
 	private TokenResponse getToken(String email) {
