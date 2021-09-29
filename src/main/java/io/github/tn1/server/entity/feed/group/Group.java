@@ -43,4 +43,12 @@ public class Group {
         this.feed = feed;
     }
 
+    public void increaseCurrentCount() {
+    	this.currentCount++;
+	}
+
+	public void decreaseCurrentCount() {
+    	this.currentCount--;
+	}
+
 }
