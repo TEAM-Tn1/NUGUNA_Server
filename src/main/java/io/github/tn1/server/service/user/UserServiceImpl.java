@@ -2,6 +2,8 @@ package io.github.tn1.server.service.user;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
@@ -133,6 +135,17 @@ public class UserServiceImpl implements UserService {
 				.findById(UserFacade.getEmail())
 				.map(User::getAccountNumber)
 				.orElse(null));
+	}
+
+	@Override
+	@Transactional
+	public void logout() {
+		userRepository
+				.findById(UserFacade.getEmail())
+				.orElseThrow(UserNotFoundException::new)
+				.removeDeviceToken();
+		refreshTokenRepository.findById(UserFacade.getEmail())
+				.ifPresent(refreshTokenRepository::delete);
 	}
 
 	private TokenResponse getToken(String email) {
