@@ -16,4 +16,5 @@ public interface UserService {
     void modifyInformation(InformationRequest request);
     UserInformationResponse getInformation(String email);
     AccountResponse getAccount();
+    void logout();
 }

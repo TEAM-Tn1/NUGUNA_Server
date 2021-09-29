@@ -51,4 +51,10 @@ public class UserController {
     	return userService.getAccount();
 	}
 
+	@PostMapping("/logout")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void logout() {
+    	userService.logout();
+	}
+
 }

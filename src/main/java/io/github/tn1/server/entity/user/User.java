@@ -135,4 +135,8 @@ public class User implements UserDetails {
         return deviceToken != null;
     }
 
+    public void removeDeviceToken() {
+    	this.deviceToken = null;
+	}
+
 }
