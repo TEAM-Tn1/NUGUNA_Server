@@ -3,29 +3,32 @@ package io.github.tn1.server.utils.api;
 import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import feign.codec.StringDecoder;
+import io.github.tn1.server.exception.OtherServerBadRequestException;
+import io.github.tn1.server.exception.OtherServerExpiredTokenException;
+import io.github.tn1.server.exception.OtherServerForbiddenException;
+import io.github.tn1.server.exception.OtherServerUnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
 
 @Slf4j
 public class FeignClientErrorDecoder implements ErrorDecoder {
 
-    private final StringDecoder stringDecoder = new StringDecoder();
-
     @Override
     public Exception decode(String methodKey, Response response) {
-        String message = "Server failed to request oauth server.";
 
-        if(response.body() != null) {
-            try {
-                message = stringDecoder.decode(response, String.class).toString();
-            } catch (IOException e) {
-                log.error(methodKey + "Error Deserializing response body from failed feign request response.", e);
-            }
-        }
+    	if(response.status() >= 400) {
+			switch (response.status()){
+				case 401:
+					throw new OtherServerUnauthorizedException();
+				case 403:
+					throw new OtherServerForbiddenException();
+				case 419:
+					throw new OtherServerExpiredTokenException();
+				default:
+					throw new OtherServerBadRequestException();
+			}
+		}
 
-        return FeignException.FeignClientException.errorStatus(methodKey, response);
+        return FeignException.errorStatus(methodKey, response);
     }
 
 }
