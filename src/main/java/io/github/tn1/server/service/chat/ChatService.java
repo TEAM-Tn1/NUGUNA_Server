@@ -59,6 +59,7 @@ public class ChatService {
 							s3Util.getObjectUrl(medium.getFileName()) : null)
 					.build());
 		} else {
+			feed.getGroup().increaseCurrentCount();
 			room = roomRepository.findByFeed(feed)
 					.orElseThrow(RoomNotFoundException::new);
 		}
