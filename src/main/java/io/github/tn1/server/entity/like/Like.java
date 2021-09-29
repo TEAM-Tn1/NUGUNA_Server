@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.user.User;
@@ -17,6 +19,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "email", "feed_id" })
+})
 @Entity(name = "tbl_like")
 public class Like {
 
