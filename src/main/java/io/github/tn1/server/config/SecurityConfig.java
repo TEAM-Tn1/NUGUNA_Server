@@ -38,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, "/users/information").hasAnyRole(roles)
                 .antMatchers(HttpMethod.GET, "/users/{email}").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/feed/{email}").permitAll()
+                .antMatchers(HttpMethod.GET, "/feed/users/{email}").permitAll()
+				.antMatchers(HttpMethod.GET, "/feed/{feed_id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/feed/carrot").permitAll()
                 .antMatchers(HttpMethod.POST, "/feed/carrot").hasAnyRole(roles)
                 .antMatchers(HttpMethod.PATCH, "/feed/carrot").hasAnyRole(roles)
