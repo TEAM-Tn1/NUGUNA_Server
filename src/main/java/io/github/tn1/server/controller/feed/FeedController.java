@@ -25,21 +25,26 @@ public class FeedController {
 
 	private final FeedService feedService;
 
-	@DeleteMapping("/{feed_id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeFeed(@PathVariable(name = "feed_id") Long feedId) {
-		feedService.removeFeed(feedId);
-	}
-
-	@GetMapping("/{email}")
+	@GetMapping("/users/{email}")
 	public List<FeedResponse> getWriteFeed(@PathVariable("email") String email) {
 		return feedService.getWriteFeed(email);
+	}
+
+	@GetMapping("/{feed_id}")
+	public FeedResponse getFeed(@PathVariable("feed_id") Long feedId) {
+		return feedService.getFeed(feedId);
 	}
 
 	@PostMapping("/{feed_id}/photo")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void uploadPhoto(@RequestPart List<MultipartFile> files, @PathVariable("feed_id") Long feedId) {
 		feedService.uploadPhoto(files, feedId);
+	}
+
+	@DeleteMapping("/{feed_id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeFeed(@PathVariable(name = "feed_id") Long feedId) {
+		feedService.removeFeed(feedId);
 	}
 
 	@DeleteMapping("/photo")

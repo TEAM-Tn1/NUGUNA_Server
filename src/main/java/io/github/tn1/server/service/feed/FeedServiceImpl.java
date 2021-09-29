@@ -8,8 +8,6 @@ import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
-import io.github.tn1.server.entity.feed.tag.TagRepository;
-import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
@@ -36,20 +34,7 @@ public class FeedServiceImpl implements FeedService {
     private final FeedMediumRepository feedMediumRepository;
     private final UserRepository userRepository;
 
-    @Override
-    public void removeFeed(Long id) {
-        User user = userRepository.findById(UserFacade.getEmail())
-                .orElseThrow(CredentialsNotFoundException::new);
 
-        Feed feed = feedRepository.findById(id)
-                .orElseThrow(FeedNotFoundException::new);
-
-        if(!feed.getUser().getEmail().equals(user.getEmail()))
-            throw new NotYourFeedException();
-
-        feedRepository.deleteById(id);
-
-    }
 
     @Override
     public List<FeedResponse> getWriteFeed(String email) {
@@ -64,30 +49,54 @@ public class FeedServiceImpl implements FeedService {
 				.collect(Collectors.toList());
     }
 
-    @Override
-    public void uploadPhoto(List<MultipartFile> files, Long feedId) {
-        User user = userRepository.findById(UserFacade.getEmail())
-                .orElseThrow(CredentialsNotFoundException::new);
+	@Override
+	public FeedResponse getFeed(Long feedId) {
+    	User user = userRepository.findById(UserFacade.getEmail())
+				.orElse(null);
+    	Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
+    	return FeedUtil.feedToFeedResponse(feed, user);
+	}
 
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(FeedNotFoundException::new);
+	@Override
+	public void uploadPhoto(List<MultipartFile> files, Long feedId) {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
 
-        if(!feed.getUser().getEmail().equals(user.getEmail()))
-            throw new NotYourFeedException();
+		Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
 
-        if(files == null)
-            throw new FileEmptyException();
+		if(!feed.getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
 
-        if(files.size() + feedMediumRepository.countByFeed(feed) > 5)
-            throw new TooManyFilesException();
+		if(files == null)
+			throw new FileEmptyException();
 
-        files.forEach(file ->
-                    feedMediumRepository.save(FeedMedium.builder()
-                            .feed(feed)
-                            .fileName(s3Util.upload(file))
-                            .build())
-                );
-    }
+		if(files.size() + feedMediumRepository.countByFeed(feed) > 5)
+			throw new TooManyFilesException();
+
+		files.forEach(file ->
+				feedMediumRepository.save(FeedMedium.builder()
+						.feed(feed)
+						.fileName(s3Util.upload(file))
+						.build())
+		);
+	}
+
+	@Override
+	public void removeFeed(Long id) {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		Feed feed = feedRepository.findById(id)
+				.orElseThrow(FeedNotFoundException::new);
+
+		if(!feed.getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
+
+		feedRepository.deleteById(id);
+
+	}
 
 	@Override
 	public void removePhoto(String fileName) {
