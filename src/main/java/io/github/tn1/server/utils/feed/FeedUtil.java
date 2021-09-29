@@ -52,7 +52,7 @@ public class FeedUtil {
 		if (!feed.isUsedItem()) {
 			response.setGroupFeed(
 					feed.getGroup().getHeadCount(),
-					0, // TODO: 2021-09-28
+					feed.getGroup().getCurrentCount(),
 					feed.getGroup().getRecruitmentDate()
 			);
 		}
