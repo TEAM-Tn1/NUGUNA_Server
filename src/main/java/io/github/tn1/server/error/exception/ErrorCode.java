@@ -23,7 +23,12 @@ public enum ErrorCode {
 	MEDIUM_NOT_FOUND(404, "Medium not found."),
 	ROOM_NOT_FOUND(404, "Room not found."),
     TOO_MANY_TAGS(413, "Too many tags."),
-    TOO_MANY_FILES(413, "Too many tags.");
+    TOO_MANY_FILES(413, "Too many tags."),
+
+	OTHER_SERVER_BAD_REQUEST(400, "Bad Request."),
+	OTHER_SERVER_UNAUTHORIZED(401, "Unauthorized token."),
+	OTHER_SERVER_EXPIRED_TOKEN(401, "Expired token."),
+	OTHER_SERVER_FORBIDDEN(403, "Forbidden Consumer.");
 
     private final int status;
     private final String message;
