@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.user;
 
+import io.github.tn1.server.dto.user.request.DeviceTokenRequest;
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
@@ -16,5 +17,6 @@ public interface UserService {
     void modifyInformation(InformationRequest request);
     UserInformationResponse getInformation(String email);
     AccountResponse getAccount();
+    void insertDeviceToken(DeviceTokenRequest request);
     void logout();
 }
