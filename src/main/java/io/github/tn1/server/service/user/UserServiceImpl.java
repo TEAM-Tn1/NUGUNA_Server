@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import io.github.tn1.server.dto.user.request.DeviceTokenRequest;
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
@@ -135,6 +136,15 @@ public class UserServiceImpl implements UserService {
 				.findById(UserFacade.getEmail())
 				.map(User::getAccountNumber)
 				.orElse(null));
+	}
+
+	@Override
+	@Transactional
+	public void insertDeviceToken(DeviceTokenRequest request) {
+		userRepository
+				.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.changeDeviceToken(request.getDeviceToken());
 	}
 
 	@Override

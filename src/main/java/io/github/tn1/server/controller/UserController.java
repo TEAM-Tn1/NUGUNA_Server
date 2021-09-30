@@ -1,5 +1,6 @@
 package io.github.tn1.server.controller;
 
+import io.github.tn1.server.dto.user.request.DeviceTokenRequest;
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
@@ -49,6 +50,12 @@ public class UserController {
     @GetMapping("/account")
 	public AccountResponse getAccountNumber() {
     	return userService.getAccount();
+	}
+
+	@PostMapping("/device_token")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void insertDeviceToken(@RequestBody DeviceTokenRequest request) {
+		userService.insertDeviceToken(request);
 	}
 
 	@PostMapping("/logout")
