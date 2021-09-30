@@ -1,5 +1,7 @@
 package io.github.tn1.server.controller;
 
+import javax.validation.Valid;
+
 import io.github.tn1.server.dto.user.request.DeviceTokenRequest;
 import io.github.tn1.server.dto.user.request.InformationRequest;
 import io.github.tn1.server.dto.user.request.LoginRequest;
@@ -27,12 +29,12 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest request) {
         return userService.login(request);
     }
 
     @PutMapping("/auth")
-    public TokenResponse tokenRefresh(@RequestBody RefreshTokenRequest request) {
+    public TokenResponse tokenRefresh(@RequestBody @Valid RefreshTokenRequest request) {
         return userService.tokenRefresh(request);
     }
 
@@ -54,7 +56,7 @@ public class UserController {
 
 	@PostMapping("/device_token")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void insertDeviceToken(@RequestBody DeviceTokenRequest request) {
+	public void insertDeviceToken(@RequestBody @Valid DeviceTokenRequest request) {
 		userService.insertDeviceToken(request);
 	}
 

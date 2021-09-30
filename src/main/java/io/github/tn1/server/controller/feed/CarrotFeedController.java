@@ -2,6 +2,8 @@ package io.github.tn1.server.controller.feed;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.FeedElementResponse;
@@ -27,13 +29,13 @@ public class CarrotFeedController {
 
     @PostMapping("/carrot")
     @ResponseStatus(HttpStatus.CREATED)
-    public void postCarrotFeed(@RequestBody PostCarrotRequest request) {
+    public void postCarrotFeed(@RequestBody @Valid PostCarrotRequest request) {
         feedService.postCarrotFeed(request);
     }
 
     @PatchMapping("/carrot")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void modifyCarrotFeed(@RequestBody ModifyCarrotRequest request) {
+    public void modifyCarrotFeed(@RequestBody @Valid ModifyCarrotRequest request) {
         feedService.modifyCarrotFeed(request);
     }
 
