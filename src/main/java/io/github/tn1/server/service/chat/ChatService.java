@@ -72,7 +72,7 @@ public class ChatService {
 		return new JoinResponse(room.getId());
 	}
 
-	public List<CarrotRoomResponse> getCarrotRoom() {
+	public List<CarrotRoomResponse> queryCarrotRoom() {
 		return roomRepository.findByEmailAndType(UserFacade.getEmail(),
 				RoomType.CARROT)
 				.stream().map(room ->

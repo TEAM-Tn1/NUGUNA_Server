@@ -11,12 +11,12 @@ import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
-    OAuthLinkResponse getOAuthLink();
+    OAuthLinkResponse queryOAuthLink();
     ResponseEntity<TokenResponse> login(LoginRequest request);
     TokenResponse tokenRefresh(RefreshTokenRequest request);
     void modifyInformation(InformationRequest request);
-    UserInformationResponse getInformation(String email);
-    AccountResponse getAccount();
+    UserInformationResponse queryInformation(String email);
+    AccountResponse queryAccount();
     void insertDeviceToken(DeviceTokenRequest request);
     void logout();
 }

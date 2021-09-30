@@ -96,7 +96,7 @@ public class CarrotFeedServiceImpl implements CarrotFeedService {
 	}
 
 	@Override
-	public List<FeedElementResponse> getCarrotFeed(int page, int range) {
+	public List<FeedElementResponse> queryCarrotFeed(int page, int range) {
 
 		User user = userRepository.findById(UserFacade.getEmail())
 				.orElse(null);
@@ -127,7 +127,7 @@ public class CarrotFeedServiceImpl implements CarrotFeedService {
 	}
 
 	@Override
-	public List<FeedElementResponse> getLikedCarrot() {
+	public List<FeedElementResponse> queryLikedCarrot() {
 		User user = userRepository.findById(UserFacade.getEmail())
 				.orElseThrow(UserNotFoundException::new);
 		return user.getLikes()

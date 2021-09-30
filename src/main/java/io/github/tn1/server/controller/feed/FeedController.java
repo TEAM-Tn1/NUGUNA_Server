@@ -31,12 +31,12 @@ public class FeedController {
 
 	@GetMapping("/users/{email}")
 	public List<FeedResponse> getWriteFeed(@PathVariable("email") String email) {
-		return feedService.getWriteFeed(email);
+		return feedService.queryWriteFeed(email);
 	}
 
 	@GetMapping("/{feed_id}")
 	public FeedResponse getFeed(@PathVariable("feed_id") Long feedId) {
-		return feedService.getFeed(feedId);
+		return feedService.queryFeed(feedId);
 	}
 
 	@PostMapping("/{feed_id}/photo")

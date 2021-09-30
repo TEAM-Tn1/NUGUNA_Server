@@ -43,7 +43,7 @@ public class FeedServiceImpl implements FeedService {
 
 
     @Override
-    public List<FeedResponse> getWriteFeed(String email) {
+    public List<FeedResponse> queryWriteFeed(String email) {
         User writer = userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -56,7 +56,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
 	@Override
-	public FeedResponse getFeed(Long feedId) {
+	public FeedResponse queryFeed(Long feedId) {
     	User user = userRepository.findById(UserFacade.getEmail())
 				.orElse(null);
     	Feed feed = feedRepository.findById(feedId)

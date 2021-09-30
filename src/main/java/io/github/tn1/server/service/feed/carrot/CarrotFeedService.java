@@ -9,6 +9,6 @@ import io.github.tn1.server.dto.feed.response.FeedElementResponse;
 public interface CarrotFeedService {
 	void postCarrotFeed(PostCarrotRequest request);
 	void modifyCarrotFeed(ModifyCarrotRequest request);
-	List<FeedElementResponse> getCarrotFeed(int page, int range);
-	List<FeedElementResponse> getLikedCarrot();
+	List<FeedElementResponse> queryCarrotFeed(int page, int range);
+	List<FeedElementResponse> queryLikedCarrot();
 }

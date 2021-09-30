@@ -42,12 +42,12 @@ public class CarrotFeedController {
     @GetMapping("/carrot")
     public List<FeedElementResponse> getCarrotFeed(@RequestParam("page") int page,
                                                   @RequestParam("range") int range) {
-        return feedService.getCarrotFeed(page, range);
+        return feedService.queryCarrotFeed(page, range);
     }
 
     @GetMapping("/me/like/carrot")
 	public List<FeedElementResponse> getLikedCarrot() {
-    	return feedService.getLikedCarrot();
+    	return feedService.queryLikedCarrot();
 	}
 
 }

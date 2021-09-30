@@ -30,7 +30,7 @@ public class ChatController {
 
 	@GetMapping("/carrot")
 	public List<CarrotRoomResponse> getCarrotRoom() {
-		return chatService.getCarrotRoom();
+		return chatService.queryCarrotRoom();
 	}
 
 }

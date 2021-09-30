@@ -8,8 +8,8 @@ import io.github.tn1.server.dto.feed.response.FeedResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FeedService {
-    List<FeedResponse> getWriteFeed(String email);
-    FeedResponse getFeed(Long feedId);
+    List<FeedResponse> queryWriteFeed(String email);
+    FeedResponse queryFeed(Long feedId);
     void uploadPhoto(List<MultipartFile> files, Long feedId);
 	void removeFeed(Long id);
     void modifyTag(ModifyTagRequest request);
