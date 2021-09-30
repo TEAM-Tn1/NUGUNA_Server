@@ -12,4 +12,5 @@ public interface FeedMediumRepository extends JpaRepository<FeedMedium, Long> {
     FeedMedium findTopByFeedOrderById(Feed feed);
     int countByFeed(Feed feed);
     Optional<FeedMedium> findByFileName(String fileName);
+    void removeByFeed(Feed feed);
 }

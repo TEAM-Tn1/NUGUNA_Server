@@ -1,5 +1,6 @@
 package io.github.tn1.server.service.feed;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,23 +100,16 @@ public class FeedServiceImpl implements FeedService {
 		if(!feed.getUser().getEmail().equals(user.getEmail()))
 			throw new NotYourFeedException();
 
+		List<String> photoLinks = new ArrayList<>();
+
+		for(FeedMedium medium : feed.getMedia()) {
+			photoLinks.add(medium.getFileName());
+		}
+
+		photoLinks.forEach(this::removePhoto);
+
 		feedRepository.deleteById(id);
 
-	}
-
-	@Override
-	public void removePhoto(String fileName) {
-		User user = userRepository.findById(UserFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
-
-		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
-				.orElseThrow(MediumNotFoundException::new);
-
-		if(!medium.getFeed().getUser().getEmail().equals(user.getEmail()))
-			throw new NotYourFeedException();
-
-		s3Util.delete(medium.getFileName());
-		feedMediumRepository.delete(medium);
 	}
 
 	@Override
@@ -140,6 +134,20 @@ public class FeedServiceImpl implements FeedService {
 					.build()
 			);
 		}
+	}
+
+	private void removePhoto(String fileName) {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
+				.orElseThrow(MediumNotFoundException::new);
+
+		if(!medium.getFeed().getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
+
+		s3Util.delete(medium.getFileName());
+		feedMediumRepository.delete(medium);
 	}
 
 }

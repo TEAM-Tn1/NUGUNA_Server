@@ -1,5 +1,9 @@
 package io.github.tn1.server.entity.chat.room;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,8 +12,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.user.User;
 import lombok.AccessLevel;
@@ -42,6 +48,9 @@ public class Room {
 	private RoomType type;
 
 	private String photoUrl;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.REMOVE)
+	private final Set<Member> member = new HashSet<>();
 
 	@Builder
 	public Room(User user, Feed feed, RoomType type, String photoUrl) {

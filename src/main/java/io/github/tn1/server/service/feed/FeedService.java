@@ -12,6 +12,5 @@ public interface FeedService {
     FeedResponse getFeed(Long feedId);
     void uploadPhoto(List<MultipartFile> files, Long feedId);
 	void removeFeed(Long id);
-    void removePhoto(String path);
     void modifyTag(ModifyTagRequest request);
 }
