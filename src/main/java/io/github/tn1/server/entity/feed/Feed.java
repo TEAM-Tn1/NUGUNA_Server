@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
+import io.github.tn1.server.entity.chat.room.Room;
 import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.tag.Tag;
@@ -57,14 +58,17 @@ public class Feed extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private final Set<FeedMedium> media = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-    private Group group;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private final Set<Like> likes = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private final Set<FeedReport> feedReports = new HashSet<>();
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+	private Group group;
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+	private Room room;
 
     @Builder
     public Feed(String title, String description, Integer price,
