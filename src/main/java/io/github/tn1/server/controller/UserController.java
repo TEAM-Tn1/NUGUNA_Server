@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping("/oauth")
     public OAuthLinkResponse getOAuthLink() {
-        return userService.getOAuthLink();
+        return userService.queryOAuthLink();
     }
 
     @PostMapping("/auth")
@@ -46,12 +46,12 @@ public class UserController {
 
     @GetMapping("/{email}")
     public UserInformationResponse getInformation(@PathVariable("email") String email) {
-        return userService.getInformation(email);
+        return userService.queryInformation(email);
     }
 
     @GetMapping("/account")
 	public AccountResponse getAccountNumber() {
-    	return userService.getAccount();
+    	return userService.queryAccount();
 	}
 
 	@PostMapping("/device_token")

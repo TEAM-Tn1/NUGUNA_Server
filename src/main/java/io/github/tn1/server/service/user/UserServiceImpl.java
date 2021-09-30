@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private final DsmAuthClient dsmAuthClient;
 
     @Override
-    public OAuthLinkResponse getOAuthLink() {
+    public OAuthLinkResponse queryOAuthLink() {
         return new OAuthLinkResponse(OAUTH_BASE_URI + "external/login?redirect_url=" +
                 redirectUri + "&client_id=" + clientId);
     }
@@ -124,14 +124,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInformationResponse getInformation(String email) {
+    public UserInformationResponse queryInformation(String email) {
         return userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new)
                 .getInformation();
     }
 
 	@Override
-	public AccountResponse getAccount() {
+	public AccountResponse queryAccount() {
 		return new AccountResponse(userRepository
 				.findById(UserFacade.getEmail())
 				.map(User::getAccountNumber)
