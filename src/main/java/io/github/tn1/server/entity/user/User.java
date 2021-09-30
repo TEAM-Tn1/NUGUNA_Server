@@ -131,6 +131,10 @@ public class User implements UserDetails {
         return roomNumber != null && accountNumber != null;
     }
 
+    public void changeDeviceToken(String deviceToken) {
+    	this.deviceToken = deviceToken;
+	}
+
     public boolean haveDeviceToken() {
         return deviceToken != null;
     }
