@@ -2,6 +2,8 @@ package io.github.tn1.server.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import io.github.tn1.server.dto.chat.request.JoinRequest;
 import io.github.tn1.server.dto.chat.response.CarrotRoomResponse;
 import io.github.tn1.server.dto.chat.response.JoinResponse;
@@ -22,7 +24,7 @@ public class ChatController {
 	private final ChatService chatService;
 
 	@PostMapping("/room")
-	public JoinResponse joinRoom(@RequestBody JoinRequest request) {
+	public JoinResponse joinRoom(@RequestBody @Valid JoinRequest request) {
 		return chatService.joinRoom(request.getFeedId());
 	}
 
