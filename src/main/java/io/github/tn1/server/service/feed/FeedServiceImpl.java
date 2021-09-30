@@ -3,11 +3,14 @@ package io.github.tn1.server.service.feed;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
+import io.github.tn1.server.entity.feed.tag.Tag;
+import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
@@ -16,6 +19,7 @@ import io.github.tn1.server.exception.FileEmptyException;
 import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
+import io.github.tn1.server.exception.TooManyTagsException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.security.facade.UserFacade;
 import io.github.tn1.server.utils.feed.FeedUtil;
@@ -31,6 +35,7 @@ public class FeedServiceImpl implements FeedService {
 
     private final S3Util s3Util;
     private final FeedRepository feedRepository;
+    private final TagRepository tagRepository;
     private final FeedMediumRepository feedMediumRepository;
     private final UserRepository userRepository;
 
@@ -111,6 +116,30 @@ public class FeedServiceImpl implements FeedService {
 
 		s3Util.delete(medium.getFileName());
 		feedMediumRepository.delete(medium);
+	}
+
+	@Override
+	public void modifyTag(ModifyTagRequest request) {
+		User user = userRepository.findById(UserFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		Feed feed = feedRepository.findById(request.getFeedId())
+				.orElseThrow(FeedNotFoundException::new);
+
+		if(!feed.getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
+
+		if(feed.getTags().size() + request.getTags().length > 5)
+			throw new TooManyTagsException();
+
+		for(String tag : request.getTags()) {
+			tagRepository.save(
+					Tag.builder()
+							.feed(feed)
+							.tag(tag)
+					.build()
+			);
+		}
 	}
 
 }
