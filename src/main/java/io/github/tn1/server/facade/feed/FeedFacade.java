@@ -64,4 +64,11 @@ public class FeedFacade {
 		fcmUtil.sendTagNotification(tag, feed);
 	}
 
+	public String getFeedPhotoUrl(Feed feed) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
+
+		return s3Util.getObjectUrl(medium.getFileName());
+	}
+
 }

@@ -67,8 +67,8 @@ public class Feed extends BaseTimeEntity {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
 	private Group group;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
-	private Room room;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
+	private final Set<Room> room = new HashSet<>();
 
     @Builder
     public Feed(String title, String description, Integer price,
