@@ -10,6 +10,7 @@ import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.AccountResponse;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
+import io.github.tn1.server.dto.user.response.RoomNumberResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.entity.refresh_token.RefreshToken;
@@ -151,10 +152,18 @@ public class UserService {
 	public void logout() {
 		userRepository
 				.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new)
+				.orElseThrow(CredentialsNotFoundException::new)
 				.removeDeviceToken();
 		refreshTokenRepository.findById(userFacade.getEmail())
 				.ifPresent(refreshTokenRepository::delete);
+	}
+
+	public RoomNumberResponse queryRoomNumber() {
+    	String roomNumber = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.getRoomNumber();
+    	return new RoomNumberResponse(roomNumber);
 	}
 
 	private TokenResponse getToken(String email) {
