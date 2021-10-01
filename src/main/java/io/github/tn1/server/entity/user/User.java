@@ -56,18 +56,22 @@ public class User implements UserDetails {
     @Column(columnDefinition = "BIT(1) default true")
     private boolean alarm;
 
+    @Column(columnDefinition = "BIT(1) default false")
+    private boolean showAccount;
+
     private LocalDate blackDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private final Set<Like> likes = new HashSet<>();
 
     @Builder
-    public User(String email, String name, Role role,
+    public User(String email, String name, Role role, boolean showAccount,
                 String gcn, String roomNumber, String accountNumber,
                 String deviceToken, boolean alarm, LocalDate blackDate) {
         this.email = email;
         this.name = name;
         this.role = role;
+        this.showAccount = showAccount;
         this.gcn = gcn;
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
