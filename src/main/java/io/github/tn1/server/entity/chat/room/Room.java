@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -39,7 +40,7 @@ public class Room {
 	@JoinColumn(name = "head_email")
 	private User headUser;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feed_id")
 	private Feed feed;
 
@@ -57,6 +58,10 @@ public class Room {
 		this.headUser = user;
 		this.feed = feed;
 		this.type = type;
+		this.photoUrl = photoUrl;
+	}
+
+	public void initPhotoUrl(String photoUrl) {
 		this.photoUrl = photoUrl;
 	}
 
