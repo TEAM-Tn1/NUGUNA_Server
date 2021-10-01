@@ -12,6 +12,7 @@ public enum ErrorCode {
     FILE_UPLOAD_FAIL(400, "File upload Fail"),
     FILE_EMPTY(400, "File is empty."),
 	ALREADY_JOIN_ROOM(400, "Already join room."),
+	ITS_YOUR_FEED(400, "Its your feed."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),

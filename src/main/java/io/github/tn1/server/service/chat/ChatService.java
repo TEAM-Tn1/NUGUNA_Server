@@ -18,6 +18,7 @@ import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyJoinRoomException;
 import io.github.tn1.server.exception.FeedNotFoundException;
+import io.github.tn1.server.exception.ItsYourFeedException;
 import io.github.tn1.server.exception.RoomNotFoundException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
@@ -47,9 +48,14 @@ public class ChatService {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
 		Room room;
+
+		if(feed.getUser().getEmail().equals(currentUser.getEmail()))
+			throw new ItsYourFeedException();
+
 		if(roomRepository.existsByFeedAndEmail(feed, currentUser.getEmail())){
 			throw new AlreadyJoinRoomException();
 		}
+
 		if(feed.isUsedItem()) {
 			room = roomRepository.save(
 					Room.builder()
@@ -76,6 +82,7 @@ public class ChatService {
 						.room(room)
 						.build()
 		);
+
 		return new JoinResponse(room.getId());
 	}
 
