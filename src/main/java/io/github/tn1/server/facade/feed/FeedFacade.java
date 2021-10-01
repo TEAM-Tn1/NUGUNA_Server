@@ -1,4 +1,4 @@
-package io.github.tn1.server.utils.feed;
+package io.github.tn1.server.facade.feed;
 
 import java.util.stream.Collectors;
 
@@ -10,30 +10,23 @@ import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
+import io.github.tn1.server.utils.fcm.FcmUtil;
 import io.github.tn1.server.utils.s3.S3Util;
+import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FeedUtil {
+@RequiredArgsConstructor
+public class FeedFacade {
 
-	private static S3Util s3Util;
-	private static LikeRepository likeRepository;
-	private static FeedMediumRepository feedMediumRepository;
-	private static TagRepository tagRepository;
+	private final S3Util s3Util;
+	private final FcmUtil fcmUtil;
+	private final LikeRepository likeRepository;
+	private final FeedMediumRepository feedMediumRepository;
+	private final TagRepository tagRepository;
 
-	@Autowired
-	public FeedUtil(S3Util s3Util,
-			LikeRepository likeRepository, TagRepository tagRepository,
-			FeedMediumRepository feedMediumRepository) {
-		FeedUtil.s3Util = s3Util;
-		FeedUtil.likeRepository = likeRepository;
-		FeedUtil.tagRepository = tagRepository;
-		FeedUtil.feedMediumRepository = feedMediumRepository;
-	}
-
-	public static FeedResponse feedToFeedResponse(Feed feed, User user) {
+	public FeedResponse feedToFeedResponse(Feed feed, User user) {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
 		FeedResponse response = FeedResponse.WriteFeedResponseBuilder()
@@ -59,6 +52,16 @@ public class FeedUtil {
 		if(user != null)
 			response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
 		return response;
+	}
+
+	public void addTag(String tag, Feed feed) {
+		tagRepository.save(
+				Tag.builder()
+						.feed(feed)
+						.tag(tag)
+						.build()
+		);
+		fcmUtil.sendTagNotification(tag, feed);
 	}
 
 }
