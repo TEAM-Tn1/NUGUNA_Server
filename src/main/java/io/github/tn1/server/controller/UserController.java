@@ -8,6 +8,7 @@ import io.github.tn1.server.dto.user.request.LoginRequest;
 import io.github.tn1.server.dto.user.request.RefreshTokenRequest;
 import io.github.tn1.server.dto.user.response.AccountResponse;
 import io.github.tn1.server.dto.user.response.OAuthLinkResponse;
+import io.github.tn1.server.dto.user.response.RoomNumberResponse;
 import io.github.tn1.server.dto.user.response.TokenResponse;
 import io.github.tn1.server.dto.user.response.UserInformationResponse;
 import io.github.tn1.server.service.user.UserService;
@@ -69,6 +70,11 @@ public class UserController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void logout() {
     	userService.logout();
+	}
+
+	@GetMapping("/room_number")
+	public RoomNumberResponse queryRoomNumber() {
+    	return userService.queryRoomNumber();
 	}
 
 }
