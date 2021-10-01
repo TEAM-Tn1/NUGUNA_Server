@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
@@ -62,6 +64,7 @@ public class FeedService {
     	return feedFacade.feedToFeedResponse(feed, user);
 	}
 
+	@Transactional
 	public void uploadPhoto(List<MultipartFile> files, Long feedId) {
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new);
@@ -84,6 +87,8 @@ public class FeedService {
 						.fileName(s3Util.upload(file))
 						.build())
 		);
+
+		addRoomPhoto(feed);
 	}
 
 	public void removeFeed(Long id) {
@@ -143,6 +148,14 @@ public class FeedService {
 
 		s3Util.delete(medium.getFileName());
 		feedMediumRepository.delete(medium);
+	}
+
+	private void addRoomPhoto(Feed feed) {
+    	String photoUrl = feedFacade.getFeedPhotoUrl(feed);
+    	feed.getRoom().forEach(room -> {
+    		if(room.getPhotoUrl() == null)
+    			room.initPhotoUrl(photoUrl);
+		});
 	}
 
 }
