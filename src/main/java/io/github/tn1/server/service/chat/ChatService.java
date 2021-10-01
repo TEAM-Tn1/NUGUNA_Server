@@ -20,7 +20,7 @@ import io.github.tn1.server.exception.AlreadyJoinRoomException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.RoomNotFoundException;
 import io.github.tn1.server.exception.UserNotFoundException;
-import io.github.tn1.server.security.facade.UserFacade;
+import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatService {
 
+	private final UserFacade userFacade;
 	private final UserRepository userRepository;
 	private final FeedRepository feedRepository;
 	private final FeedMediumRepository feedMediumRepository;
@@ -39,7 +40,7 @@ public class ChatService {
 	private final S3Util s3Util;
 
 	public JoinResponse joinRoom(Long feedId) {
-		User currentUser = userRepository.findById(UserFacade.getEmail())
+		User currentUser = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(UserNotFoundException::new);
 		Feed feed = feedRepository.findById(feedId)
 				.orElseThrow(FeedNotFoundException::new);
@@ -58,6 +59,12 @@ public class ChatService {
 					.photoUrl(medium != null ?
 							s3Util.getObjectUrl(medium.getFileName()) : null)
 					.build());
+			memberRepository.save(
+					Member.builder()
+					.user(feed.getUser())
+					.room(room)
+					.build()
+			);
 		} else {
 			feed.getGroup().increaseCurrentCount();
 			room = roomRepository.findByFeed(feed)
@@ -73,7 +80,7 @@ public class ChatService {
 	}
 
 	public List<CarrotRoomResponse> queryCarrotRoom() {
-		return roomRepository.findByEmailAndType(UserFacade.getEmail(),
+		return roomRepository.findByEmailAndType(userFacade.getEmail(),
 				RoomType.CARROT)
 				.stream().map(room ->
 					new CarrotRoomResponse(room.getId(),
