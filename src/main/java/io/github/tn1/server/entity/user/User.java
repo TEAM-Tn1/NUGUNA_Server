@@ -127,8 +127,11 @@ public class User implements UserDetails {
         return this;
     }
 
-    public UserInformationResponse getInformation() {
-        return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber);
+    public UserInformationResponse getInformation(String email) {
+    	if(email != null && email.equals(this.email)) {
+			return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber, showAccount);
+		}
+        return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
     }
 
     public boolean writeAllInformation() {
