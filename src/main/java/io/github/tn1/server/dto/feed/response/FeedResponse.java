@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FeedResponse extends FeedElementResponse {
 
     private Integer headCount;
