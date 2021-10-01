@@ -38,6 +38,11 @@ public class UserController {
         return userService.tokenRefresh(request);
     }
 
+    @GetMapping("/information")
+	public UserInformationResponse queryCurrentUserInformation() {
+    	return userService.queryUserInformation();
+	}
+
     @PatchMapping("/information")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchInformation(@RequestBody InformationRequest request) {

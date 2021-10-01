@@ -112,6 +112,12 @@ public class UserService {
         throw new InvalidTokenException();
     }
 
+    public UserInformationResponse queryUserInformation() {
+    	return userRepository.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.getInformation(userFacade.getEmail());
+	}
+
     public void modifyInformation(InformationRequest request) {
         userRepository.findById(userFacade.getEmail())
                 .map(user -> userRepository.save(
@@ -123,7 +129,7 @@ public class UserService {
     public UserInformationResponse queryInformation(String email) {
         return userRepository.findById(email)
                 .orElseThrow(UserNotFoundException::new)
-                .getInformation();
+                .getInformation(userFacade.getEmail());
     }
 
 	public AccountResponse queryAccount() {

@@ -6,9 +6,21 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserInformationResponse {
+
     private final String email;
     private final String name;
     private final String gcn;
     private final String roomNumber;
     private final String accountNumber;
+    private final Boolean showAccount;
+
+	public UserInformationResponse(String email, String name, String gcn, String roomNumber, String accountNumber) {
+		this.email = email;
+		this.name = name;
+		this.gcn = gcn;
+		this.roomNumber = roomNumber;
+		this.accountNumber = accountNumber;
+		this.showAccount = null;
+	}
+
 }
