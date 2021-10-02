@@ -14,8 +14,11 @@ import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
 import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
+import io.github.tn1.server.entity.like.Like;
+import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
+import io.github.tn1.server.exception.AlreadyLikedFeedException;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.FileEmptyException;
@@ -43,6 +46,7 @@ public class FeedService {
     private final TagRepository tagRepository;
     private final FeedMediumRepository feedMediumRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     public List<FeedResponse> queryWriteFeed(String email) {
         User writer = userRepository.findById(email)
@@ -133,6 +137,25 @@ public class FeedService {
 							.tag(tag)
 					.build()
 			);
+		}
+	}
+
+	public void addLike(Long feedId) {
+    	Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
+    	User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+    	try {
+			likeRepository.save(
+					Like.builder()
+							.user(user)
+							.feed(feed)
+							.build()
+			);
+		} catch (RuntimeException e) {
+    		throw new AlreadyLikedFeedException();
 		}
 	}
 
