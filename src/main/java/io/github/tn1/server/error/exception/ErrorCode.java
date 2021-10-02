@@ -11,7 +11,6 @@ public enum ErrorCode {
 
     FILE_UPLOAD_FAIL(400, "File upload Fail"),
     FILE_EMPTY(400, "File is empty."),
-	ALREADY_JOIN_ROOM(400, "Already join room."),
 	ITS_YOUR_FEED(400, "Its your feed."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
@@ -23,6 +22,8 @@ public enum ErrorCode {
     FEED_NOT_FOUND(404, "Feed not found."),
 	MEDIUM_NOT_FOUND(404, "Medium not found."),
 	ROOM_NOT_FOUND(404, "Room not found."),
+	ALREADY_LIKED_FEED(409, "Already liked feed."),
+	ALREADY_JOIN_ROOM(409, "Already join room."),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags."),
 
