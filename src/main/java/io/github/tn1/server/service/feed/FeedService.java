@@ -22,6 +22,7 @@ import io.github.tn1.server.exception.AlreadyLikedFeedException;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.FileEmptyException;
+import io.github.tn1.server.exception.LikeNotFoundException;
 import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
@@ -157,6 +158,20 @@ public class FeedService {
 		} catch (RuntimeException e) {
     		throw new AlreadyLikedFeedException();
 		}
+	}
+
+	public void removeLike(Long feedId) {
+		Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		likeRepository.delete(
+				likeRepository
+						.findByUserAndFeed(user, feed)
+						.orElseThrow(LikeNotFoundException::new)
+		);
 	}
 
 	private void removePhoto(String fileName) {
