@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,17 +15,21 @@ public class FeedResponse extends FeedElementResponse {
     private Integer currentHeadCount;
     private LocalDate date;
     private final boolean isUsedItem;
+	private final UserInfo userInfo;
 
     @Builder(builderMethodName = "WriteFeedResponseBuilder")
     public FeedResponse(Long feedId, String title, String description,
 			Integer price, List<String> tags, String photo,
 			LocalDateTime lastModifyDate, boolean like, Integer count,
-			Integer headCount, LocalDate date, boolean isUsedItem) {
+			Integer headCount, LocalDate date, boolean isUsedItem,
+			String writerEmail, String writerName) {
     	super(feedId, title, description, price,
 				tags, photo, lastModifyDate, like, count);
     	this.headCount = headCount;
     	this.date = date;
     	this.isUsedItem = isUsedItem;
+    	this.userInfo =
+				new UserInfo(writerEmail, writerName);
 	}
 
     public void setGroupFeed(Integer headCount, Integer currentHeadCount, LocalDate date) {
@@ -37,5 +41,12 @@ public class FeedResponse extends FeedElementResponse {
     public void setLike(boolean value) {
         super.setLike(value);
     }
+
+	@Getter
+    @AllArgsConstructor
+    private class UserInfo{
+		private final String writerEmail;
+		private final String writerName;
+	}
 
 }
