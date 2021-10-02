@@ -40,6 +40,8 @@ public class FeedFacade {
 				.count(feed.getLikes().size())
 				.lastModifyDate(feed.getUpdatedDate())
 				.isUsedItem(feed.isUsedItem())
+				.writerEmail(feed.getUser().getEmail())
+				.writerName(feed.getUser().getName())
 				.build();
 		if (!feed.isUsedItem()) {
 			response.setGroupFeed(
