@@ -22,6 +22,7 @@ public enum ErrorCode {
     FEED_NOT_FOUND(404, "Feed not found."),
 	MEDIUM_NOT_FOUND(404, "Medium not found."),
 	ROOM_NOT_FOUND(404, "Room not found."),
+	LIKE_NOT_FOUND(404, "Like not found."),
 	ALREADY_LIKED_FEED(409, "Already liked feed."),
 	ALREADY_JOIN_ROOM(409, "Already join room."),
     TOO_MANY_TAGS(413, "Too many tags."),
