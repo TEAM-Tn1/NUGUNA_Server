@@ -128,8 +128,10 @@ public class FeedService {
 		if(!feed.getUser().getEmail().equals(user.getEmail()))
 			throw new NotYourFeedException();
 
-		if(feed.getTags().size() + request.getTags().length > 5)
+		if(request.getTags().length > 5)
 			throw new TooManyTagsException();
+
+		tagRepository.deleteByFeed(feed);
 
 		for(String tag : request.getTags()) {
 			tagRepository.save(
