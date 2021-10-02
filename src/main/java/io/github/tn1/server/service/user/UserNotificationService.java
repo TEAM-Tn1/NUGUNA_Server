@@ -26,6 +26,14 @@ public class UserNotificationService {
 		return new NotificationResponse(notification);
 	}
 
+  @Transactional
+	public void ableNotification() {
+		userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.ableNotification();
+  }
+  
 	@Transactional
 	public void disableNotification() {
 		userRepository
