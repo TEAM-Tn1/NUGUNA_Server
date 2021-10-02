@@ -64,4 +64,10 @@ public class FeedController {
 		feedService.addLike(feedId);
 	}
 
+	@DeleteMapping("/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeLike(@RequestParam("feed_id") Long feedId) {
+		feedService.removeLike(feedId);
+	}
+
 }
