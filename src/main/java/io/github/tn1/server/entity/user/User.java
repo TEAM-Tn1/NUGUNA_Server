@@ -54,7 +54,7 @@ public class User implements UserDetails {
     private String deviceToken;
 
     @Column(columnDefinition = "BIT(1) default true")
-    private boolean alarm;
+    private boolean notification;
 
     @Column(columnDefinition = "BIT(1) default false")
     private boolean showAccount;
@@ -67,7 +67,7 @@ public class User implements UserDetails {
     @Builder
     public User(String email, String name, Role role, boolean showAccount,
                 String gcn, String roomNumber, String accountNumber,
-                String deviceToken, boolean alarm, LocalDate blackDate) {
+                String deviceToken, boolean notification, LocalDate blackDate) {
         this.email = email;
         this.name = name;
         this.role = role;
@@ -76,7 +76,7 @@ public class User implements UserDetails {
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
         this.deviceToken = deviceToken;
-        this.alarm = alarm;
+        this.notification = notification;
         this.blackDate = blackDate;
     }
 

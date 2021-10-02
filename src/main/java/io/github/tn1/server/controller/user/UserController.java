@@ -1,4 +1,4 @@
-package io.github.tn1.server.controller;
+package io.github.tn1.server.controller.user;
 
 import javax.validation.Valid;
 

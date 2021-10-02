@@ -44,7 +44,7 @@ public class FcmUtil {
 
     public void sendTagNotification(String tag, Feed feed) {
         tagNotificationRepository.findByTag(tag)
-                .stream().filter(value -> value.getUser().haveDeviceToken() && value.getUser().isAlarm())
+                .stream().filter(value -> value.getUser().haveDeviceToken() && value.getUser().isNotification())
                 .forEach(value ->
                         send(
                                 SendDto.builder()
