@@ -1,5 +1,6 @@
 package io.github.tn1.server.facade.feed;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.feed.response.FeedResponse;
@@ -34,9 +35,7 @@ public class FeedFacade {
 				.title(feed.getTitle())
 				.description(feed.getDescription())
 				.price(feed.getPrice())
-				.tags(
-						tagRepository.findByFeedOrderById(feed)
-								.stream().map(Tag::getTag).collect(Collectors.toList()))
+				.tags(queryTag(feed))
 				.photo(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.count(feed.getLikes().size())
 				.lastModifyDate(feed.getUpdatedDate())
@@ -62,6 +61,12 @@ public class FeedFacade {
 						.build()
 		);
 		fcmUtil.sendTagNotification(tag, feed);
+	}
+
+	public List<String> queryTag(Feed feed) {
+		return tagRepository.findByFeedOrderById(feed)
+				.stream().map(Tag::getTag)
+				.collect(Collectors.toList());
 	}
 
 	public String getFeedPhotoUrl(Feed feed) {
