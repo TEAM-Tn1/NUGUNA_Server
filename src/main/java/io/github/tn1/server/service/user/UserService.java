@@ -103,13 +103,11 @@ public class UserService {
     }
 
     public TokenResponse tokenRefresh(RefreshTokenRequest request) {
-        if (jwtTokenProvider.validateToken(request.getRefreshToken())){
-            String email = jwtTokenProvider
-                    .parseRefreshToken(request.getRefreshToken());
-            return refreshTokenRepository.findById(email)
-                    .map(token -> getToken(token.getEmail()))
-                    .orElseThrow(ExpiredRefreshTokenException::new);
-        }
+		if (jwtTokenProvider.validateToken(request.getRefreshToken())){
+			return refreshTokenRepository.findByToken(request.getRefreshToken())
+					.map(token -> getToken(token.getEmail()))
+					.orElseThrow(ExpiredRefreshTokenException::new);
+		}
         throw new InvalidTokenException();
     }
 
