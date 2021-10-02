@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
+import io.github.tn1.server.dto.feed.response.TagResponse;
 import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
 
@@ -50,6 +51,11 @@ public class FeedController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeFeed(@PathVariable(name = "feed_id") Long feedId) {
 		feedService.removeFeed(feedId);
+	}
+
+	@GetMapping("/tag")
+	public TagResponse queryTag(@RequestParam("feed_id") Long feedId) {
+		return feedService.queryTag(feedId);
 	}
 
 	@PatchMapping("/tag")
