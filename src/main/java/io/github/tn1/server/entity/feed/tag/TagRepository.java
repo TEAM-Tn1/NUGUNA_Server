@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findByFeedOrderById(Feed feed);
+    void deleteByFeed(Feed feed);
 }
