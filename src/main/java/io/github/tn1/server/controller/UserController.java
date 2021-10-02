@@ -60,7 +60,7 @@ public class UserController {
     	return userService.queryAccount();
 	}
 
-	@PostMapping("/device_token")
+	@PostMapping("/device-token")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void insertDeviceToken(@RequestBody @Valid DeviceTokenRequest request) {
 		userService.insertDeviceToken(request);
@@ -72,7 +72,7 @@ public class UserController {
     	userService.logout();
 	}
 
-	@GetMapping("/room_number")
+	@GetMapping("/room-number")
 	public RoomNumberResponse queryRoomNumber() {
     	return userService.queryRoomNumber();
 	}
