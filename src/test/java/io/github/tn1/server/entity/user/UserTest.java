@@ -1,12 +1,10 @@
 package io.github.tn1.server.entity.user;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
@@ -18,7 +16,7 @@ class UserTest {
         String accountNumber = "47------------KB";
         Role role = Role.ROLE_USER;
         String deviceToken = "test token";
-        boolean alarm = true;
+        boolean notification = true;
         LocalDate blackDate = LocalDate.of(2021, 8, 13);
 
         // when
@@ -30,7 +28,7 @@ class UserTest {
                 .name("이**")
                 .roomNumber("318")
                 .deviceToken(deviceToken)
-                .alarm(alarm)
+                .notification(notification)
                 .blackDate(blackDate)
                 .build();
 
@@ -40,7 +38,7 @@ class UserTest {
                 () -> Assertions.assertEquals(accountNumber, user.getAccountNumber()),
                 () -> Assertions.assertEquals(role, user.getRole()),
                 () -> Assertions.assertEquals(deviceToken, user.getDeviceToken()),
-                () -> Assertions.assertEquals(alarm, user.isAlarm()),
+                () -> Assertions.assertEquals(notification, user.isNotification()),
                 () -> Assertions.assertEquals(blackDate, user.getBlackDate())
         );
     }
