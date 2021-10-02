@@ -5,6 +5,7 @@ import io.github.tn1.server.service.user.UserNotificationService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,13 @@ public class UserNotificationController {
 	public void ableNotification() {
 		userNotificationService
 				.ableNotification();
+  }
+  
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void disableNotification() {
+		userNotificationService
+				.disableNotification();
 	}
 
 }

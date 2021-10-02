@@ -161,6 +161,10 @@ public class User implements UserDetails {
 
 	public void ableNotification() {
     	this.notification = true;
+  }
+  
+	public void disableNotification() {
+    	this.notification = false;
 	}
 
 }

@@ -1,5 +1,7 @@
 package io.github.tn1.server.service.user;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.user.response.NotificationResponse;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
@@ -24,11 +26,20 @@ public class UserNotificationService {
 		return new NotificationResponse(notification);
 	}
 
+  @Transactional
 	public void ableNotification() {
 		userRepository
 				.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new)
 				.ableNotification();
+  }
+  
+	@Transactional
+	public void disableNotification() {
+		userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.disableNotification();
 	}
 
 }
