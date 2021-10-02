@@ -159,4 +159,8 @@ public class User implements UserDetails {
     	this.deviceToken = null;
 	}
 
+	public void ableNotification() {
+    	this.notification = true;
+	}
+
 }
