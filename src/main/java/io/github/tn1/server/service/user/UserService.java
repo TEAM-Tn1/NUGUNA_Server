@@ -166,6 +166,20 @@ public class UserService {
     	return new RoomNumberResponse(roomNumber);
 	}
 
+	@Transactional
+	public void ableAccountShow() {
+    	userRepository.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.ableShowAccount();
+	}
+
+	@Transactional
+	public void disableAccountShow() {
+		userRepository.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.disableAccountShow();
+	}
+
 	private TokenResponse getToken(String email) {
         String accessToken = jwtTokenProvider.generateAccessToken(email);
         String refreshToken = jwtTokenProvider.generateRefreshToken(email);

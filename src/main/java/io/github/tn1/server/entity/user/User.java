@@ -130,13 +130,22 @@ public class User implements UserDetails {
     public UserInformationResponse getInformation(String email) {
     	if(email != null && email.equals(this.email)) {
 			return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber, showAccount);
-		}
-        return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
+		} else if(showAccount)
+			return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
+		return new UserInformationResponse(this.email, name, gcn, roomNumber, null);
     }
 
     public boolean writeAllInformation() {
         return roomNumber != null && accountNumber != null;
     }
+
+    public void ableShowAccount() {
+    	this.showAccount = true;
+	}
+
+	public void disableAccountShow() {
+    	this.showAccount = false;
+	}
 
     public void changeDeviceToken(String deviceToken) {
     	this.deviceToken = deviceToken;

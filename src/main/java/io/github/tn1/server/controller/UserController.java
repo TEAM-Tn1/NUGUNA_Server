@@ -77,4 +77,16 @@ public class UserController {
     	return userService.queryRoomNumber();
 	}
 
+	@PostMapping("/show")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ableAccountShow() {
+    	userService.ableAccountShow();
+	}
+
+	@DeleteMapping("/show")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void disableAccountShow() {
+    	userService.disableAccountShow();
+	}
+
 }
