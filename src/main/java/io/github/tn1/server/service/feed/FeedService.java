@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
+import io.github.tn1.server.dto.feed.response.TagResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
@@ -116,6 +117,15 @@ public class FeedService {
 
 		feedRepository.deleteById(id);
 
+	}
+
+	public TagResponse queryTag(Long feedId) {
+    	Feed feed = feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
+
+    	return new TagResponse(
+				feedFacade.queryTag(feed)
+		);
 	}
 
 	public void modifyTag(ModifyTagRequest request) {
