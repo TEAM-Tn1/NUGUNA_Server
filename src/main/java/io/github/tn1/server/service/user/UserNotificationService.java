@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserNotificationService {
 
-	private UserFacade userFacade;
-	private UserRepository userRepository;
+	private final UserFacade userFacade;
+	private final UserRepository userRepository;
 
 	public NotificationResponse queryNotification() {
 		boolean notification;
@@ -26,14 +26,14 @@ public class UserNotificationService {
 		return new NotificationResponse(notification);
 	}
 
-  @Transactional
+	@Transactional
 	public void ableNotification() {
 		userRepository
 				.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new)
 				.ableNotification();
-  }
-  
+	}
+
 	@Transactional
 	public void disableNotification() {
 		userRepository
