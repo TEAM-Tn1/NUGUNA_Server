@@ -24,4 +24,11 @@ public class UserNotificationService {
 		return new NotificationResponse(notification);
 	}
 
+	public void ableNotification() {
+		userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new)
+				.ableNotification();
+	}
+
 }
