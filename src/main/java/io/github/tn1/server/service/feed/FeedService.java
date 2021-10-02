@@ -13,7 +13,6 @@ import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
-import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.Like;
 import io.github.tn1.server.entity.like.LikeRepository;
@@ -144,12 +143,7 @@ public class FeedService {
 		tagRepository.deleteByFeed(feed);
 
 		for(String tag : request.getTags()) {
-			tagRepository.save(
-					Tag.builder()
-							.feed(feed)
-							.tag(tag)
-					.build()
-			);
+			feedFacade.addTag(tag, feed);
 		}
 	}
 
