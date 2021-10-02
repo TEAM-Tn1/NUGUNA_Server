@@ -1,5 +1,9 @@
 package io.github.tn1.server.utils.fcm;
 
+import java.io.IOException;
+
+import javax.annotation.PostConstruct;
+
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -11,11 +15,9 @@ import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 
 @Service
 @Slf4j
@@ -42,7 +44,7 @@ public class FcmUtil {
 
     public void sendTagNotification(String tag, Feed feed) {
         tagNotificationRepository.findByTag(tag)
-                .stream().filter(value -> value.getUser().haveDeviceToken())
+                .stream().filter(value -> value.getUser().haveDeviceToken() && value.getUser().isAlarm())
                 .forEach(value ->
                         send(
                                 SendDto.builder()
