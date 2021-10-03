@@ -2,7 +2,6 @@ package io.github.tn1.server.service.feed;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -27,7 +26,6 @@ import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.TooManyTagsException;
-import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
@@ -48,18 +46,6 @@ public class FeedService {
     private final FeedMediumRepository feedMediumRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
-
-    public List<FeedResponse> queryWriteFeed(String email) {
-        User writer = userRepository.findById(email)
-                .orElseThrow(UserNotFoundException::new);
-
-        User user = userRepository.findById(userFacade.getEmail())
-                .orElse(null);
-
-        return feedRepository.findByUser(writer)
-                .stream().map(feed -> feedFacade.feedToFeedResponse(feed, user))
-				.collect(Collectors.toList());
-    }
 
 	public FeedResponse queryFeed(Long feedId) {
     	User user = userRepository.findById(userFacade.getEmail())

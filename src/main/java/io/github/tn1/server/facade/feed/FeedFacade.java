@@ -3,6 +3,7 @@ package io.github.tn1.server.facade.feed;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.tn1.server.dto.feed.response.CarrotResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
@@ -30,13 +31,13 @@ public class FeedFacade {
 	public FeedResponse feedToFeedResponse(Feed feed, User user) {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
-		FeedResponse response = FeedResponse.WriteFeedResponseBuilder()
+		FeedResponse response = FeedResponse.builder()
 				.feedId(feed.getId())
 				.title(feed.getTitle())
 				.description(feed.getDescription())
 				.price(feed.getPrice())
 				.tags(queryTag(feed))
-				.photo(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.count(feed.getLikes().size())
 				.lastModifyDate(feed.getUpdatedDate())
 				.isUsedItem(feed.isUsedItem())
@@ -52,6 +53,26 @@ public class FeedFacade {
 		}
 		if(user != null)
 			response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
+		return response;
+	}
+
+	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
+		CarrotResponse response;
+		response = CarrotResponse.builder()
+				.feedId(feed.getId())
+				.title(feed.getTitle())
+				.price(feed.getPrice())
+				.count(feed.getLikes().size())
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.tags(tagRepository.findByFeedOrderById(feed)
+						.stream().map(Tag::getTag).collect(Collectors.toList()))
+				.build();
+		if(user != null) {
+			response.setLike(likeRepository.findByUserAndFeed(user, feed)
+					.isPresent());
+		}
 		return response;
 	}
 

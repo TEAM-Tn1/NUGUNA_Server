@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
-import io.github.tn1.server.dto.feed.response.FeedElementResponse;
+import io.github.tn1.server.dto.feed.response.CarrotResponse;
 import io.github.tn1.server.service.feed.carrot.CarrotFeedService;
 import lombok.RequiredArgsConstructor;
 
@@ -40,13 +40,13 @@ public class CarrotFeedController {
     }
 
     @GetMapping("/carrot")
-    public List<FeedElementResponse> getCarrotFeed(@RequestParam("page") int page,
+    public List<CarrotResponse> getCarrotFeed(@RequestParam("page") int page,
                                                   @RequestParam("range") int range) {
         return feedService.queryCarrotFeed(page, range);
     }
 
     @GetMapping("/me/like/carrot")
-	public List<FeedElementResponse> getLikedCarrot() {
+	public List<CarrotResponse> getLikedCarrot() {
     	return feedService.queryLikedCarrot();
 	}
 

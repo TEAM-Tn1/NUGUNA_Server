@@ -5,12 +5,10 @@ import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
-import io.github.tn1.server.dto.feed.response.FeedElementResponse;
+import io.github.tn1.server.dto.feed.response.CarrotResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
-import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
-import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
@@ -84,45 +82,26 @@ public class CarrotFeedService {
 		feedRepository.save(feed);
 	}
 
-	public List<FeedElementResponse> queryCarrotFeed(int page, int range) {
+	public List<CarrotResponse> queryCarrotFeed(int page, int range) {
 
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElse(null);
 
 		return feedRepository.findByIsUsedItem(true, PageRequest.of(page, range, Sort.by("id").descending()))
 				.stream()
-				.map(feed -> {
-					FeedMedium medium = feedMediumRepository
-							.findTopByFeedOrderById(feed);
-					FeedElementResponse response;
-					response = FeedElementResponse.builder()
-							.feedId(feed.getId())
-							.title(feed.getTitle())
-							.price(feed.getPrice())
-							.lastModifyDate(feed.getUpdatedDate())
-							.count(feed.getLikes().size())
-							.description(feed.getDescription())
-							.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
-							.tags(tagRepository.findByFeedOrderById(feed)
-									.stream().map(Tag::getTag).collect(Collectors.toList()))
-							.build();
-					if(user != null) {
-						response.setLike(likeRepository.findByUserAndFeed(user, feed)
-								.isPresent());
-					}
-					return response;
-				}).collect(Collectors.toList());
+				.map(feed ->
+					feedFacade.feedToCarrotResponse(feed, user)
+				).collect(Collectors.toList());
 	}
 
-	public List<FeedElementResponse> queryLikedCarrot() {
+	public List<CarrotResponse> queryLikedCarrot() {
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(UserNotFoundException::new);
 		return user.getLikes()
 				.stream().filter(like -> like.getFeed().isUsedItem())
-				.map(like -> {
-					Feed feed = like.getFeed();
-					return feedFacade.feedToFeedResponse(feed, user);
-				}).collect(Collectors.toList());
+				.map(like ->
+						feedFacade.feedToCarrotResponse(like.getFeed(), user)
+				).collect(Collectors.toList());
 	}
 
 }
