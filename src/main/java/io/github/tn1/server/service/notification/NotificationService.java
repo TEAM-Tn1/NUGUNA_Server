@@ -3,7 +3,9 @@ package io.github.tn1.server.service.notification;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.tn1.server.dto.notification.response.CountResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
+import io.github.tn1.server.entity.notification.NotificationRepository;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import io.github.tn1.server.entity.user.User;
@@ -24,6 +26,7 @@ public class NotificationService {
 	private final UserFacade userFacade;
 	private final UserRepository userRepository;
 	private final TagNotificationRepository tagNotificationRepository;
+	private final NotificationRepository notificationRepository;
 
 	public void setNotificationTag(String tag) {
 		User user = userRepository
@@ -59,6 +62,15 @@ public class NotificationService {
 				.equals(userFacade.getEmail()))
 			throw new NotYourNotificationTagException();
 		tagNotificationRepository.delete(tag);
+	}
+
+	public CountResponse countOfNotification() {
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+		return new CountResponse(
+				notificationRepository
+				.countByUser(user));
 	}
 
 
