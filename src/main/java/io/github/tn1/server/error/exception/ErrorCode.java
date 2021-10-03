@@ -12,6 +12,7 @@ public enum ErrorCode {
     FILE_UPLOAD_FAIL(400, "File upload Fail"),
     FILE_EMPTY(400, "File is empty."),
 	ITS_YOUR_FEED(400, "Its your feed."),
+	SELF_REPORT(400, "Self report."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),
@@ -28,6 +29,7 @@ public enum ErrorCode {
 	ALREADY_LIKED_FEED(409, "Already liked feed."),
 	ALREADY_JOIN_ROOM(409, "Already join room."),
 	ALREADY_REGISTERED_TAG(409, "Already registered tag."),
+	ALREADY_REPORTED_USER(409, "Already reported user."),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags."),
 
