@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,11 @@ public class GroupFeedController {
 	@GetMapping("/me/like/group")
 	public List<GroupResponse> queryLikedGroup() {
 		return groupFeedService.queryLikedGroup();
+	}
+
+	@GetMapping("/users/{email}/group")
+	public List<GroupResponse> querySpecificUserGroup(@PathVariable("email") String email) {
+		return groupFeedService.querySpecificUserGroup(email);
 	}
 
 }
