@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,14 +41,19 @@ public class CarrotFeedController {
     }
 
     @GetMapping("/carrot")
-    public List<CarrotResponse> getCarrotFeed(@RequestParam("page") int page,
+    public List<CarrotResponse> queryCarrotFeed(@RequestParam("page") int page,
                                                   @RequestParam("range") int range) {
         return feedService.queryCarrotFeed(page, range);
     }
 
     @GetMapping("/me/like/carrot")
-	public List<CarrotResponse> getLikedCarrot() {
+	public List<CarrotResponse> queryLikedCarrot() {
     	return feedService.queryLikedCarrot();
+	}
+
+	@GetMapping("/users/{email}/carrot")
+	public List<CarrotResponse> querySpecificUserCarrot(@PathVariable("email") String email) {
+    	return feedService.querySpecificUserCarrot(email);
 	}
 
 }
