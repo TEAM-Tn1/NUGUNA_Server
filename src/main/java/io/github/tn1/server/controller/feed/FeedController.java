@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,26 +52,26 @@ public class FeedController {
 		feedService.removeFeed(feedId);
 	}
 
-	@GetMapping("/tag")
-	public TagResponse queryTag(@RequestParam("feed_id") Long feedId) {
+	@GetMapping("/{feed_id}/tags")
+	public TagResponse queryTag(@PathVariable("feed_id") Long feedId) {
 		return feedService.queryTag(feedId);
 	}
 
-	@PatchMapping("/tag")
+	@PatchMapping("/tags")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changeTag(@RequestBody @Valid ModifyTagRequest request) {
 		feedService.modifyTag(request);
 	}
 
-	@PostMapping("/like")
+	@PostMapping("/{feed_id}/like")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addLike(@RequestParam("feed_id") Long feedId) {
+	public void addLike(@PathVariable("feed_id") Long feedId) {
 		feedService.addLike(feedId);
 	}
 
-	@DeleteMapping("/like")
+	@DeleteMapping("/{feed_id}/like")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeLike(@RequestParam("feed_id") Long feedId) {
+	public void removeLike(@PathVariable("feed_id") Long feedId) {
 		feedService.removeLike(feedId);
 	}
 
