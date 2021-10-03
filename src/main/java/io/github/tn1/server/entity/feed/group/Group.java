@@ -51,4 +51,12 @@ public class Group {
     	this.currentCount--;
 	}
 
+	public void changeHeadCount(int headCount) {
+    	this.headCount = headCount;
+	}
+
+	public void changeDate(LocalDate recruitmentDate) {
+    	this.recruitmentDate = recruitmentDate;
+	}
+
 }
