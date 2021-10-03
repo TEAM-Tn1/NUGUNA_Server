@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.chat.response.CarrotRoomResponse;
+import io.github.tn1.server.dto.chat.response.GroupRoomResponse;
 import io.github.tn1.server.dto.chat.response.JoinResponse;
 import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.chat.member.MemberRepository;
@@ -92,8 +93,21 @@ public class ChatService {
 				.stream().map(room ->
 					new CarrotRoomResponse(room.getId(),
 							room.getHeadUser().getName(),
-							null,
+							null, // TODO: 2021-10-03  
 							room.getPhotoUrl())
+				).collect(Collectors.toList());
+	}
+
+	public List<GroupRoomResponse> queryGroupRoom() {
+		return roomRepository.findByEmailAndType(userFacade.getEmail(),
+				RoomType.GROUP)
+				.stream().map(room ->
+						new GroupRoomResponse(room.getId(),
+								room.getFeed().getTitle(),
+								null, // TODO: 2021-10-03
+								room.getPhotoUrl(),
+								room.getFeed().getGroup()
+										.getCurrentCount())
 				).collect(Collectors.toList());
 	}
 
