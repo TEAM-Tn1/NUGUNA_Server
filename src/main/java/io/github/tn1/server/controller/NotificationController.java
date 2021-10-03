@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import io.github.tn1.server.dto.notification.request.RemoveTagRequest;
 import io.github.tn1.server.dto.notification.request.TagRequest;
 import io.github.tn1.server.dto.notification.response.CountResponse;
+import io.github.tn1.server.dto.notification.response.NotificationResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
 import io.github.tn1.server.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +53,12 @@ public class NotificationController {
 	public CountResponse countOfNotification() {
 		return notificationService
 				.countOfNotification();
+	}
+
+	@GetMapping("/list")
+	public List<NotificationResponse> queryNotificationList(@RequestParam("page") int page) {
+		return notificationService
+				.queryNotificationList(page);
 	}
 
 }
