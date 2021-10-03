@@ -2,6 +2,7 @@ package io.github.tn1.server.controller;
 
 import javax.validation.Valid;
 
+import io.github.tn1.server.dto.report.request.FeedReportRequest;
 import io.github.tn1.server.dto.report.request.UserReportRequest;
 import io.github.tn1.server.dto.report.response.ReportResponse;
 import io.github.tn1.server.service.report.ReportService;
@@ -27,6 +28,11 @@ public class ReportController {
 	@PostMapping("/users")
 	public ReportResponse userReport(@RequestBody @Valid UserReportRequest request) {
 		return reportService.userReport(request);
+	}
+
+	@PostMapping("/feed")
+	public ReportResponse feedReport(@RequestBody @Valid FeedReportRequest request) {
+		return reportService.feedReport(request);
 	}
 
 	@PostMapping("/{report_id}/medium")
