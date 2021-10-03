@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = @UniqueConstraint(
-		columnNames = {"reporter_email", "defendant_email"}
+		columnNames = {"reporter_email", "reportType", "defendant_email"}
 		))
 @Entity(name = "tbl_report")
 public class Report extends BaseTimeEntity {
