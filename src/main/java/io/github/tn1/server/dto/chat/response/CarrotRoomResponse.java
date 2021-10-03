@@ -8,7 +8,7 @@ import lombok.Getter;
 public class CarrotRoomResponse {
 
 	private final String roomId;
-	private final String headUserName;
+	private final String roomName;
 	private final String lastMessage;
 	private final String photoUrl;
 
