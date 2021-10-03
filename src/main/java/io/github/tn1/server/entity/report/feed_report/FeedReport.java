@@ -34,8 +34,9 @@ public class FeedReport {
     private Report report;
 
     @Builder
-    public FeedReport(Feed feed) {
+    public FeedReport(Feed feed, Report report) {
         this.feed = feed;
+        this.report = report;
     }
 
 }
