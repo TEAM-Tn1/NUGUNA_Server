@@ -138,4 +138,15 @@ public class GroupFeedService {
 				).collect(Collectors.toList());
 	}
 
+	public List<GroupResponse> querySpecificUserGroup(String email) {
+		User currentUser = userRepository.findById(userFacade.getEmail())
+				.orElse(null);
+		User user = userRepository.findById(email)
+				.orElseThrow(UserNotFoundException::new);
+		return feedRepository.findByUserAndIsUsedItem(user, false)
+				.stream().map(feed ->
+						feedFacade.feedToGroupResponse(feed, currentUser)
+				).collect(Collectors.toList());
+	}
+
 }
