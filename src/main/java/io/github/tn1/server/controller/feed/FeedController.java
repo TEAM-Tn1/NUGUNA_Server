@@ -30,11 +30,6 @@ public class FeedController {
 
 	private final FeedService feedService;
 
-	@GetMapping("/users/{email}")
-	public List<FeedResponse> getWriteFeed(@PathVariable("email") String email) {
-		return feedService.queryWriteFeed(email);
-	}
-
 	@GetMapping("/{feed_id}")
 	public FeedResponse getFeed(@PathVariable("feed_id") Long feedId) {
 		return feedService.queryFeed(feedId);
