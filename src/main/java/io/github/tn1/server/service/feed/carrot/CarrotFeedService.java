@@ -98,7 +98,7 @@ public class CarrotFeedService {
 
 	public List<CarrotResponse> querySpecificUserCarrot(String email) {
 		User currentUser = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
+				.orElse(null);
 		User user = userRepository.findById(email)
 				.orElseThrow(UserNotFoundException::new);
 		return feedRepository.findByUserAndIsUsedItem(user, true)
