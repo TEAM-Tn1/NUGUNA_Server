@@ -44,4 +44,9 @@ public class GroupFeedController {
 		return groupFeedService.queryGroupFeed(page, range);
 	}
 
+	@GetMapping("/me/like/group")
+	public List<GroupResponse> queryLikedGroup() {
+		return groupFeedService.queryLikedGroup();
+	}
+
 }
