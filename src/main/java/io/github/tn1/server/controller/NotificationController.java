@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.dto.notification.request.RemoveTagRequest;
 import io.github.tn1.server.dto.notification.request.TagRequest;
+import io.github.tn1.server.dto.notification.response.CountResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
 import io.github.tn1.server.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,12 @@ public class NotificationController {
 	public void removeNotificationTag(@RequestBody @Valid RemoveTagRequest request) {
 		notificationService
 				.removeNotificationTag(request.getTagId());
+	}
+
+	@GetMapping("/count")
+	public CountResponse countOfNotification() {
+		return notificationService
+				.countOfNotification();
 	}
 
 }
