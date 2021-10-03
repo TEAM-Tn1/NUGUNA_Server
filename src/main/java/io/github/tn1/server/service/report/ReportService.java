@@ -5,24 +5,33 @@ import io.github.tn1.server.dto.report.response.ReportResponse;
 import io.github.tn1.server.entity.report.Report;
 import io.github.tn1.server.entity.report.ReportRepository;
 import io.github.tn1.server.entity.report.ReportType;
+import io.github.tn1.server.entity.report.medium.ReportMedium;
+import io.github.tn1.server.entity.report.medium.ReportMediumRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyReportedUserException;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.NotYourReportException;
+import io.github.tn1.server.exception.ReportNotFoundException;
 import io.github.tn1.server.exception.SelfReportException;
+import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
+import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class ReportService {
 
 	private final UserFacade userFacade;
+	private final S3Util s3Util;
 	private final UserRepository userRepository;
 	private final ReportRepository reportRepository;
+	private final ReportMediumRepository reportMediumRepository;
 
 	public ReportResponse userReport(UserReportRequest request) {
 		if(request.getEmail().equals(userFacade.getEmail()))
@@ -50,7 +59,27 @@ public class ReportService {
 		} catch (RuntimeException e) {
 			throw new AlreadyReportedUserException();
 		}
+	}
 
+	public void postMedium(MultipartFile file, Long reportId) {
+		Report report = reportRepository.findById(reportId)
+				.orElseThrow(ReportNotFoundException::new);
+
+		if(!report.getReporter().getEmail()
+				.equals(userFacade.getEmail()))
+			throw new NotYourReportException();
+
+		if(reportMediumRepository.existsByReport(report))
+			throw new TooManyFilesException();
+
+		String url = s3Util.upload(file);
+
+		reportMediumRepository.save(
+				ReportMedium.builder()
+				.report(report)
+				.path(url)
+				.build()
+		);
 	}
 
 }
