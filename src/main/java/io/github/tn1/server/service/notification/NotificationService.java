@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.notification.response.CountResponse;
+import io.github.tn1.server.dto.notification.response.NotificationResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
 import io.github.tn1.server.entity.notification.NotificationRepository;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
@@ -17,6 +18,7 @@ import io.github.tn1.server.exception.NotificationTagNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -71,6 +73,20 @@ public class NotificationService {
 		return new CountResponse(
 				notificationRepository
 				.countByUser(user));
+	}
+
+	public List<NotificationResponse> queryNotificationList(int page) {
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+		return notificationRepository
+				.findByUser(user, PageRequest.of(page, 5))
+				.stream().map(notification ->
+				new NotificationResponse(
+						notification.getId(), notification.getTitle(),
+						notification.getMessage(), notification.getContent(),
+						notification.isWatch())
+		).collect(Collectors.toList());
 	}
 
 
