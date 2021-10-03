@@ -30,7 +30,7 @@ public class Notification {
 	private String message;
 
 	@Column(length = 45)
-	private String value;
+	private String content;
 
 	@Column(columnDefinition = "BIT(1) default false")
 	private boolean isWatch;
@@ -41,11 +41,11 @@ public class Notification {
 
 	@Builder
 	public Notification(String title, String message,
-			String value, boolean isWatch,
+			String content, boolean isWatch,
 			User user) {
 		this.title = title;
 		this.message = message;
-		this.value = value;
+		this.content = content;
 		this.isWatch = isWatch;
 		this.user = user;
 	}
