@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.dto.chat.request.JoinRequest;
 import io.github.tn1.server.dto.chat.response.CarrotRoomResponse;
+import io.github.tn1.server.dto.chat.response.GroupRoomResponse;
 import io.github.tn1.server.dto.chat.response.JoinResponse;
 import io.github.tn1.server.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,13 @@ public class ChatController {
 	}
 
 	@GetMapping("/carrot")
-	public List<CarrotRoomResponse> getCarrotRoom() {
+	public List<CarrotRoomResponse> queryCarrotRoom() {
 		return chatService.queryCarrotRoom();
+	}
+
+	@GetMapping("/group")
+	public List<GroupRoomResponse> queryGroupRoom() {
+		return chatService.queryGroupRoom();
 	}
 
 }
