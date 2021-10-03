@@ -3,11 +3,14 @@ package io.github.tn1.server.service.chat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.tn1.server.dto.chat.request.QueryMessageRequest;
 import io.github.tn1.server.dto.chat.response.CarrotRoomResponse;
 import io.github.tn1.server.dto.chat.response.GroupRoomResponse;
 import io.github.tn1.server.dto.chat.response.JoinResponse;
+import io.github.tn1.server.dto.chat.response.QueryMessageResponse;
 import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.chat.member.MemberRepository;
+import io.github.tn1.server.entity.chat.message.MessageRepository;
 import io.github.tn1.server.entity.chat.room.Room;
 import io.github.tn1.server.entity.chat.room.RoomRepository;
 import io.github.tn1.server.entity.chat.room.RoomType;
@@ -18,14 +21,17 @@ import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyJoinRoomException;
+import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.ItsYourFeedException;
+import io.github.tn1.server.exception.NotYourRoomException;
 import io.github.tn1.server.exception.RoomNotFoundException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,6 +43,7 @@ public class ChatService {
 	private final FeedRepository feedRepository;
 	private final FeedMediumRepository feedMediumRepository;
 	private final RoomRepository roomRepository;
+	private final MessageRepository messageRepository;
 	private final MemberRepository memberRepository;
 
 	private final S3Util s3Util;
@@ -109,6 +116,24 @@ public class ChatService {
 								room.getFeed().getGroup()
 										.getCurrentCount())
 				).collect(Collectors.toList());
+	}
+
+	public List<QueryMessageResponse> queryMessage(QueryMessageRequest request, int page) {
+		Room room = roomRepository.findById(request.getRoomId())
+				.orElseThrow(RoomNotFoundException::new);
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		if(memberRepository
+				.findByUserAndRoom(user, room).isEmpty())
+			throw new NotYourRoomException();
+
+		return messageRepository.findByRoom(room, PageRequest.of(page, 10))
+				.stream().map(message ->
+					new QueryMessageResponse(message.getContent(),
+							message.getType().name(), message.getSentAt())
+		).collect(Collectors.toList());
 	}
 
 }
