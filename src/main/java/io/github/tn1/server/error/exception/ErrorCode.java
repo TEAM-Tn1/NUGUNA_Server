@@ -25,6 +25,7 @@ public enum ErrorCode {
 	LIKE_NOT_FOUND(404, "Like not found."),
 	ALREADY_LIKED_FEED(409, "Already liked feed."),
 	ALREADY_JOIN_ROOM(409, "Already join room."),
+	ALREADY_REGISTERED_TAG(409, "Already registered tag."),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags."),
 
