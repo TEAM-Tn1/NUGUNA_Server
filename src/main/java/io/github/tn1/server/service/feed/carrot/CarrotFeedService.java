@@ -8,9 +8,6 @@ import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.CarrotResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
-import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
-import io.github.tn1.server.entity.feed.tag.TagRepository;
-import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
@@ -20,7 +17,6 @@ import io.github.tn1.server.exception.TooManyTagsException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
-import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
@@ -34,11 +30,7 @@ public class CarrotFeedService {
 
 	private final UserFacade userFacade;
 	private final FeedFacade feedFacade;
-	private final S3Util s3Util;
 	private final FeedRepository feedRepository;
-	private final LikeRepository likeRepository;
-	private final FeedMediumRepository feedMediumRepository;
-	private final TagRepository tagRepository;
 	private final UserRepository userRepository;
 
 	public void postCarrotFeed(PostCarrotRequest request) {
@@ -101,6 +93,17 @@ public class CarrotFeedService {
 				.stream().filter(like -> like.getFeed().isUsedItem())
 				.map(like ->
 						feedFacade.feedToCarrotResponse(like.getFeed(), user)
+				).collect(Collectors.toList());
+	}
+
+	public List<CarrotResponse> querySpecificUserCarrot(String email) {
+		User currentUser = userRepository.findById(userFacade.getEmail())
+				.orElseThrow(UserNotFoundException::new);
+		User user = userRepository.findById(email)
+				.orElseThrow(UserNotFoundException::new);
+		return feedRepository.findByUserAndIsUsedItem(user, true)
+				.stream().map(feed ->
+						feedFacade.feedToCarrotResponse(feed, currentUser)
 				).collect(Collectors.toList());
 	}
 
