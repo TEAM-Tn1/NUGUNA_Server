@@ -25,6 +25,7 @@ import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyTagsException;
+import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -124,6 +125,16 @@ public class GroupFeedService {
 				.stream()
 				.map(feed ->
 						feedFacade.feedToGroupResponse(feed, user)
+				).collect(Collectors.toList());
+	}
+
+	public List<GroupResponse> queryLikedGroup() {
+		User user = userRepository.findById(userFacade.getEmail())
+				.orElseThrow(UserNotFoundException::new);
+		return user.getLikes()
+				.stream().filter(like -> !like.getFeed().isUsedItem())
+				.map(like ->
+						feedFacade.feedToGroupResponse(like.getFeed(), user)
 				).collect(Collectors.toList());
 	}
 
