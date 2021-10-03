@@ -5,6 +5,7 @@ import java.time.ZoneId;
 
 import javax.transaction.Transactional;
 
+import io.github.tn1.server.dto.feed.request.ModifyGroupRequest;
 import io.github.tn1.server.dto.feed.request.PostGroupRequest;
 import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.chat.member.MemberRepository;
@@ -18,6 +19,8 @@ import io.github.tn1.server.entity.feed.group.GroupRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.FeedNotFoundException;
+import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyTagsException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
@@ -82,6 +85,29 @@ public class GroupFeedService {
 				.user(user)
 				.build()
 		);
-
 	}
+
+	@Transactional
+	public void modifyGroupFeed(ModifyGroupRequest request) {
+		User user = userRepository.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		Feed feed = feedRepository.findById(request.getFeedId())
+				.orElseThrow(FeedNotFoundException::new);
+
+		if(!feed.getUser().getEmail().equals(user.getEmail()))
+			throw new NotYourFeedException();
+
+		feed.setTitle(request.getTitle())
+			.setPrice(request.getPrice())
+			.setDescription(request.getDescription());
+
+		Group group = groupRepository.findByFeed(feed)
+				.orElseThrow(FeedNotFoundException::new);
+		group.changeHeadCount(request.getHeadCount());
+		group.changeDate(request.getDate()
+		.toInstant().atZone(ZoneId.of("Asia/Seout"))
+		.toLocalDate());
+	}
+
 }
