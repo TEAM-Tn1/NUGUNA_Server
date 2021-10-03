@@ -20,6 +20,7 @@ public enum ErrorCode {
     NOT_YOUR_FEED(403, "Not your feed."),
 	NOT_YOUR_NOTIFICATION_TAG(403, "Not your notification tag."),
 	NOT_YOUR_REPORT(403, "Not your report."),
+	NOT_YOUR_ROOM(403, "Not your room."),
     BLACKED(403, "User was blacked."),
     USER_NOT_FOUND(404, "User not found."),
     FEED_NOT_FOUND(404, "Feed not found."),
