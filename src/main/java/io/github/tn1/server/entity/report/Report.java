@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
@@ -23,6 +25,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = @UniqueConstraint(
+		columnNames = {"reporter_email", "defendant_email"}
+		))
 @Entity(name = "tbl_report")
 public class Report extends BaseTimeEntity {
 
