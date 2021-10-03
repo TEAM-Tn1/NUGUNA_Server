@@ -1,5 +1,9 @@
 package io.github.tn1.server.service.notification;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.github.tn1.server.dto.notification.response.TagResponse;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import io.github.tn1.server.entity.user.User;
@@ -20,7 +24,8 @@ public class NotificationService {
 	private final TagNotificationRepository tagNotificationRepository;
 
 	public void setNotificationTag(String tag) {
-		User user = userRepository.findById(userFacade.getEmail())
+		User user = userRepository
+				.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new);
 		try {
 			tagNotificationRepository.save(
@@ -32,6 +37,16 @@ public class NotificationService {
 		} catch (RuntimeException e) {
 			throw new AlreadyRegisteredTagException();
 		}
+	}
+
+	public List<TagResponse> queryNotificationTag() {
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+		return tagNotificationRepository.findByUser(user)
+				.stream()
+				.map(tag -> new TagResponse(tag.getId(), tag.getTag()))
+				.collect(Collectors.toList());
 	}
 
 
