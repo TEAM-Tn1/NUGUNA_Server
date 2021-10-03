@@ -17,10 +17,14 @@ public class GroupResponse {
 	private final int price;
 	private final List<String> tags;
 	private final String medium;
-	private final boolean like;
+	private boolean like;
 	private final int count;
 	private final int headCount;
 	private final int currentHeadCount;
 	private final LocalDate date;
+
+	public void setLike(boolean like) {
+		this.like = like;
+	}
 
 }

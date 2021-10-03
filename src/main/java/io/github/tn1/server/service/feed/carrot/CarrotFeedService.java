@@ -83,11 +83,11 @@ public class CarrotFeedService {
 	}
 
 	public List<CarrotResponse> queryCarrotFeed(int page, int range) {
-
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElse(null);
 
-		return feedRepository.findByIsUsedItem(true, PageRequest.of(page, range, Sort.by("id").descending()))
+		return feedRepository.findByIsUsedItem(true,
+				PageRequest.of(page, range, Sort.by("id").descending()))
 				.stream()
 				.map(feed ->
 					feedFacade.feedToCarrotResponse(feed, user)

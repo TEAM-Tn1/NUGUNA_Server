@@ -2,11 +2,14 @@ package io.github.tn1.server.service.feed.group;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import io.github.tn1.server.dto.feed.request.ModifyGroupRequest;
 import io.github.tn1.server.dto.feed.request.PostGroupRequest;
+import io.github.tn1.server.dto.feed.response.GroupResponse;
 import io.github.tn1.server.entity.chat.member.Member;
 import io.github.tn1.server.entity.chat.member.MemberRepository;
 import io.github.tn1.server.entity.chat.room.Room;
@@ -26,6 +29,8 @@ import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -106,8 +111,20 @@ public class GroupFeedService {
 				.orElseThrow(FeedNotFoundException::new);
 		group.changeHeadCount(request.getHeadCount());
 		group.changeDate(request.getDate()
-		.toInstant().atZone(ZoneId.of("Asia/Seout"))
+		.toInstant().atZone(ZoneId.of("Asia/Seoul"))
 		.toLocalDate());
+	}
+
+	public List<GroupResponse> queryGroupFeed(int page, int range) {
+		User user = userRepository.findById(userFacade.getEmail())
+				.orElse(null);
+
+		return feedRepository.findByIsUsedItem(false,
+				PageRequest.of(page, range, Sort.by("id").descending()))
+				.stream()
+				.map(feed ->
+						feedFacade.feedToGroupResponse(feed, user)
+				).collect(Collectors.toList());
 	}
 
 }
