@@ -10,6 +10,8 @@ import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyRegisteredTagException;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.NotYourNotificationTagException;
+import io.github.tn1.server.exception.NotificationTagNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
@@ -47,6 +49,16 @@ public class NotificationService {
 				.stream()
 				.map(tag -> new TagResponse(tag.getId(), tag.getTag()))
 				.collect(Collectors.toList());
+	}
+
+	public void removeNotificationTag(long tagId) {
+		TagNotification tag;
+		tag = tagNotificationRepository.findById(tagId)
+				.orElseThrow(NotificationTagNotFoundException::new);
+		if(!tag.getUser().getEmail()
+				.equals(userFacade.getEmail()))
+			throw new NotYourNotificationTagException();
+		tagNotificationRepository.delete(tag);
 	}
 
 
