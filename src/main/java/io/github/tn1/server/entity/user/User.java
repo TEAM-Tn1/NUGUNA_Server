@@ -65,18 +65,16 @@ public class User implements UserDetails {
 	private final Set<Like> likes = new HashSet<>();
 
     @Builder
-    public User(String email, String name, Role role, boolean showAccount,
-                String gcn, String roomNumber, String accountNumber,
-                String deviceToken, boolean notification, LocalDate blackDate) {
+    public User(String email, String name, Role role, String gcn,
+			String roomNumber, String accountNumber,
+			String deviceToken, LocalDate blackDate) {
         this.email = email;
         this.name = name;
         this.role = role;
-        this.showAccount = showAccount;
         this.gcn = gcn;
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
         this.deviceToken = deviceToken;
-        this.notification = notification;
         this.blackDate = blackDate;
     }
 

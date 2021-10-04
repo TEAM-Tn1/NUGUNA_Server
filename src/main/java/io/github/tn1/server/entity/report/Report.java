@@ -45,6 +45,9 @@ public class Report extends BaseTimeEntity {
     @Column(length = 1000)
     private String contents;
 
+    @Column(columnDefinition = "BIT(1) default false")
+    private boolean check;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_email")
     private User reporter;

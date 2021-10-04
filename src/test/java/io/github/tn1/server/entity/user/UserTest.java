@@ -28,7 +28,6 @@ class UserTest {
                 .name("이**")
                 .roomNumber("318")
                 .deviceToken(deviceToken)
-                .notification(notification)
                 .blackDate(blackDate)
                 .build();
 
@@ -38,7 +37,6 @@ class UserTest {
                 () -> Assertions.assertEquals(accountNumber, user.getAccountNumber()),
                 () -> Assertions.assertEquals(role, user.getRole()),
                 () -> Assertions.assertEquals(deviceToken, user.getDeviceToken()),
-                () -> Assertions.assertEquals(notification, user.isNotification()),
                 () -> Assertions.assertEquals(blackDate, user.getBlackDate())
         );
     }

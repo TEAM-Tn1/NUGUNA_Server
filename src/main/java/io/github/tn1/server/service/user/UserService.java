@@ -89,7 +89,6 @@ public class UserService {
                             .email(response.getEmail())
                             .name(response.getName())
                             .gcn(response.getGcn())
-							.notification(true)
                             .role(Role.ROLE_USER)
                             .build()
             );
