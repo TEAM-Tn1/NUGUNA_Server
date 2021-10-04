@@ -1,7 +1,9 @@
 package io.github.tn1.server.service.report;
 
 import io.github.tn1.server.dto.report.request.FeedReportRequest;
+import io.github.tn1.server.dto.report.request.ReasonRequest;
 import io.github.tn1.server.dto.report.request.UserReportRequest;
+import io.github.tn1.server.dto.report.response.ReasonResponse;
 import io.github.tn1.server.dto.report.response.ReportResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
@@ -12,6 +14,7 @@ import io.github.tn1.server.entity.report.feed_report.FeedReport;
 import io.github.tn1.server.entity.report.feed_report.FeedReportRepository;
 import io.github.tn1.server.entity.report.medium.ReportMedium;
 import io.github.tn1.server.entity.report.medium.ReportMediumRepository;
+import io.github.tn1.server.entity.report.result.ResultRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyReportedUserException;
@@ -19,6 +22,7 @@ import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
+import io.github.tn1.server.exception.ReportResultNotFoundException;
 import io.github.tn1.server.exception.SelfReportException;
 import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.UserNotFoundException;
@@ -40,6 +44,7 @@ public class ReportService {
 	private final FeedRepository feedRepository;
 	private final FeedReportRepository feedReportRepository;
 	private final ReportMediumRepository reportMediumRepository;
+	private final ResultRepository resultRepository;
 
 	public ReportResponse userReport(UserReportRequest request) {
 		if(request.getEmail().equals(userFacade.getEmail()))
@@ -129,6 +134,21 @@ public class ReportService {
 				.path(url)
 				.build()
 		);
+	}
+
+	public ReasonResponse queryReport(ReasonRequest request) {
+		Report report = reportRepository
+				.findById(request.getReportId())
+				.orElseThrow(ReportNotFoundException::new);
+
+		if(!report.getReporter()
+				.matchEmail(userFacade.getEmail()))
+			throw new NotYourReportException();
+
+		if(report.getResult() == null)
+			throw new ReportResultNotFoundException();
+
+		return new ReasonResponse(report.getResult().getReason());
 	}
 
 }

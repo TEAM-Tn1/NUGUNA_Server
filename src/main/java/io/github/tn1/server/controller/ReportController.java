@@ -3,12 +3,15 @@ package io.github.tn1.server.controller;
 import javax.validation.Valid;
 
 import io.github.tn1.server.dto.report.request.FeedReportRequest;
+import io.github.tn1.server.dto.report.request.ReasonRequest;
 import io.github.tn1.server.dto.report.request.UserReportRequest;
+import io.github.tn1.server.dto.report.response.ReasonResponse;
 import io.github.tn1.server.dto.report.response.ReportResponse;
 import io.github.tn1.server.service.report.ReportService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +42,11 @@ public class ReportController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void postMedium(@RequestPart MultipartFile file, @PathVariable("report_id") Long reportId) {
 		reportService.postMedium(file, reportId);
+	}
+
+	@GetMapping
+	public ReasonResponse queryReport(@RequestBody @Valid ReasonRequest request) {
+		return reportService.queryReport(request);
 	}
 
 }
