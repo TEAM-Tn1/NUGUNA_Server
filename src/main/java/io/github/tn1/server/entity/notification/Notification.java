@@ -41,12 +41,10 @@ public class Notification {
 
 	@Builder
 	public Notification(String title, String message,
-			String content, boolean isWatch,
-			User user) {
+			String content, User user) {
 		this.title = title;
 		this.message = message;
 		this.content = content;
-		this.isWatch = isWatch;
 		this.user = user;
 	}
 
