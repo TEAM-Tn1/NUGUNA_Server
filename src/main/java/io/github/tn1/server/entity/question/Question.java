@@ -8,8 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
+import io.github.tn1.server.entity.question.result.QuestionResult;
 import io.github.tn1.server.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,6 +36,9 @@ public class Question extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")
     private User user;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "question")
+	private QuestionResult questionResult;
 
     @Builder
     public Question(String title, String description,
