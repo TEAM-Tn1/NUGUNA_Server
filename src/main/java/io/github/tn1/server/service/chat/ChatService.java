@@ -60,7 +60,7 @@ public class ChatService {
 				.findTopByFeedOrderById(feed);
 		Room room;
 
-		if(feed.getUser().getEmail().equals(currentUser.getEmail()))
+		if(feed.getUser().matchEmail(currentUser.getEmail()))
 			throw new ItsYourFeedException();
 
 		if(roomRepository.existsByFeedAndEmail(feed, currentUser.getEmail())){

@@ -101,7 +101,7 @@ public class GroupFeedService {
 		Feed feed = feedRepository.findById(request.getFeedId())
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(!feed.getUser().getEmail().equals(user.getEmail()))
+		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
 		feed.setTitle(request.getTitle())

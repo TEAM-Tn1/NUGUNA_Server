@@ -139,6 +139,10 @@ public class User implements UserDetails {
         return roomNumber != null && accountNumber != null;
     }
 
+    public boolean matchEmail(String email) {
+    	return this.email.equals(email);
+	}
+
     public void ableShowAccount() {
     	this.showAccount = true;
 	}
