@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.question.Question;
@@ -28,7 +28,7 @@ public class QuestionResult extends BaseTimeEntity {
     @Column(length = 100)
     private String reason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
 
