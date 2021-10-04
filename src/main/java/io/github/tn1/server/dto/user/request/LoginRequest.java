@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class LoginRequest {
+
 	@NotNull(message = "code는 null이면 안됩니다.")
     private String code;
+
 }

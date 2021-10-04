@@ -53,7 +53,7 @@ public class ChatController {
 	}
 
 	@GetMapping("/content")
-	public List<QueryMessageResponse> queryMessage(@RequestBody QueryMessageRequest request, @RequestParam("page") int page) {
+	public List<QueryMessageResponse> queryMessage(@RequestBody @Valid QueryMessageRequest request, @RequestParam("page") int page) {
 		return chatService.queryMessage(request, page);
 	}
 

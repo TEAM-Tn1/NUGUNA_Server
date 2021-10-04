@@ -113,6 +113,7 @@ public class FeedService {
 		);
 	}
 
+	@Transactional
 	public void modifyTag(ModifyTagRequest request) {
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new);
@@ -123,7 +124,7 @@ public class FeedService {
 		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
-		if(request.getTags().length > 5)
+		if(request.getTags().size() > 5)
 			throw new TooManyTagsException();
 
 		tagRepository.deleteByFeed(feed);
