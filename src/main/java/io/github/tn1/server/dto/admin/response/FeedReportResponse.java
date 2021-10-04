@@ -13,6 +13,6 @@ public class FeedReportResponse {
 	private final String title;
 	private final String reporterName;
 	private final LocalDateTime createdDate;
-	private final boolean isCheck;
+	private final boolean check;
 
 }

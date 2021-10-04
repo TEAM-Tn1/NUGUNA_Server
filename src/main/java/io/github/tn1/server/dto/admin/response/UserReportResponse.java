@@ -14,6 +14,6 @@ public class UserReportResponse {
 	private final String reporterName;
 	private final String defendantName;
 	private final LocalDateTime createdDate;
-	private final boolean isCheck;
+	private final boolean check;
 
 }
