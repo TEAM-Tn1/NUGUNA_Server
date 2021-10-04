@@ -3,9 +3,12 @@ package io.github.tn1.server.service.notification;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.notification.response.CountResponse;
 import io.github.tn1.server.dto.notification.response.NotificationResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
+import io.github.tn1.server.entity.notification.Notification;
 import io.github.tn1.server.entity.notification.NotificationRepository;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
@@ -13,7 +16,9 @@ import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyRegisteredTagException;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.NotYourNotificationException;
 import io.github.tn1.server.exception.NotYourNotificationTagException;
+import io.github.tn1.server.exception.NotificationNotFoundException;
 import io.github.tn1.server.exception.NotificationTagNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +76,7 @@ public class NotificationService {
 				.orElseThrow(CredentialsNotFoundException::new);
 		return new CountResponse(
 				notificationRepository
-				.countByUser(user));
+				.countByUserAndIsWatch(user, false));
 	}
 
 	public List<NotificationResponse> queryNotificationList(int page) {
@@ -88,5 +93,17 @@ public class NotificationService {
 		).collect(Collectors.toList());
 	}
 
+	@Transactional
+	public void checkNotification(Long notificationId) {
+		Notification notification = notificationRepository
+				.findById(notificationId)
+				.orElseThrow(NotificationNotFoundException::new);
+
+		if(!notification.getUser()
+				.matchEmail(userFacade.getEmail()))
+			throw new NotYourNotificationException();
+
+		notification.watch();
+	}
 
 }
