@@ -28,6 +28,7 @@ public enum ErrorCode {
 	ROOM_NOT_FOUND(404, "Room not found."),
 	LIKE_NOT_FOUND(404, "Like not found."),
 	REPORT_NOT_FOUND(404, "Report not found."),
+	REPORT_RESULT_NOT_FOUND(404, "Report result not found."),
 	NOTIFICATION_TAG_NOT_FOUND(404, "Notification tag not found."),
 	ALREADY_LIKED_FEED(409, "Already liked feed."),
 	ALREADY_JOIN_ROOM(409, "Already join room."),
