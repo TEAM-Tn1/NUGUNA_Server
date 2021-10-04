@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
+import io.github.tn1.server.entity.report.medium.ReportMedium;
 import io.github.tn1.server.entity.report.result.Result;
 import io.github.tn1.server.entity.user.User;
 import lombok.AccessLevel;
@@ -58,6 +59,9 @@ public class Report extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
     private Result result;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
+	private ReportMedium reportMedium;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "report")
     private FeedReport feedReport;
