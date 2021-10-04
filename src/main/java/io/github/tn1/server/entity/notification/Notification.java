@@ -48,4 +48,8 @@ public class Notification {
 		this.user = user;
 	}
 
+	public void watch() {
+		this.isWatch = true;
+	}
+
 }
