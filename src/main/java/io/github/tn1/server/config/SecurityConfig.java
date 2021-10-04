@@ -41,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/feed/users/{email}/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/feed/{feed_id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/feed/carrot").permitAll()
+
+				.antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().apply(new FilterConfig(jwtTokenProvider, exceptionHandlerFilter, requestLogger));
 
