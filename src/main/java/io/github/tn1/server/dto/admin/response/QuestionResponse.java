@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FeedReportResponse {
+public class QuestionResponse {
 
-	private final long reportId;
+	private final long questionId;
 	private final String title;
-	private final String reporterName;
+	private final String userName;
 	private final LocalDateTime createdDate;
 	private final boolean check;
 
