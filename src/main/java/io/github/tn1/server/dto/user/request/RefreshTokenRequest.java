@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RefreshTokenRequest {
+
 	@NotEmpty(message = "refresh_token은 비어있으면 안됩니다.")
     private String refreshToken;
+
 }

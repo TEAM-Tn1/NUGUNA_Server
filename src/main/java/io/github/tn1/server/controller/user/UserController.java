@@ -46,7 +46,7 @@ public class UserController {
 
     @PatchMapping("/information")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void patchInformation(@RequestBody InformationRequest request) {
+    public void patchInformation(@RequestBody @Valid InformationRequest request) {
         userService.modifyInformation(request);
     }
 
