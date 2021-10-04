@@ -1,11 +1,16 @@
 package io.github.tn1.server.service.question;
 
+import io.github.tn1.server.dto.question.request.QuestionDetailRequest;
 import io.github.tn1.server.dto.question.request.QuestionRequest;
+import io.github.tn1.server.dto.question.response.QuestionResponse;
 import io.github.tn1.server.entity.question.Question;
 import io.github.tn1.server.entity.question.QuestionRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.NotYourQuestionException;
+import io.github.tn1.server.exception.QuestionNotFoundException;
+import io.github.tn1.server.exception.QuestionResultNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +36,22 @@ public class QuestionService {
 				.user(user)
 				.build()
 		);
+	}
+
+	public QuestionResponse queryQuestionDetail(QuestionDetailRequest request) {
+		Question question = questionRepository
+				.findById(request.getQuestionId())
+				.orElseThrow(QuestionNotFoundException::new);
+
+		if(!question.getUser()
+				.matchEmail(userFacade.getEmail()))
+			throw new NotYourQuestionException();
+
+		if(question.getQuestionResult() == null)
+			throw new QuestionResultNotFoundException();
+
+		return new QuestionResponse(question
+				.getQuestionResult().getReason());
 	}
 
 }
