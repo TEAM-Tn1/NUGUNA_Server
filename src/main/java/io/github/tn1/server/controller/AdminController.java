@@ -3,6 +3,7 @@ package io.github.tn1.server.controller;
 import java.util.List;
 
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
+import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
 import io.github.tn1.server.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +19,19 @@ public class AdminController {
 
 	private final AdminService adminService;
 
-	@GetMapping("/feed")
+	@GetMapping("/report/feed")
 	public List<FeedReportResponse> queryFeedReport() {
 		return adminService.queryFeedReport();
 	}
 
-	@GetMapping("/users")
+	@GetMapping("/report/users")
 	public List<UserReportResponse> queryUserReport() {
 		return adminService.queryUserReport();
+	}
+
+	@GetMapping("/question")
+	public List<QuestionResponse> queryQuestion() {
+		return adminService.queryQuestion();
 	}
 
 }
