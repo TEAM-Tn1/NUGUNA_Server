@@ -3,6 +3,8 @@ package io.github.tn1.server.service.chat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.chat.request.QueryMessageRequest;
 import io.github.tn1.server.dto.chat.response.CarrotRoomResponse;
 import io.github.tn1.server.dto.chat.response.GroupRoomResponse;
@@ -48,6 +50,7 @@ public class ChatService {
 
 	private final S3Util s3Util;
 
+	@Transactional
 	public JoinResponse joinRoom(Long feedId) {
 		User currentUser = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(UserNotFoundException::new);
@@ -134,6 +137,25 @@ public class ChatService {
 					new QueryMessageResponse(message.getContent(),
 							message.getType().name(), message.getSentAt())
 		).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public void leaveRoom(String roomId) {
+		Room room = roomRepository.findById(roomId)
+				.orElseThrow(RoomNotFoundException::new);
+		User user = userRepository
+				.findById(userFacade.getEmail())
+				.orElseThrow(CredentialsNotFoundException::new);
+
+		if(memberRepository
+				.findByUserAndRoom(user, room).isEmpty())
+			throw new NotYourRoomException();
+
+		if(room.getType().equals(RoomType.GROUP))
+			room.getFeed().getGroup().decreaseCurrentCount();
+
+		memberRepository.delete(memberRepository
+				.findByUserAndRoom(user, room).get());
 	}
 
 }
