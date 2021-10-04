@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
+import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
+import io.github.tn1.server.entity.question.QuestionRepository;
 import io.github.tn1.server.entity.report.ReportRepository;
 import io.github.tn1.server.entity.report.ReportType;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class AdminService {
 
 	private final ReportRepository reportRepository;
+	private final QuestionRepository questionRepository;
 
 	public List<FeedReportResponse> queryFeedReport() {
 		return reportRepository.findByReportType(ReportType.F)
@@ -40,6 +43,19 @@ public class AdminService {
 							report.getDefendant().getName(),
 							report.getCreatedDate(),
 							report.isCheck()
+					)
+				).collect(Collectors.toList());
+	}
+
+	public List<QuestionResponse> queryQuestion() {
+		return questionRepository.findAll()
+				.stream().map(question ->
+					new QuestionResponse(
+							question.getId(),
+							question.getTitle(),
+							question.getUser().getName(),
+							question.getCreatedDate(),
+							question.isCheck()
 					)
 				).collect(Collectors.toList());
 	}
