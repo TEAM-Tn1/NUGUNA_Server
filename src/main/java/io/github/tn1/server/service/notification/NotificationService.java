@@ -60,8 +60,7 @@ public class NotificationService {
 		TagNotification tag;
 		tag = tagNotificationRepository.findById(tagId)
 				.orElseThrow(NotificationTagNotFoundException::new);
-		if(!tag.getUser().getEmail()
-				.equals(userFacade.getEmail()))
+		if(!tag.getUser().matchEmail(userFacade.getEmail()))
 			throw new NotYourNotificationTagException();
 		tagNotificationRepository.delete(tag);
 	}

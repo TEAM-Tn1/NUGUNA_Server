@@ -63,7 +63,7 @@ public class FeedService {
 		Feed feed = feedRepository.findById(feedId)
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(!feed.getUser().getEmail().equals(user.getEmail()))
+		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
 		if(files == null)
@@ -89,7 +89,7 @@ public class FeedService {
 		Feed feed = feedRepository.findById(id)
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(!feed.getUser().getEmail().equals(user.getEmail()))
+		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
 		List<String> photoLinks = new ArrayList<>();
@@ -120,7 +120,7 @@ public class FeedService {
 		Feed feed = feedRepository.findById(request.getFeedId())
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(!feed.getUser().getEmail().equals(user.getEmail()))
+		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
 		if(request.getTags().length > 5)
@@ -173,7 +173,7 @@ public class FeedService {
 		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
 				.orElseThrow(MediumNotFoundException::new);
 
-		if(!medium.getFeed().getUser().getEmail().equals(user.getEmail()))
+		if(!medium.getFeed().getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
 		s3Util.delete(medium.getFileName());

@@ -74,7 +74,7 @@ public class ReportService {
 				.findById(request.getFeedId())
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(feed.getUser().getEmail().equals(userFacade.getEmail()))
+		if(feed.getUser().matchEmail(userFacade.getEmail()))
 			throw new SelfReportException();
 
 		User currentUser = userRepository
@@ -115,8 +115,7 @@ public class ReportService {
 		Report report = reportRepository.findById(reportId)
 				.orElseThrow(ReportNotFoundException::new);
 
-		if(!report.getReporter().getEmail()
-				.equals(userFacade.getEmail()))
+		if(!report.getReporter().matchEmail(userFacade.getEmail()))
 			throw new NotYourReportException();
 
 		if(reportMediumRepository.existsByReport(report))
