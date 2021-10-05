@@ -155,7 +155,7 @@ public class ChatService {
 				.findByUserAndRoom(user, room).isEmpty())
 			throw new NotYourRoomException();
 
-		if(room.getType().equals(RoomType.GROUP))
+		if(room.isGroupRoom())
 			room.getFeed().getGroup().decreaseCurrentCount();
 
 		memberRepository.delete(memberRepository
