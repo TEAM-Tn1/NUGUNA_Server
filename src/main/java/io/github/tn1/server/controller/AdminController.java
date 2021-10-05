@@ -3,6 +3,7 @@ package io.github.tn1.server.controller;
 import java.util.List;
 
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
+import io.github.tn1.server.dto.admin.response.QuestionInformationResponse;
 import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
@@ -39,6 +40,11 @@ public class AdminController {
 	@GetMapping("/report/{report_id}")
 	public ReportInformationResponse queryReportInformation(@PathVariable("report_id") Long reportId) {
 		return adminService.queryReportInformation(reportId);
+	}
+
+	@GetMapping("/question/{question_id}")
+	public QuestionInformationResponse queryQuestionInformation(@PathVariable("question_id") Long questionId) {
+		return adminService.queryQuestionInformation(questionId);
 	}
 
 }
