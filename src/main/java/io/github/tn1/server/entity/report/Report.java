@@ -71,8 +71,12 @@ public class Report extends BaseTimeEntity {
         this.defendant = defendant;
     }
 
-    public boolean isFeedReport() {
-    	return reportType.equals(ReportType.F);
+    public boolean isNotFeedReport() {
+    	return !reportType.equals(ReportType.F);
+	}
+
+	public boolean isNotUserReport() {
+    	return !reportType.equals(ReportType.U);
 	}
 
 	public void check() {
