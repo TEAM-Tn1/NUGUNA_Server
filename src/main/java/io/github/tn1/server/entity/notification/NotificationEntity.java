@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_notification")
-public class Notification {
+public class NotificationEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class Notification {
 	private User user;
 
 	@Builder
-	public Notification(String title, String message,
+	public NotificationEntity(String title, String message,
 			String content, User user) {
 		this.title = title;
 		this.message = message;

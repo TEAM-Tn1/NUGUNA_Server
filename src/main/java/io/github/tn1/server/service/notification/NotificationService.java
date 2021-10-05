@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import io.github.tn1.server.dto.notification.response.CountResponse;
 import io.github.tn1.server.dto.notification.response.NotificationResponse;
 import io.github.tn1.server.dto.notification.response.TagResponse;
-import io.github.tn1.server.entity.notification.Notification;
+import io.github.tn1.server.entity.notification.NotificationEntity;
 import io.github.tn1.server.entity.notification.NotificationRepository;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
@@ -95,7 +95,7 @@ public class NotificationService {
 
 	@Transactional
 	public void checkNotification(Long notificationId) {
-		Notification notification = notificationRepository
+		NotificationEntity notification = notificationRepository
 				.findById(notificationId)
 				.orElseThrow(NotificationNotFoundException::new);
 
