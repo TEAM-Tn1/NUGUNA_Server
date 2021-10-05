@@ -122,7 +122,7 @@ public class GroupFeedService {
 
 		return feedRepository.findByIsUsedItem(false,
 				PageRequest.of(page, range, Sort.by("id").descending()))
-				.stream()
+				.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
 				.map(feed ->
 						feedFacade.feedToGroupResponse(feed, user)
 				).collect(Collectors.toList());
