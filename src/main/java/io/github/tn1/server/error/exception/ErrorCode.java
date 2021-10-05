@@ -14,6 +14,7 @@ public enum ErrorCode {
 	ITS_YOUR_FEED(400, "Its your feed."),
 	SELF_REPORT(400, "Self report."),
 	ROOM_IS_FULL(400, "Room is full."),
+	NOT_FEED_REPORT(400, "Not feed report."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),
@@ -40,6 +41,7 @@ public enum ErrorCode {
 	ALREADY_JOIN_ROOM(409, "Already join room."),
 	ALREADY_REGISTERED_TAG(409, "Already registered tag."),
 	ALREADY_REPORTED_USER(409, "Already reported user."),
+	ALREADY_RESULT_REPORT(409, "Already result report"),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags."),
 
