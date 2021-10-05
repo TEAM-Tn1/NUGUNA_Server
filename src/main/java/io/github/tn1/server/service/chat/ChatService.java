@@ -27,6 +27,7 @@ import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.ItsYourFeedException;
 import io.github.tn1.server.exception.NotYourRoomException;
+import io.github.tn1.server.exception.RoomIsFullException;
 import io.github.tn1.server.exception.RoomNotFoundException;
 import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
@@ -83,6 +84,9 @@ public class ChatService {
 					.build()
 			);
 		} else {
+			if(feed.getGroup().getCurrentCount() >=
+					feed.getGroup().getHeadCount())
+				throw new RoomIsFullException();
 			feed.getGroup().increaseCurrentCount();
 			room = roomRepository.findByFeed(feed)
 					.orElseThrow(RoomNotFoundException::new);

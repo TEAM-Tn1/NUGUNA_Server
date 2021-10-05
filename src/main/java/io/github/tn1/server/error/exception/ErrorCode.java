@@ -13,6 +13,7 @@ public enum ErrorCode {
     FILE_EMPTY(400, "File is empty."),
 	ITS_YOUR_FEED(400, "Its your feed."),
 	SELF_REPORT(400, "Self report."),
+	ROOM_IS_FULL(400, "Room is full."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),
