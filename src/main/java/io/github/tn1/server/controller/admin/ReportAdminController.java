@@ -1,16 +1,15 @@
-package io.github.tn1.server.controller;
+package io.github.tn1.server.controller.admin;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import io.github.tn1.server.dto.admin.request.ReportResultRequest;
+import io.github.tn1.server.dto.admin.request.FeedReportResultRequest;
+import io.github.tn1.server.dto.admin.request.UserReportResultRequest;
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
-import io.github.tn1.server.dto.admin.response.QuestionInformationResponse;
-import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
-import io.github.tn1.server.service.admin.AdminService;
+import io.github.tn1.server.service.admin.ReportAdminService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -23,41 +22,37 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/report")
 @RequiredArgsConstructor
-public class AdminController {
+public class ReportAdminController {
 
-	private final AdminService adminService;
+	private final ReportAdminService adminService;
 
-	@GetMapping("/report/feed")
+	@GetMapping("/feed")
 	public List<FeedReportResponse> queryFeedReport() {
 		return adminService.queryFeedReport();
 	}
 
-	@GetMapping("/report/users")
+	@GetMapping("/users")
 	public List<UserReportResponse> queryUserReport() {
 		return adminService.queryUserReport();
 	}
 
-	@GetMapping("/question")
-	public List<QuestionResponse> queryQuestion() {
-		return adminService.queryQuestion();
-	}
-
-	@GetMapping("/report/{report_id}")
+	@GetMapping("/{report_id}")
 	public ReportInformationResponse queryReportInformation(@PathVariable("report_id") Long reportId) {
 		return adminService.queryReportInformation(reportId);
 	}
 
-	@GetMapping("/question/{question_id}")
-	public QuestionInformationResponse queryQuestionInformation(@PathVariable("question_id") Long questionId) {
-		return adminService.queryQuestionInformation(questionId);
+	@PostMapping("/feed")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void feedReportResult(@RequestBody @Valid FeedReportResultRequest request) {
+		adminService.feedReportResult(request);
 	}
 
-	@PostMapping("/report/feed")
+	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void feedReportResult(@RequestBody @Valid ReportResultRequest request) {
-		adminService.feedReportResult(request);
+	public void userReportResult(@RequestBody @Valid UserReportResultRequest request) {
+		adminService.userReportResult(request);
 	}
 
 }
