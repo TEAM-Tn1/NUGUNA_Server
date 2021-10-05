@@ -21,6 +21,7 @@ import io.github.tn1.server.entity.report.ReportType;
 import io.github.tn1.server.entity.report.result.Result;
 import io.github.tn1.server.entity.report.result.ResultRepository;
 import io.github.tn1.server.exception.AlreadyResultReportException;
+import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.NotFeedReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
 import io.github.tn1.server.utils.s3.S3Util;
@@ -115,12 +116,14 @@ public class ReportAdminService {
 		if(report.isCheck())
 			throw new AlreadyResultReportException();
 
-		if(request.getBlackDate() != null &&
-				request.getBlackDate().before(new Date()))
-			report.getDefendant().changeBlackDate(
+		if(request.getBlackDate() != null) {
+			if(request.getBlackDate().before(new Date()))
+				throw new DateIsBeforeException();
+			else report.getDefendant().changeBlackDate(
 					LocalDate.ofInstant(
 							request.getBlackDate().toInstant(),
 							ZoneId.of("Asia/Seoul")));
+		}
 
 		report.check();
 
