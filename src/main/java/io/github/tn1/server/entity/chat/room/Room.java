@@ -65,4 +65,8 @@ public class Room {
 		this.photoUrl = photoUrl;
 	}
 
+	public boolean isGroupRoom() {
+		return type.equals(RoomType.GROUP);
+	}
+
 }
