@@ -56,8 +56,8 @@ public class User implements UserDetails {
     @Column(columnDefinition = "BIT(1) default true")
     private boolean notification;
 
-    @Column(columnDefinition = "BIT(1) default false")
-    private boolean showAccount;
+    @Column(columnDefinition = "BIT(1) default true")
+    private boolean hideAccount;
 
     private LocalDate blackDate;
 
@@ -127,10 +127,10 @@ public class User implements UserDetails {
 
     public UserInformationResponse getInformation(String email) {
     	if(email != null && email.equals(this.email)) {
-			return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber, showAccount);
-		} else if(showAccount)
-			return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
-		return new UserInformationResponse(this.email, name, gcn, roomNumber, null);
+			return new UserInformationResponse(email, name, gcn, roomNumber, accountNumber, hideAccount);
+		} else if(hideAccount)
+			return new UserInformationResponse(this.email, name, gcn, roomNumber, null);
+    	return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
     }
 
     public boolean writeAllInformation() {
@@ -141,12 +141,12 @@ public class User implements UserDetails {
     	return this.email.equals(email);
 	}
 
-    public void ableShowAccount() {
-    	this.showAccount = true;
+    public void ableHideAccount() {
+    	this.hideAccount = true;
 	}
 
-	public void disableAccountShow() {
-    	this.showAccount = false;
+	public void disableHideAccount() {
+    	this.hideAccount = false;
 	}
 
     public void changeDeviceToken(String deviceToken) {
