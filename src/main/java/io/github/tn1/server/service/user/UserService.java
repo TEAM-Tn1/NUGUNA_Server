@@ -165,17 +165,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public void ableAccountShow() {
+	public void ableAccountHide() {
     	userRepository.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new)
-				.ableShowAccount();
+				.ableHideAccount();
 	}
 
 	@Transactional
-	public void disableAccountShow() {
+	public void disableAccountHide() {
 		userRepository.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new)
-				.disableAccountShow();
+				.disableHideAccount();
 	}
 
 	private TokenResponse getToken(String email) {

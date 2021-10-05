@@ -52,7 +52,6 @@ public class FcmUtil {
                         send(
                                 SendDto.builder()
 										.user(value.getUser())
-                                        .token(value.getUser().getDeviceToken())
                                         .title("태그")
                                         .message("#" + tag + " 태그가 포함한 게시물이 올라왔어요!")
                                         .key("feed_id")
@@ -71,9 +70,9 @@ public class FcmUtil {
 				.content(sendDto.getData())
 				.build()
 		);
-    	if(sendDto.getToken() != null) {
+    	if(sendDto.getUser().haveDeviceToken()) {
 			Message message = Message.builder()
-					.setToken(sendDto.getToken())
+					.setToken(sendDto.getUser().getDeviceToken())
 					.putData(sendDto.getKey(), sendDto.getData())
 					.setNotification(
 							Notification.builder()
