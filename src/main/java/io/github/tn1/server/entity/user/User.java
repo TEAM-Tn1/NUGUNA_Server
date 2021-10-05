@@ -169,4 +169,8 @@ public class User implements UserDetails {
     	this.notification = false;
 	}
 
+	public void changeBlackDate(LocalDate date) {
+    	this.blackDate = date;
+	}
+
 }
