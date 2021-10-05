@@ -10,7 +10,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SendDto {
 	private final User user;
-    private final String token;
     private final String title;
     private final String message;
     private final String key;
