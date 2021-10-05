@@ -15,6 +15,7 @@ public enum ErrorCode {
 	SELF_REPORT(400, "Self report."),
 	ROOM_IS_FULL(400, "Room is full."),
 	NOT_FEED_REPORT(400, "Not feed report."),
+	DATE_IS_BEFORE(400, "Date is before"),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),

@@ -2,6 +2,7 @@ package io.github.tn1.server.service.feed.group;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import io.github.tn1.server.entity.feed.group.GroupRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.CredentialsNotFoundException;
+import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyTagsException;
@@ -51,6 +53,9 @@ public class GroupFeedService {
 
 		if(request.getTags() != null && request.getTags().size() > 5)
 			throw new TooManyTagsException();
+
+		if(request.getDate().before(new Date()))
+			throw new DateIsBeforeException();
 
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElseThrow(CredentialsNotFoundException::new);
@@ -103,6 +108,9 @@ public class GroupFeedService {
 
 		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
+
+		if(request.getDate().before(new Date()))
+			throw new DateIsBeforeException();
 
 		feed.setTitle(request.getTitle())
 			.setPrice(request.getPrice())
