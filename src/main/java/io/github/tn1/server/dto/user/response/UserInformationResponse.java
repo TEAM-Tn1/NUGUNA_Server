@@ -12,7 +12,7 @@ public class UserInformationResponse {
     private final String gcn;
     private final String roomNumber;
     private final String accountNumber;
-    private final Boolean showAccount;
+    private final Boolean hideAccount;
 
 	public UserInformationResponse(String email, String name, String gcn, String roomNumber, String accountNumber) {
 		this.email = email;
@@ -20,7 +20,7 @@ public class UserInformationResponse {
 		this.gcn = gcn;
 		this.roomNumber = roomNumber;
 		this.accountNumber = accountNumber;
-		this.showAccount = null;
+		this.hideAccount = null;
 	}
 
 }
