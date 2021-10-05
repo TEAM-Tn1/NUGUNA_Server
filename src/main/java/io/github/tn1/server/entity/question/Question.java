@@ -33,8 +33,8 @@ public class Question extends BaseTimeEntity {
     @Column(length = 1000)
     private String description;
 
-    @Column(columnDefinition = "BIT(1) default false")
-	private boolean check;
+	@Column(columnDefinition = "BIT(1) default false")
+	private boolean isCheck;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")

@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import io.github.tn1.server.entity.BaseTimeEntity;
 import io.github.tn1.server.entity.report.feed_report.FeedReport;
@@ -26,9 +24,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(
-		columnNames = {"reporter_email", "reportType", "defendant_email"}
-		))
 @Entity(name = "tbl_report")
 public class Report extends BaseTimeEntity {
 
@@ -47,7 +42,7 @@ public class Report extends BaseTimeEntity {
     private String contents;
 
     @Column(columnDefinition = "BIT(1) default false")
-    private boolean check;
+    private boolean isCheck;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_email")
@@ -75,5 +70,13 @@ public class Report extends BaseTimeEntity {
         this.reporter = reporter;
         this.defendant = defendant;
     }
+
+    public boolean isFeedReport() {
+    	return reportType.equals(ReportType.F);
+	}
+
+	public void check() {
+    	this.isCheck = true;
+	}
 
 }
