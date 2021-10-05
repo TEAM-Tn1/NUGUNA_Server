@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
+import io.github.tn1.server.dto.admin.response.QuestionInformationResponse;
 import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
+import io.github.tn1.server.entity.question.Question;
 import io.github.tn1.server.entity.question.QuestionRepository;
 import io.github.tn1.server.entity.report.Report;
 import io.github.tn1.server.entity.report.ReportRepository;
 import io.github.tn1.server.entity.report.ReportType;
+import io.github.tn1.server.exception.QuestionNotFoundException;
 import io.github.tn1.server.exception.ReportNotFoundException;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +80,14 @@ public class AdminService {
 								report.getReportMedium().getPath()
 						)
 		);
+	}
+
+	public QuestionInformationResponse queryQuestionInformation(Long questionId) {
+		Question question = questionRepository
+				.findById(questionId)
+				.orElseThrow(QuestionNotFoundException::new);
+
+		return new QuestionInformationResponse(question.getDescription());
 	}
 
 }
