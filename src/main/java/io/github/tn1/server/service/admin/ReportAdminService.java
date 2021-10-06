@@ -14,7 +14,6 @@ import io.github.tn1.server.dto.admin.response.FeedReportResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
 import io.github.tn1.server.entity.feed.FeedRepository;
-import io.github.tn1.server.entity.question.QuestionRepository;
 import io.github.tn1.server.entity.report.Report;
 import io.github.tn1.server.entity.report.ReportRepository;
 import io.github.tn1.server.entity.report.ReportType;
@@ -23,6 +22,7 @@ import io.github.tn1.server.entity.report.result.ResultRepository;
 import io.github.tn1.server.exception.AlreadyResultReportException;
 import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.NotFeedReportException;
+import io.github.tn1.server.exception.NotUserReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,6 @@ public class ReportAdminService {
 	private final FeedRepository feedRepository;
 	private final ReportRepository reportRepository;
 	private final ResultRepository resultRepository;
-	private final QuestionRepository questionRepository;
 	private final S3Util s3Util;
 
 	public List<FeedReportResponse> queryFeedReport() {
@@ -111,7 +110,7 @@ public class ReportAdminService {
 				.orElseThrow(ReportNotFoundException::new);
 
 		if(report.isNotUserReport())
-			throw new NotFeedReportException();
+			throw new NotUserReportException();
 
 		if(report.isCheck())
 			throw new AlreadyResultReportException();
