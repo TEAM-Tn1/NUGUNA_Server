@@ -8,8 +8,6 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 @Getter
 @NoArgsConstructor
 public class UserReportResultRequest {
