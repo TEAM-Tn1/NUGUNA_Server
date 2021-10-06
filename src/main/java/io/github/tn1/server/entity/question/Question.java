@@ -51,4 +51,8 @@ public class Question extends BaseTimeEntity {
         this.user = user;
     }
 
+    public void check() {
+    	this.isCheck = true;
+	}
+
 }
