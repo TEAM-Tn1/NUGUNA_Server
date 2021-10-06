@@ -15,6 +15,7 @@ public enum ErrorCode {
 	SELF_REPORT(400, "Self report."),
 	ROOM_IS_FULL(400, "Room is full."),
 	NOT_FEED_REPORT(400, "Not feed report."),
+	NOT_USER_REPORT(400, "Not user report."),
 	DATE_IS_BEFORE(400, "Date is before"),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
@@ -43,6 +44,7 @@ public enum ErrorCode {
 	ALREADY_REGISTERED_TAG(409, "Already registered tag."),
 	ALREADY_REPORTED_USER(409, "Already reported user."),
 	ALREADY_RESULT_REPORT(409, "Already result report"),
+	ALREADY_RESULT_QUESTION(409, "Already result question."),
     TOO_MANY_TAGS(413, "Too many tags."),
     TOO_MANY_FILES(413, "Too many tags."),
 
