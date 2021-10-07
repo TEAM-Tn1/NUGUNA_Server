@@ -62,18 +62,19 @@ public class FcmUtil {
     }
 
     private void send(SendDto sendDto) {
-    	notificationRepository.save(
+    	Long notificationId = notificationRepository.save(
 				NotificationEntity.builder()
 				.user(sendDto.getUser())
 				.title(sendDto.getTitle())
 				.message(sendDto.getMessage())
 				.content(sendDto.getData())
 				.build()
-		);
+		).getId();
     	if(sendDto.getUser().haveDeviceToken()) {
 			Message message = Message.builder()
 					.setToken(sendDto.getUser().getDeviceToken())
 					.putData(sendDto.getKey(), sendDto.getData())
+					.putData("notification_id", notificationId.toString())
 					.setNotification(
 							Notification.builder()
 									.setTitle(sendDto.getTitle())
