@@ -24,6 +24,7 @@ import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.NotFeedReportException;
 import io.github.tn1.server.exception.NotUserReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
+import io.github.tn1.server.utils.fcm.FcmUtil;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +38,7 @@ public class ReportAdminService {
 	private final ReportRepository reportRepository;
 	private final ResultRepository resultRepository;
 	private final S3Util s3Util;
+	private final FcmUtil fcmUtil;
 
 	public List<FeedReportResponse> queryFeedReport() {
 		return reportRepository.findByReportType(ReportType.F)
@@ -102,6 +104,8 @@ public class ReportAdminService {
 						.report(report)
 						.build()
 		);
+
+		fcmUtil.sendFeedResultNotification(report, request.getRemove());
 	}
 
 	public void userReportResult(UserReportResultRequest request) {
@@ -132,6 +136,8 @@ public class ReportAdminService {
 						.report(report)
 						.build()
 		);
+
+		fcmUtil.sendUserResultNotification(report, request.getBlackDate() != null);
 	}
 
 }

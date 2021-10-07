@@ -14,6 +14,7 @@ import io.github.tn1.server.entity.question.result.QuestionResult;
 import io.github.tn1.server.entity.question.result.QuestionResultRepository;
 import io.github.tn1.server.exception.AlreadyResultQuestionException;
 import io.github.tn1.server.exception.QuestionNotFoundException;
+import io.github.tn1.server.utils.fcm.FcmUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class QuestionAdminService {
 
 	private final QuestionRepository questionRepository;
 	private final QuestionResultRepository questionResultRepository;
+	private final FcmUtil fcmUtil;
 
 	public List<QuestionResponse> queryQuestion() {
 		return questionRepository.findAll()
@@ -63,6 +65,8 @@ public class QuestionAdminService {
 		);
 
 		question.check();
+
+		fcmUtil.sendQuestionResultNotification(question);
 	}
 
 }

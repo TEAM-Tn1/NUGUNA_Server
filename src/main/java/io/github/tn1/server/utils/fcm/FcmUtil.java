@@ -14,6 +14,8 @@ import io.github.tn1.server.dto.fcm.SendDto;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.notification.NotificationEntity;
 import io.github.tn1.server.entity.notification.NotificationRepository;
+import io.github.tn1.server.entity.question.Question;
+import io.github.tn1.server.entity.report.Report;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,56 @@ public class FcmUtil {
                         )
                 );
     }
+
+    public void sendUserResultNotification(Report report, boolean black) {
+    	String message;
+    	if(black) {
+    		message = "는 신고처리 되었습니다.";
+		} else {
+    		message = "는 신고되지 않았습니다.";
+		}
+
+		send(
+				SendDto.builder()
+				.user(report.getReporter())
+				.title("신고")
+				.message(report.getDefendant().getName() + message)
+				.key("report_id")
+				.data(report.getId().toString())
+				.build()
+		);
+	}
+
+	public void sendFeedResultNotification(Report report, boolean delete) {
+    	String message;
+    	if(delete){
+    		message = "게시물이 신고처리 되었습니다.";
+		} else {
+    		message = "게시물이 신고처리 되지 않았습니다.";
+		}
+
+		send(
+				SendDto.builder()
+						.user(report.getReporter())
+						.title("신고")
+						.message(report.getDefendant().getName() + message)
+						.key("report_id")
+						.data(report.getId().toString())
+						.build()
+		);
+	}
+
+	public void sendQuestionResultNotification(Question question) {
+		send(
+				SendDto.builder()
+						.user(question.getUser())
+						.title("문의")
+						.message(question.getTitle() + "글에 답변에 달렸습니다.")
+						.key("question_id")
+						.data(question.getId().toString())
+						.build()
+		);
+	}
 
     private void send(SendDto sendDto) {
     	Long notificationId = notificationRepository.save(
