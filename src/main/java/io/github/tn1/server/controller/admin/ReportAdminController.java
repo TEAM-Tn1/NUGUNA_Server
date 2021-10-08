@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import io.github.tn1.server.dto.admin.request.FeedReportResultRequest;
+import io.github.tn1.server.dto.admin.request.UpdateUserBlackDateRequest;
 import io.github.tn1.server.dto.admin.request.UserReportResultRequest;
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,6 +61,13 @@ public class ReportAdminController {
 	@GetMapping("/{report_id}/date")
 	public UserBlackDateResponse queryUserBlackDate(@PathVariable("report_id") Long reportId) {
 		return adminService.queryUserBlackDate(reportId);
+	}
+
+	@PatchMapping("/{report_id}/date")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateUserBlackDate(@PathVariable("report_id") Long reportId,
+			@RequestBody @Valid UpdateUserBlackDateRequest request) {
+		adminService.updateUserBlackDate(reportId, request);
 	}
 
 }
