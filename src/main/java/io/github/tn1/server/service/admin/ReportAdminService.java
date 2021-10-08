@@ -12,6 +12,7 @@ import io.github.tn1.server.dto.admin.request.FeedReportResultRequest;
 import io.github.tn1.server.dto.admin.request.UserReportResultRequest;
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
+import io.github.tn1.server.dto.admin.response.UserBlackDateResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.report.Report;
@@ -24,6 +25,7 @@ import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.NotFeedReportException;
 import io.github.tn1.server.exception.NotUserReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
+import io.github.tn1.server.exception.ReportResultNotFoundException;
 import io.github.tn1.server.utils.fcm.FcmUtil;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -138,6 +140,25 @@ public class ReportAdminService {
 		);
 
 		fcmUtil.sendUserResultNotification(report, request.getBlackDate() != null);
+	}
+
+	public UserBlackDateResponse queryUserBlackDate(Long reportId) {
+		Report report = reportRepository
+				.findById(reportId)
+				.orElseThrow(ReportNotFoundException::new);
+
+		if(report.isNotUserReport())
+			throw new NotUserReportException();
+
+		if(!report.isCheck())
+			throw new ReportResultNotFoundException();
+
+		LocalDate blackDate = report.getDefendant().getBlackDate();
+
+		return new UserBlackDateResponse(
+				blackDate.isBefore(LocalDate.now()) ?
+						null : blackDate
+		);
 	}
 
 }

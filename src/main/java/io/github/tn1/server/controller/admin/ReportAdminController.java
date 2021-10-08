@@ -8,6 +8,7 @@ import io.github.tn1.server.dto.admin.request.FeedReportResultRequest;
 import io.github.tn1.server.dto.admin.request.UserReportResultRequest;
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
+import io.github.tn1.server.dto.admin.response.UserBlackDateResponse;
 import io.github.tn1.server.dto.admin.response.UserReportResponse;
 import io.github.tn1.server.service.admin.ReportAdminService;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,11 @@ public class ReportAdminController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void userReportResult(@RequestBody @Valid UserReportResultRequest request) {
 		adminService.userReportResult(request);
+	}
+
+	@GetMapping("/{report_id}/date")
+	public UserBlackDateResponse queryUserBlackDate(@PathVariable("report_id") Long reportId) {
+		return adminService.queryUserBlackDate(reportId);
 	}
 
 }
