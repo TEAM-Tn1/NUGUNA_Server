@@ -1,5 +1,6 @@
 package io.github.tn1.server.dto.feed.request;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
@@ -27,7 +28,7 @@ public class ModifyGroupRequest {
 	private Integer price;
 
 	@NotNull(message = "date는 null이면 안됩니다.")
-	private Date date;
+	private LocalDate date;
 
 	@NotNull(message = "head_count는 null이면 안됩니다.")
 	private Integer headCount;

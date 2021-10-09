@@ -1,8 +1,6 @@
 package io.github.tn1.server.service.admin;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +94,7 @@ public class ReportAdminService {
 		if(report.isCheck())
 			throw new AlreadyResultReportException();
 
-		if(request.getRemove())
+		if(Boolean.TRUE.equals(request.getRemove()))
 			feedRepository.delete(report.getFeedReport().getFeed());
 
 		report.check();
@@ -123,12 +121,10 @@ public class ReportAdminService {
 			throw new AlreadyResultReportException();
 
 		if(request.getBlackDate() != null) {
-			if(request.getBlackDate().before(new Date()))
+			if(request.getBlackDate().isBefore(LocalDate.now()))
 				throw new DateIsBeforeException();
-			else report.getDefendant().changeBlackDate(
-					LocalDate.ofInstant(
-							request.getBlackDate().toInstant(),
-							ZoneId.of("Asia/Seoul")));
+			else report.getDefendant()
+					.changeBlackDate(request.getBlackDate());
 		}
 
 		report.check();

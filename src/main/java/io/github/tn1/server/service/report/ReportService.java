@@ -14,7 +14,6 @@ import io.github.tn1.server.entity.report.feed_report.FeedReport;
 import io.github.tn1.server.entity.report.feed_report.FeedReportRepository;
 import io.github.tn1.server.entity.report.medium.ReportMedium;
 import io.github.tn1.server.entity.report.medium.ReportMediumRepository;
-import io.github.tn1.server.entity.report.result.ResultRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyReportedUserException;
@@ -44,7 +43,6 @@ public class ReportService {
 	private final FeedRepository feedRepository;
 	private final FeedReportRepository feedReportRepository;
 	private final ReportMediumRepository reportMediumRepository;
-	private final ResultRepository resultRepository;
 
 	public ReportResponse userReport(UserReportRequest request) {
 		if(request.getEmail().equals(userFacade.getEmail()))
