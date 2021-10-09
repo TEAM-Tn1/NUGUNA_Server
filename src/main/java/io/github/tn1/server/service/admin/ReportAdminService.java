@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import io.github.tn1.server.dto.admin.request.FeedReportResultRequest;
+import io.github.tn1.server.dto.admin.request.UpdateUserBlackDateRequest;
 import io.github.tn1.server.dto.admin.request.UserReportResultRequest;
 import io.github.tn1.server.dto.admin.response.FeedReportResponse;
 import io.github.tn1.server.dto.admin.response.ReportInformationResponse;
@@ -143,6 +144,24 @@ public class ReportAdminService {
 	}
 
 	public UserBlackDateResponse queryUserBlackDate(Long reportId) {
+		Report report = queryUserReport(reportId);
+
+		LocalDate blackDate = report.getDefendant().getBlackDate();
+
+		return new UserBlackDateResponse(
+				blackDate.isBefore(LocalDate.now()) ?
+						null : blackDate
+		);
+	}
+
+	public void updateUserBlackDate(Long reportId, UpdateUserBlackDateRequest request) {
+		Report report = queryUserReport(reportId);
+
+		report.getDefendant()
+				.changeBlackDate(request.getBlackDate());
+	}
+
+	private Report queryUserReport(Long reportId) {
 		Report report = reportRepository
 				.findById(reportId)
 				.orElseThrow(ReportNotFoundException::new);
@@ -153,12 +172,7 @@ public class ReportAdminService {
 		if(!report.isCheck())
 			throw new ReportResultNotFoundException();
 
-		LocalDate blackDate = report.getDefendant().getBlackDate();
-
-		return new UserBlackDateResponse(
-				blackDate.isBefore(LocalDate.now()) ?
-						null : blackDate
-		);
+		return report;
 	}
 
 }
