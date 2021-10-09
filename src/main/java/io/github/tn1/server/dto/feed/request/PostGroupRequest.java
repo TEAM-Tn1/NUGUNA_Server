@@ -1,6 +1,6 @@
 package io.github.tn1.server.dto.feed.request;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -26,7 +26,7 @@ public class PostGroupRequest {
 
 	private List<@Size(max = 10, message = "tag는 10자를 넘어서는 안됩니다.") String> tags;
 
-	private Date date;
+	private LocalDate date;
 
 	@NotNull(message = "head_count는 null이면 안됩니다.")
 	private Integer headCount;

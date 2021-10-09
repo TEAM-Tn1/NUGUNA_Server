@@ -1,8 +1,6 @@
 package io.github.tn1.server.service.feed.group;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +52,7 @@ public class GroupFeedService {
 		if(request.getTags() != null && request.getTags().size() > 5)
 			throw new TooManyTagsException();
 
-		if(request.getDate().before(new Date()))
+		if(request.getDate().isBefore(LocalDate.now()))
 			throw new DateIsBeforeException();
 
 		User user = userRepository.findById(userFacade.getEmail())
@@ -74,7 +72,7 @@ public class GroupFeedService {
 				Group.builder()
 				.feed(feed)
 				.headCount(request.getHeadCount())
-				.recruitmentDate(LocalDate.ofInstant(request.getDate().toInstant(), ZoneId.of("Asia/Seoul")))
+				.recruitmentDate(request.getDate())
 				.build()
 		);
 
@@ -109,7 +107,7 @@ public class GroupFeedService {
 		if(!feed.getUser().matchEmail(user.getEmail()))
 			throw new NotYourFeedException();
 
-		if(request.getDate().before(new Date()))
+		if(request.getDate().isBefore(LocalDate.now()))
 			throw new DateIsBeforeException();
 
 		feed.setTitle(request.getTitle())
@@ -119,9 +117,7 @@ public class GroupFeedService {
 		Group group = groupRepository.findByFeed(feed)
 				.orElseThrow(FeedNotFoundException::new);
 		group.changeHeadCount(request.getHeadCount());
-		group.changeDate(request.getDate()
-		.toInstant().atZone(ZoneId.of("Asia/Seoul"))
-		.toLocalDate());
+		group.changeDate(request.getDate());
 	}
 
 	public List<GroupResponse> queryGroupFeed(int page, int range) {
