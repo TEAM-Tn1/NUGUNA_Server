@@ -11,6 +11,8 @@ public class QueryMessageResponse {
 
 	private final String message;
 	private final String type;
+	private final String email;
+	private final String name;
 	private final LocalDateTime sentAt;
 
 }
