@@ -2,6 +2,7 @@ package io.github.tn1.server.entity.feed.group;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,9 +26,10 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer headCount;
+    private int headCount;
 
-    private Integer currentCount;
+    @Column(columnDefinition = "INT default 1")
+    private int currentCount;
 
     private LocalDate recruitmentDate;
 
