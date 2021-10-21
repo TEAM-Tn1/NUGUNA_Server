@@ -42,8 +42,8 @@ public class CarrotFeedController {
 
     @GetMapping("/carrot")
     public List<CarrotResponse> queryCarrotFeed(@RequestParam("page") int page,
-                                                  @RequestParam("range") int range) {
-        return feedService.queryCarrotFeed(page, range);
+			@RequestParam("range") int range, @RequestParam("sort") String sort) {
+        return feedService.queryCarrotFeed(page, range, sort);
     }
 
     @GetMapping("/me/like/carrot")

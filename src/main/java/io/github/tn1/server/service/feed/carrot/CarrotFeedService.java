@@ -74,9 +74,18 @@ public class CarrotFeedService {
 		feedRepository.save(feed);
 	}
 
-	public List<CarrotResponse> queryCarrotFeed(int page, int range) {
+	public List<CarrotResponse> queryCarrotFeed(int page, int range, String sort) {
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElse(null);
+
+		if(sort != null && sort.equals("like")) {
+			return feedRepository.findByIsUsedItem(true,
+					PageRequest.of(page, range, Sort.by("count").descending().and(Sort.by("id"))))
+					.stream()
+					.map(feed ->
+							feedFacade.feedToCarrotResponse(feed, user)
+					).collect(Collectors.toList());
+		}
 
 		return feedRepository.findByIsUsedItem(true,
 				PageRequest.of(page, range, Sort.by("id").descending()))

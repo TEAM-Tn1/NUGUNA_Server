@@ -77,14 +77,15 @@ public class UserService {
         HttpStatus status = HttpStatus.CREATED;
 
         if(userRepository.findById(response.getEmail()).isPresent()) {
-            if(userRepository.save(
-                    userRepository.findById(response.getEmail())
-                            .orElseThrow(UserNotFoundException::new)
-                            .changeNameAndGcn(response.getName(), response.getGcn())
-            ).writeAllInformation())
-                status = HttpStatus.OK;
-        } else {
-            userRepository.save(
+			User user = userRepository.save(
+					userRepository.findById(response.getEmail())
+							.orElseThrow(UserNotFoundException::new)
+							.changeNameAndGcn(response.getName(), response.getGcn())
+			);
+            if(user.writeAllInformation())
+            	status = HttpStatus.OK;
+		} else {
+			userRepository.save(
                     User.builder()
                             .email(response.getEmail())
                             .name(response.getName())
