@@ -52,6 +52,8 @@ public class Feed extends BaseTimeEntity {
     @JoinColumn(name = "email")
     private User user;
 
+    private int count;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "feed", cascade = CascadeType.REMOVE)
     private final Set<Tag> tags = new HashSet<>();
 
@@ -94,5 +96,13 @@ public class Feed extends BaseTimeEntity {
         this.price = price;
         return this;
     }
+
+    public void decreaseCount() {
+    	this.count--;
+	}
+
+	public void increaseCount() {
+    	this.count++;
+	}
 
 }

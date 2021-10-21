@@ -66,7 +66,7 @@ public class FeedFacade {
 				.feedId(feed.getId())
 				.title(feed.getTitle())
 				.price(feed.getPrice())
-				.count(feed.getLikes().size())
+				.count(feed.getCount())
 				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.tags(tagRepository.findByFeedOrderById(feed)
 						.stream().map(Tag::getTag).collect(Collectors.toList()))

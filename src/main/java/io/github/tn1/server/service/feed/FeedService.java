@@ -134,6 +134,7 @@ public class FeedService {
 		}
 	}
 
+	@Transactional
 	public void addLike(Long feedId) {
     	Feed feed = feedRepository.findById(feedId)
 				.orElseThrow(FeedNotFoundException::new);
@@ -148,11 +149,13 @@ public class FeedService {
 							.feed(feed)
 							.build()
 			);
+			feed.increaseCount();
 		} catch (RuntimeException e) {
     		throw new AlreadyLikedFeedException();
 		}
 	}
 
+	@Transactional
 	public void removeLike(Long feedId) {
 		Feed feed = feedRepository.findById(feedId)
 				.orElseThrow(FeedNotFoundException::new);
@@ -165,6 +168,7 @@ public class FeedService {
 						.findByUserAndFeed(user, feed)
 						.orElseThrow(LikeNotFoundException::new)
 		);
+		feed.decreaseCount();
 	}
 
 	private void removePhoto(String fileName) {
