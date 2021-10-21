@@ -41,8 +41,9 @@ public class GroupFeedController {
 	}
 
 	@GetMapping("/group")
-	public List<GroupResponse> queryGroupFeed(@RequestParam("page") int page, @RequestParam("range") int range) {
-		return groupFeedService.queryGroupFeed(page, range);
+	public List<GroupResponse> queryGroupFeed(@RequestParam("page") int page,
+			@RequestParam("range") int range, @RequestParam("sort") String sort) {
+		return groupFeedService.queryGroupFeed(page, range, sort);
 	}
 
 	@GetMapping("/me/like/group")
