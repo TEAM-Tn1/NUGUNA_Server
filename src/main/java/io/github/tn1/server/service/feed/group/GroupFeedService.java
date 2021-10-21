@@ -120,9 +120,18 @@ public class GroupFeedService {
 		group.changeDate(request.getDate());
 	}
 
-	public List<GroupResponse> queryGroupFeed(int page, int range) {
+	public List<GroupResponse> queryGroupFeed(int page, int range, String sort) {
 		User user = userRepository.findById(userFacade.getEmail())
 				.orElse(null);
+
+		if(sort != null && sort.equals("like")) {
+			return feedRepository.findByIsUsedItem(false,
+					PageRequest.of(page, range, Sort.by("count").descending().and(Sort.by("id"))))
+					.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
+					.map(feed ->
+							feedFacade.feedToGroupResponse(feed, user)
+					).collect(Collectors.toList());
+		}
 
 		return feedRepository.findByIsUsedItem(false,
 				PageRequest.of(page, range, Sort.by("id").descending()))
