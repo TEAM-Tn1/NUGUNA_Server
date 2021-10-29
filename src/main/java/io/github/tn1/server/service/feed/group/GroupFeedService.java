@@ -30,8 +30,6 @@ import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -118,37 +116,6 @@ public class GroupFeedService {
 				.orElseThrow(FeedNotFoundException::new);
 		group.changeHeadCount(request.getHeadCount());
 		group.changeDate(request.getDate());
-	}
-
-	public List<GroupResponse> queryGroupFeed(int page, int range, String sort) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElse(null);
-
-		if(sort != null && sort.equals("like")) {
-			return feedRepository.findByIsUsedItem(false,
-					PageRequest.of(page, range, Sort.by("count").descending().and(Sort.by("id"))))
-					.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
-					.map(feed ->
-							feedFacade.feedToGroupResponse(feed, user)
-					).collect(Collectors.toList());
-		}
-
-		return feedRepository.findByIsUsedItem(false,
-				PageRequest.of(page, range, Sort.by("id").descending()))
-				.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
-				.map(feed ->
-						feedFacade.feedToGroupResponse(feed, user)
-				).collect(Collectors.toList());
-	}
-
-	public List<GroupResponse> queryLikedGroup() {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
-		return user.getLikes()
-				.stream().filter(like -> !like.getFeed().isUsedItem())
-				.map(like ->
-						feedFacade.feedToGroupResponse(like.getFeed(), user)
-				).collect(Collectors.toList());
 	}
 
 	public List<GroupResponse> querySpecificUserGroup(String email) {
