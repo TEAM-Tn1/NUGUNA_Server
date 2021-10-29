@@ -19,8 +19,6 @@ import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -72,37 +70,6 @@ public class CarrotFeedService {
 				.setPrice(request.getPrice());
 
 		feedRepository.save(feed);
-	}
-
-	public List<CarrotResponse> queryCarrotFeed(int page, int range, String sort) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElse(null);
-
-		if(sort != null && sort.equals("like")) {
-			return feedRepository.findByIsUsedItem(true,
-					PageRequest.of(page, range, Sort.by("count").descending().and(Sort.by("id"))))
-					.stream()
-					.map(feed ->
-							feedFacade.feedToCarrotResponse(feed, user)
-					).collect(Collectors.toList());
-		}
-
-		return feedRepository.findByIsUsedItem(true,
-				PageRequest.of(page, range, Sort.by("id").descending()))
-				.stream()
-				.map(feed ->
-					feedFacade.feedToCarrotResponse(feed, user)
-				).collect(Collectors.toList());
-	}
-
-	public List<CarrotResponse> queryLikedCarrot() {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
-		return user.getLikes()
-				.stream().filter(like -> like.getFeed().isUsedItem())
-				.map(like ->
-						feedFacade.feedToCarrotResponse(like.getFeed(), user)
-				).collect(Collectors.toList());
 	}
 
 	public List<CarrotResponse> querySpecificUserCarrot(String email) {

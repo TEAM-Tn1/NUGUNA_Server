@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,17 +37,6 @@ public class GroupFeedController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void modifyGroupFeed(@RequestBody @Valid ModifyGroupRequest request) {
 		groupFeedService.modifyGroupFeed(request);
-	}
-
-	@GetMapping("/group")
-	public List<GroupResponse> queryGroupFeed(@RequestParam("page") int page,
-			@RequestParam("range") int range, @RequestParam("sort") String sort) {
-		return groupFeedService.queryGroupFeed(page, range, sort);
-	}
-
-	@GetMapping("/me/like/group")
-	public List<GroupResponse> queryLikedGroup() {
-		return groupFeedService.queryLikedGroup();
 	}
 
 	@GetMapping("/users/{email}/group")

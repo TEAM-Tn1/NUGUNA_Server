@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,17 +38,6 @@ public class CarrotFeedController {
     public void modifyCarrotFeed(@RequestBody @Valid ModifyCarrotRequest request) {
         feedService.modifyCarrotFeed(request);
     }
-
-    @GetMapping("/carrot")
-    public List<CarrotResponse> queryCarrotFeed(@RequestParam("page") int page,
-			@RequestParam("range") int range, @RequestParam("sort") String sort) {
-        return feedService.queryCarrotFeed(page, range, sort);
-    }
-
-    @GetMapping("/me/like/carrot")
-	public List<CarrotResponse> queryLikedCarrot() {
-    	return feedService.queryLikedCarrot();
-	}
 
 	@GetMapping("/users/{email}/carrot")
 	public List<CarrotResponse> querySpecificUserCarrot(@PathVariable("email") String email) {

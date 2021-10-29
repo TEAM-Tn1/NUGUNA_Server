@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
+import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.TagResponse;
 import io.github.tn1.server.service.feed.FeedService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class FeedController {
 
 	private final FeedService feedService;
+
+	@GetMapping
+	public List<FeedPreviewResponse> queryFeedList(@RequestParam("page") int page,
+			@RequestParam("range") int range, @RequestParam("sort") String sort,
+			@RequestParam("is_used_item") boolean isUsedItem) {
+		return feedService.queryFeed(page, range, sort, isUsedItem);
+	}
+
+	@GetMapping("/me/like")
+	public List<FeedPreviewResponse> queryLikeFeedList(
+			@RequestParam("is_used_item") boolean isUsedItem) {
+		return feedService.queryLikeFeed(isUsedItem);
+	}
 
 	@GetMapping("/{feed_id}")
 	public FeedResponse getFeed(@PathVariable("feed_id") Long feedId) {

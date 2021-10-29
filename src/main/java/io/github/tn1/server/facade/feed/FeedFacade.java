@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.feed.response.CarrotResponse;
+import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.GroupResponse;
 import io.github.tn1.server.entity.feed.Feed;
@@ -71,6 +72,31 @@ public class FeedFacade {
 				.tags(tagRepository.findByFeedOrderById(feed)
 						.stream().map(Tag::getTag).collect(Collectors.toList()))
 				.build();
+		if(user != null) {
+			response.setLike(likeRepository.findByUserAndFeed(user, feed)
+					.isPresent());
+		}
+		return response;
+	}
+
+	public FeedPreviewResponse feedToPreviewResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
+		FeedPreviewResponse response;
+		Group group = feed.getGroup();
+		response = FeedPreviewResponse.builder()
+				.feedId(feed.getId())
+				.title(feed.getTitle())
+				.price(feed.getPrice())
+				.count(feed.getLikes().size())
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.tags(tagRepository.findByFeedOrderById(feed)
+						.stream().map(Tag::getTag).collect(Collectors.toList()))
+				.build();
+		if(group != null) {
+			response.setGroupInformation(group.getHeadCount(),
+					group.getCurrentCount(), group.getRecruitmentDate());
+		}
 		if(user != null) {
 			response.setLike(likeRepository.findByUserAndFeed(user, feed)
 					.isPresent());

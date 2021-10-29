@@ -2,10 +2,12 @@ package io.github.tn1.server.service.feed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import io.github.tn1.server.dto.feed.request.ModifyTagRequest;
+import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.TagResponse;
 import io.github.tn1.server.entity.feed.Feed;
@@ -26,11 +28,14 @@ import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.TooManyTagsException;
+import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -169,6 +174,34 @@ public class FeedService {
 						.orElseThrow(LikeNotFoundException::new)
 		);
 		feed.decreaseCount();
+	}
+
+	public List<FeedPreviewResponse> queryFeed(int page, int range, String sort, boolean isUsedItem) {
+		User user = userRepository.findById(userFacade.getEmail())
+				.orElse(null);
+
+		PageRequest pageRequest;
+
+		if(sort != null && sort.equals("like")) {
+			pageRequest = PageRequest.of(page, range, Sort.by("count").descending().and(Sort.by("id")));
+		} else pageRequest = PageRequest.of(page, range, Sort.by("id").descending());
+
+		return feedRepository.findByIsUsedItem(isUsedItem,
+				pageRequest)
+				.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
+				.map(feed ->
+						feedFacade.feedToPreviewResponse(feed, user)
+				).collect(Collectors.toList());
+	}
+
+	public List<FeedPreviewResponse> queryLikeFeed(boolean isUsedItem) {
+		User user = userRepository.findById(userFacade.getEmail())
+				.orElseThrow(UserNotFoundException::new);
+		return user.getLikes()
+				.stream().filter(like -> like.getFeed().isUsedItem() == isUsedItem)
+				.map(like ->
+						feedFacade.feedToPreviewResponse(like.getFeed(), user)
+				).collect(Collectors.toList());
 	}
 
 	private void removePhoto(String fileName) {
