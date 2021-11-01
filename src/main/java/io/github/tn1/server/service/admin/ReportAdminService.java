@@ -29,6 +29,7 @@ import io.github.tn1.server.utils.fcm.FcmUtil;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,8 +42,8 @@ public class ReportAdminService {
 	private final S3Util s3Util;
 	private final FcmUtil fcmUtil;
 
-	public List<FeedReportResponse> queryFeedReport() {
-		return reportRepository.findByReportType(ReportType.F)
+	public List<FeedReportResponse> queryFeedReport(Pageable pageable) {
+		return reportRepository.findByReportType(ReportType.F, pageable)
 				.stream().map(report ->
 						new FeedReportResponse(
 								report.getId(),
@@ -54,8 +55,8 @@ public class ReportAdminService {
 				).collect(Collectors.toList());
 	}
 
-	public List<UserReportResponse> queryUserReport() {
-		return reportRepository.findByReportType(ReportType.U)
+	public List<UserReportResponse> queryUserReport(Pageable pageable) {
+		return reportRepository.findByReportType(ReportType.U, pageable)
 				.stream().map(report ->
 						new UserReportResponse(
 								report.getId(),
