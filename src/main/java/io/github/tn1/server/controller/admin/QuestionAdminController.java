@@ -10,6 +10,7 @@ import io.github.tn1.server.dto.admin.response.QuestionResponse;
 import io.github.tn1.server.service.admin.QuestionAdminService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +28,8 @@ public class QuestionAdminController {
 	private final QuestionAdminService adminService;
 
 	@GetMapping
-	public List<QuestionResponse> queryQuestion() {
-		return adminService.queryQuestion();
+	public List<QuestionResponse> queryQuestion(Pageable pageable) {
+		return adminService.queryQuestion(pageable);
 	}
 
 	@GetMapping("/{question_id}")
