@@ -14,6 +14,7 @@ import io.github.tn1.server.dto.admin.response.UserReportResponse;
 import io.github.tn1.server.service.admin.ReportAdminService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,13 +33,13 @@ public class ReportAdminController {
 	private final ReportAdminService adminService;
 
 	@GetMapping("/feed")
-	public List<FeedReportResponse> queryFeedReport() {
-		return adminService.queryFeedReport();
+	public List<FeedReportResponse> queryFeedReport(Pageable pageable) {
+		return adminService.queryFeedReport(pageable);
 	}
 
 	@GetMapping("/users")
-	public List<UserReportResponse> queryUserReport() {
-		return adminService.queryUserReport();
+	public List<UserReportResponse> queryUserReport(Pageable pageable) {
+		return adminService.queryUserReport(pageable);
 	}
 
 	@GetMapping("/{report_id}")
