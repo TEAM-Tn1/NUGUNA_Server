@@ -17,6 +17,7 @@ import io.github.tn1.server.exception.QuestionNotFoundException;
 import io.github.tn1.server.utils.fcm.FcmUtil;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,8 +28,8 @@ public class QuestionAdminService {
 	private final QuestionResultRepository questionResultRepository;
 	private final FcmUtil fcmUtil;
 
-	public List<QuestionResponse> queryQuestion() {
-		return questionRepository.findAll()
+	public List<QuestionResponse> queryQuestion(Pageable pageable) {
+		return questionRepository.findAll(pageable)
 				.stream().map(question ->
 						new QuestionResponse(
 								question.getId(),
