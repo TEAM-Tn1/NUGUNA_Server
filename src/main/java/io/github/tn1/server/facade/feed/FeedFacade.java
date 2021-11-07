@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.tn1.server.dto.feed.response.CarrotResponse;
+import io.github.tn1.server.dto.feed.response.DefaultFeedResponse;
 import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.GroupResponse;
@@ -32,16 +33,11 @@ public class FeedFacade {
 	private final TagRepository tagRepository;
 
 	public FeedResponse feedToFeedResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
+		DefaultFeedResponse defaultFeedResponse =
+				getDefaultFeedResponse(feed, user);
 		FeedResponse response = FeedResponse.builder()
-				.feedId(feed.getId())
-				.title(feed.getTitle())
+				.defaultFeedResponse(defaultFeedResponse)
 				.description(feed.getDescription())
-				.price(feed.getPrice())
-				.tags(queryTag(feed))
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
-				.count(feed.getLikes().size())
 				.lastModifyDate(feed.getUpdatedDate())
 				.isUsedItem(feed.isUsedItem())
 				.writerEmail(feed.getUser().getEmail())
@@ -54,78 +50,45 @@ public class FeedFacade {
 					feed.getGroup().getRecruitmentDate()
 			);
 		}
-		if(user != null)
-			response.setLike(likeRepository.findByUserAndFeed(user, feed).isPresent());
-		return response;
-	}
-
-	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
-		CarrotResponse response;
-		response = CarrotResponse.builder()
-				.feedId(feed.getId())
-				.title(feed.getTitle())
-				.price(feed.getPrice())
-				.count(feed.getCount())
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
-				.tags(tagRepository.findByFeedOrderById(feed)
-						.stream().map(Tag::getTag).collect(Collectors.toList()))
-				.build();
-		if(user != null) {
-			response.setLike(likeRepository.findByUserAndFeed(user, feed)
-					.isPresent());
-		}
 		return response;
 	}
 
 	public FeedPreviewResponse feedToPreviewResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
-		FeedPreviewResponse response;
-		Group group = feed.getGroup();
-		response = FeedPreviewResponse.builder()
-				.feedId(feed.getId())
-				.title(feed.getTitle())
-				.price(feed.getPrice())
-				.count(feed.getLikes().size())
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
-				.tags(tagRepository.findByFeedOrderById(feed)
-						.stream().map(Tag::getTag).collect(Collectors.toList()))
+		DefaultFeedResponse defaultFeedResponse =
+				getDefaultFeedResponse(feed, user);
+		FeedPreviewResponse response =
+				FeedPreviewResponse.builder()
+				.defaultFeedResponse(defaultFeedResponse)
 				.build();
-		if(group != null) {
-			response.setGroupInformation(group.getHeadCount(),
-					group.getCurrentCount(), group.getRecruitmentDate());
-		}
-		if(user != null) {
-			response.setLike(likeRepository.findByUserAndFeed(user, feed)
-					.isPresent());
+		if (!feed.isUsedItem()) {
+			response.setGroupInformation(
+					feed.getGroup().getHeadCount(),
+					feed.getGroup().getCurrentCount(),
+					feed.getGroup().getRecruitmentDate()
+			);
 		}
 		return response;
 	}
 
+	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
+		DefaultFeedResponse defaultFeedResponse =
+				getDefaultFeedResponse(feed, user);
+		return CarrotResponse.builder()
+				.defaultFeedResponse(defaultFeedResponse)
+				.build();
+	}
+
 	public GroupResponse feedToGroupResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
-		GroupResponse response;
+		DefaultFeedResponse defaultFeedResponse =
+				getDefaultFeedResponse(feed, user);
 		Group group = feed.getGroup();
-		response = GroupResponse.builder()
-				.feedId(feed.getId())
-				.title(feed.getTitle())
-				.price(feed.getPrice())
-				.count(feed.getLikes().size())
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
-				.tags(tagRepository.findByFeedOrderById(feed)
-						.stream().map(Tag::getTag).collect(Collectors.toList()))
+
+		return GroupResponse.builder()
+				.defaultFeedResponse(defaultFeedResponse)
 				.currentHeadCount(group.getCurrentCount())
 				.headCount(group.getHeadCount())
 				.date(group.getRecruitmentDate())
 				.build();
-		if(user != null) {
-			response.setLike(likeRepository.findByUserAndFeed(user, feed)
-					.isPresent());
-		}
-		return response;
 	}
 
 	public void addTag(String tag, Feed feed) {
@@ -149,6 +112,26 @@ public class FeedFacade {
 				.findTopByFeedOrderById(feed);
 
 		return s3Util.getObjectUrl(medium.getFileName());
+	}
+
+	private DefaultFeedResponse getDefaultFeedResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
+		DefaultFeedResponse response =
+				DefaultFeedResponse.builder()
+				.feedId(feed.getId())
+				.title(feed.getTitle())
+				.price(feed.getPrice())
+				.count(feed.getCount())
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.tags(tagRepository.findByFeedOrderById(feed)
+						.stream().map(Tag::getTag).collect(Collectors.toList()))
+				.build();
+		if(user != null) {
+			response.setLike(likeRepository.findByUserAndFeed(user, feed)
+					.isPresent());
+		}
+		return response;
 	}
 
 }

@@ -1,8 +1,8 @@
 package io.github.tn1.server.dto.feed.response;
 
 import java.time.LocalDate;
-import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,19 +12,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GroupResponse {
 
-	private final long feedId;
-	private final String title;
-	private final int price;
-	private final List<String> tags;
-	private final String medium;
-	private boolean like;
-	private final int count;
+	@JsonUnwrapped
+	private final DefaultFeedResponse defaultFeedResponse;
+
 	private final int headCount;
 	private final int currentHeadCount;
 	private final LocalDate date;
-
-	public void setLike(boolean like) {
-		this.like = like;
-	}
 
 }
