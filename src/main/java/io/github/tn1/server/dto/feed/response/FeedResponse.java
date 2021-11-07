@@ -2,8 +2,8 @@ package io.github.tn1.server.dto.feed.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,15 +11,11 @@ import lombok.Getter;
 @Getter
 public class FeedResponse {
 
-	private final Long feedId;
-	private final String title;
+	@JsonUnwrapped
+	private final DefaultFeedResponse defaultFeedResponse;
+
 	private final String description;
-	private final Integer price;
-	private final List<String> tags;
-	private final String medium;
 	private final LocalDateTime lastModifyDate;
-	private boolean like;
-	private final Integer count;
     private Integer headCount;
     private Integer currentHeadCount;
     private LocalDate date;
@@ -27,23 +23,15 @@ public class FeedResponse {
 	private final UserInfo userInfo;
 
 	@Builder
-	public FeedResponse(Long feedId, String title,
-			String description, Integer price,
-			List<String> tags, String medium,
+	public FeedResponse(DefaultFeedResponse defaultFeedResponse,
+			String description,
 			LocalDateTime lastModifyDate,
-			boolean like, Integer count,
 			Integer headCount, Integer currentHeadCount,
 			LocalDate date, boolean isUsedItem,
 			String writerEmail, String writerName) {
-		this.feedId = feedId;
-		this.title = title;
+		this.defaultFeedResponse = defaultFeedResponse;
 		this.description = description;
-		this.price = price;
-		this.tags = tags;
-		this.medium = medium;
 		this.lastModifyDate = lastModifyDate;
-		this.like = like;
-		this.count = count;
 		this.headCount = headCount;
 		this.currentHeadCount = currentHeadCount;
 		this.date = date;
@@ -57,10 +45,6 @@ public class FeedResponse {
         this.currentHeadCount = currentHeadCount;
         this.date = date;
     }
-
-    public void setLike(boolean like) {
-		this.like = like;
-	}
 
 	@Getter
     @AllArgsConstructor
