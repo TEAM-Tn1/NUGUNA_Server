@@ -188,7 +188,8 @@ public class FeedService {
 
 		return feedRepository.findByIsUsedItem(isUsedItem,
 				pageRequest)
-				.stream().filter(feed -> feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
+				.stream().filter(feed -> feed.getGroup() == null ||
+						feed.getGroup().getCurrentCount() < feed.getGroup().getHeadCount())
 				.map(feed ->
 						feedFacade.feedToPreviewResponse(feed, user)
 				).collect(Collectors.toList());

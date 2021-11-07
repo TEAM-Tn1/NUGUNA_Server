@@ -12,6 +12,7 @@ import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,7 +35,7 @@ public class FeedController {
 
 	@GetMapping
 	public List<FeedPreviewResponse> queryFeedList(@RequestParam("page") int page,
-			@RequestParam("range") int range, @RequestParam("sort") String sort,
+			@RequestParam("range") int range, @RequestParam("sort") @Nullable String sort,
 			@RequestParam("is_used_item") boolean isUsedItem) {
 		return feedService.queryFeed(page, range, sort, isUsedItem);
 	}
