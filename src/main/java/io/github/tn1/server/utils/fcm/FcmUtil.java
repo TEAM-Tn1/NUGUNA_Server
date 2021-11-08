@@ -20,6 +20,7 @@ import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FcmUtil {
 
-    private static final String FIREBASE_CONFIG_PATH = "tn1-server-firebase-adminsdk.json";
+	@Value("${firebase.path}")
+    private String path;
 
     private final NotificationRepository notificationRepository;
     private final TagNotificationRepository tagNotificationRepository;
@@ -37,7 +39,7 @@ public class FcmUtil {
     public void initialize() {
         try {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())).build();
+                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(path).getInputStream())).build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
                 log.info("Firebase application has been initialized");
