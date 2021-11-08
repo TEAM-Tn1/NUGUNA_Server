@@ -15,6 +15,7 @@ public class FeedPreviewResponse {
 
 	private int headCount;
 	private int currentHeadCount;
+	private final String medium;
 	private LocalDate date;
 
 	public void setGroupInformation(int headCount, int currentHeadCount,

@@ -38,6 +38,7 @@ public class FeedFacade {
 		FeedResponse response = FeedResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
 				.description(feed.getDescription())
+				.photo(queryPhoto(feed))
 				.lastModifyDate(feed.getUpdatedDate())
 				.isUsedItem(feed.isUsedItem())
 				.writerEmail(feed.getUser().getEmail())
@@ -54,11 +55,14 @@ public class FeedFacade {
 	}
 
 	public FeedPreviewResponse feedToPreviewResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		FeedPreviewResponse response =
 				FeedPreviewResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.build();
 		if (!feed.isUsedItem()) {
 			response.setGroupInformation(
@@ -71,20 +75,26 @@ public class FeedFacade {
 	}
 
 	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		return CarrotResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.build();
 	}
 
 	public GroupResponse feedToGroupResponse(Feed feed, User user) {
+		FeedMedium medium = feedMediumRepository
+				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		Group group = feed.getGroup();
 
 		return GroupResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
+				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.currentHeadCount(group.getCurrentCount())
 				.headCount(group.getHeadCount())
 				.date(group.getRecruitmentDate())
@@ -107,6 +117,12 @@ public class FeedFacade {
 				.collect(Collectors.toList());
 	}
 
+	public List<String> queryPhoto(Feed feed) {
+		return feedMediumRepository.findByFeedOrderById(feed)
+				.stream().map(FeedMedium::getFileName)
+				.collect(Collectors.toList());
+	}
+
 	public String getFeedPhotoUrl(Feed feed) {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
@@ -115,15 +131,13 @@ public class FeedFacade {
 	}
 
 	private DefaultFeedResponse getDefaultFeedResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
+
 		DefaultFeedResponse response =
 				DefaultFeedResponse.builder()
 				.feedId(feed.getId())
 				.title(feed.getTitle())
 				.price(feed.getPrice())
 				.count(feed.getCount())
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
 				.tags(tagRepository.findByFeedOrderById(feed)
 						.stream().map(Tag::getTag).collect(Collectors.toList()))
 				.build();

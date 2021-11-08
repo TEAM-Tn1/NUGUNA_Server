@@ -2,6 +2,7 @@ package io.github.tn1.server.dto.feed.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class FeedResponse {
 
 	private final String description;
 	private final LocalDateTime lastModifyDate;
+	private final List<String> photo;
     private Integer headCount;
     private Integer currentHeadCount;
     private LocalDate date;
@@ -24,13 +26,14 @@ public class FeedResponse {
 
 	@Builder
 	public FeedResponse(DefaultFeedResponse defaultFeedResponse,
-			String description,
+			String description, List<String> photo,
 			LocalDateTime lastModifyDate,
 			Integer headCount, Integer currentHeadCount,
 			LocalDate date, boolean isUsedItem,
 			String writerEmail, String writerName) {
 		this.defaultFeedResponse = defaultFeedResponse;
 		this.description = description;
+		this.photo = photo;
 		this.lastModifyDate = lastModifyDate;
 		this.headCount = headCount;
 		this.currentHeadCount = currentHeadCount;
