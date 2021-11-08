@@ -13,7 +13,6 @@ public class DefaultFeedResponse {
 	private final String title;
 	private final int price;
 	private final List<String> tags;
-	private final String medium;
 	private boolean like;
 	private final int count;
 
