@@ -25,6 +25,9 @@ public class S3Util {
     @Value("${aws.s3.bucket}")
     private String bucket;
 
+    @Value("${aws.s3.base_image_url}")
+	private String baseUrl;
+
     public String upload(MultipartFile file) {
         if(file.isEmpty() && file.getOriginalFilename() != null) throw new FileEmptyException();
         String originalFilename = file.getOriginalFilename();
@@ -42,7 +45,7 @@ public class S3Util {
             throw new FileUploadFailException();
         }
 
-        return fileName;
+        return baseUrl + fileName;
     }
 
 	public void delete(String objectName) {
