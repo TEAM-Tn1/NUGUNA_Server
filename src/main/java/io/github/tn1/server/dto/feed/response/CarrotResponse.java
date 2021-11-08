@@ -11,4 +11,6 @@ public class CarrotResponse {
 	@JsonUnwrapped
 	private final DefaultFeedResponse defaultFeedResponse;
 
+	private final String medium;
+
 }
