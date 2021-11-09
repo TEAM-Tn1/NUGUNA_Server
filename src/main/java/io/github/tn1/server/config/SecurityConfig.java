@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .authorizeRequests()
+				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/users/oauth").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/auth").permitAll()
                 .antMatchers(HttpMethod.PUT, "/users/auth").permitAll()
@@ -44,8 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/feed").permitAll()
 
 				.antMatchers("/admin/**").hasRole("ADMIN")
-
-				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				
                 .anyRequest().authenticated()
                 .and().apply(new FilterConfig(jwtTokenProvider, exceptionHandlerFilter, requestLogger));
 
