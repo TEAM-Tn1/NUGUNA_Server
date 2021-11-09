@@ -36,6 +36,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportAdminService {
 
+	private static final ReportType FEED_REPORT = ReportType.F;
+	private static final ReportType USER_REPORT = ReportType.U;
+
 	private final FeedRepository feedRepository;
 	private final ReportRepository reportRepository;
 	private final ResultRepository resultRepository;
@@ -43,7 +46,7 @@ public class ReportAdminService {
 	private final FcmUtil fcmUtil;
 
 	public List<FeedReportResponse> queryFeedReport(Pageable pageable) {
-		return reportRepository.findByReportType(ReportType.F, pageable)
+		return reportRepository.findByReportType(FEED_REPORT, pageable)
 				.stream().map(report ->
 						new FeedReportResponse(
 								report.getId(),
@@ -56,7 +59,7 @@ public class ReportAdminService {
 	}
 
 	public List<UserReportResponse> queryUserReport(Pageable pageable) {
-		return reportRepository.findByReportType(ReportType.U, pageable)
+		return reportRepository.findByReportType(USER_REPORT, pageable)
 				.stream().map(report ->
 						new UserReportResponse(
 								report.getId(),

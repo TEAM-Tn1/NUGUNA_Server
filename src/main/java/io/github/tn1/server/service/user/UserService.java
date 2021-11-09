@@ -18,10 +18,8 @@ import io.github.tn1.server.entity.refresh_token.RefreshTokenRepository;
 import io.github.tn1.server.entity.user.Role;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
-import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.utils.api.client.DsmAuthClient;
@@ -50,7 +48,9 @@ public class UserService {
     @Value("${jwt.refresh.exp}")
     private Long refreshExp;
 
-    private static final String OAUTH_BASE_URI="https://dsm-auth.vercel.app/";
+    private static final String OAUTH_BASE_URI = "https://dsm-auth.vercel.app/";
+    private static final HttpStatus DEFAULT_STATUS = HttpStatus.CREATED;
+    private static final HttpStatus OK_STATUS = HttpStatus.OK;
 
     private final UserFacade userFacade;
     private final UserRepository userRepository;
@@ -74,16 +74,15 @@ public class UserService {
         InformationResponse response = dsmAuthClient
                 .getInformation("Bearer " + accessToken);
 
-        HttpStatus status = HttpStatus.CREATED;
+        HttpStatus status = DEFAULT_STATUS;
 
         if(userRepository.findById(response.getEmail()).isPresent()) {
 			User user = userRepository.save(
-					userRepository.findById(response.getEmail())
-							.orElseThrow(UserNotFoundException::new)
+					userFacade.getCurrentUser()
 							.changeNameAndGcn(response.getName(), response.getGcn())
 			);
-            if(user.writeAllInformation())
-            	status = HttpStatus.OK;
+            if(user.fillAllInformation())
+            	status = OK_STATUS;
 		} else {
 			userRepository.save(
                     User.builder()
@@ -94,88 +93,75 @@ public class UserService {
                             .build()
             );
         }
-        
-        TokenResponse token = getToken(response.getEmail());
 
-        return new ResponseEntity<>(new TokenResponse(
-                token.getAccessToken(),
-                token.getRefreshToken(), token.getEmail()
-        ), status);
+        return new ResponseEntity<>(
+        		getToken(response.getEmail()), status);
     }
 
     public TokenResponse tokenRefresh(RefreshTokenRequest request) {
-		if (jwtTokenProvider.validateToken(request.getRefreshToken())){
-			return refreshTokenRepository.findByToken(request.getRefreshToken())
-					.map(token -> getToken(token.getEmail()))
-					.orElseThrow(ExpiredRefreshTokenException::new);
+		if (!jwtTokenProvider.validateToken(request.getRefreshToken())){
+			throw new InvalidTokenException();
 		}
-        throw new InvalidTokenException();
+		return refreshTokenRepository.findByToken(request.getRefreshToken())
+				.map(token -> getToken(token.getEmail()))
+				.orElseThrow(ExpiredRefreshTokenException::new);
     }
 
     public UserInformationResponse queryUserInformation() {
-    	return userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
-				.getInformation(userFacade.getEmail());
+    	return userFacade.getCurrentUser()
+				.getInformation(userFacade.getCurrentEmail());
 	}
 
+	@Transactional
     public void modifyInformation(InformationRequest request) {
-        userRepository.findById(userFacade.getEmail())
-                .map(user -> userRepository.save(
-                        user.writeInformation(request.getRoomNumber(), request.getAccountNumber())
-                ))
-                .orElseThrow(CredentialsNotFoundException::new);
+        userFacade.getCurrentUser()
+				.writeInformation(request.getRoomNumber(),
+						request.getAccountNumber());
     }
 
     public UserInformationResponse queryInformation(String email) {
-        return userRepository.findById(email)
-                .orElseThrow(UserNotFoundException::new)
-                .getInformation(userFacade.getEmail());
+        return userFacade.getCurrentUser()
+                .getInformation(userFacade.getCurrentEmail());
     }
 
 	public AccountResponse queryAccount() {
 		return new AccountResponse(userRepository
-				.findById(userFacade.getEmail())
+				.findById(userFacade.getCurrentEmail())
 				.map(User::getAccountNumber)
 				.orElse(null));
 	}
 
 	@Transactional
 	public void insertDeviceToken(DeviceTokenRequest request) {
-		userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
+		userFacade.getCurrentUser()
 				.changeDeviceToken(request.getDeviceToken());
 	}
 
 	@Transactional
 	public void logout() {
-		userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
-				.removeDeviceToken();
-		refreshTokenRepository.findById(userFacade.getEmail())
+    	User user = userFacade.getCurrentUser();
+
+		user.removeDeviceToken();
+
+		refreshTokenRepository.findById(user.getEmail())
 				.ifPresent(refreshTokenRepository::delete);
 	}
 
 	public RoomNumberResponse queryRoomNumber() {
-    	String roomNumber = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
+    	String roomNumber = userFacade.getCurrentUser()
 				.getRoomNumber();
     	return new RoomNumberResponse(roomNumber);
 	}
 
 	@Transactional
 	public void ableAccountHide() {
-    	userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
+    	userFacade.getCurrentUser()
 				.ableHideAccount();
 	}
 
 	@Transactional
 	public void disableAccountHide() {
-		userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new)
+		userFacade.getCurrentUser()
 				.disableHideAccount();
 	}
 

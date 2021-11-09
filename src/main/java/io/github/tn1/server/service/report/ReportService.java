@@ -17,7 +17,6 @@ import io.github.tn1.server.entity.report.medium.ReportMediumRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyReportedUserException;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourReportException;
 import io.github.tn1.server.exception.ReportNotFoundException;
@@ -36,6 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ReportService {
 
+	private static final ReportType FEED_REPORT = ReportType.F;
+	private static final ReportType USER_REPORT = ReportType.U;
+
 	private final UserFacade userFacade;
 	private final S3Util s3Util;
 	private final UserRepository userRepository;
@@ -45,27 +47,27 @@ public class ReportService {
 	private final ReportMediumRepository reportMediumRepository;
 
 	public ReportResponse userReport(UserReportRequest request) {
-		if(request.getEmail().equals(userFacade.getEmail()))
+		if(request.getEmail().equals(userFacade.getCurrentEmail()))
 			throw new SelfReportException();
 
-		User currentUser = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User currentUser = userFacade.getCurrentUser();
+
 		User user = userRepository
 				.findById(request.getEmail())
 				.orElseThrow(UserNotFoundException::new);
 
 		try {
+			Report report = reportRepository.save(
+					Report.builder()
+							.title(request.getTitle())
+							.contents(request.getContent())
+							.defendant(user)
+							.reporter(currentUser)
+							.reportType(USER_REPORT)
+							.build()
+			);
 			return new ReportResponse(
-					reportRepository.save(
-							Report.builder()
-									.title(request.getTitle())
-									.contents(request.getContent())
-									.defendant(user)
-									.reporter(currentUser)
-									.reportType(ReportType.U)
-									.build()
-					).getId()
+					report.getId()
 			);
 		} catch (RuntimeException e) {
 			throw new AlreadyReportedUserException();
@@ -77,14 +79,11 @@ public class ReportService {
 				.findById(request.getFeedId())
 				.orElseThrow(FeedNotFoundException::new);
 
-		if(feed.getUser().matchEmail(userFacade.getEmail()))
+		if(feed.isWriter(userFacade.getCurrentEmail()))
 			throw new SelfReportException();
 
-		User currentUser = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User currentUser = userFacade.getCurrentUser();
 		User user = feed.getUser();
-
 
 		Report report;
 
@@ -95,20 +94,18 @@ public class ReportService {
 							.contents(request.getContent())
 							.defendant(user)
 							.reporter(currentUser)
-							.reportType(ReportType.F)
+							.reportType(FEED_REPORT)
 							.build()
 			);
 		} catch (RuntimeException e) {
 			throw new AlreadyReportedUserException();
 		}
 
-
-
 		feedReportRepository.save(
 				FeedReport.builder()
-				.report(report)
-				.feed(feed)
-				.build()
+						.report(report)
+						.feed(feed)
+						.build()
 		);
 
 		return new ReportResponse(report.getId());
@@ -118,7 +115,7 @@ public class ReportService {
 		Report report = reportRepository.findById(reportId)
 				.orElseThrow(ReportNotFoundException::new);
 
-		if(!report.getReporter().matchEmail(userFacade.getEmail()))
+		if(report.isNotReporter(userFacade.getCurrentEmail()))
 			throw new NotYourReportException();
 
 		if(reportMediumRepository.existsByReport(report))
@@ -128,9 +125,9 @@ public class ReportService {
 
 		reportMediumRepository.save(
 				ReportMedium.builder()
-				.report(report)
-				.path(url)
-				.build()
+						.report(report)
+						.path(url)
+						.build()
 		);
 	}
 
@@ -139,8 +136,7 @@ public class ReportService {
 				.findById(request.getReportId())
 				.orElseThrow(ReportNotFoundException::new);
 
-		if(!report.getReporter()
-				.matchEmail(userFacade.getEmail()))
+		if(report.isNotReporter(userFacade.getCurrentEmail()))
 			throw new NotYourReportException();
 
 		if(report.getResult() == null)

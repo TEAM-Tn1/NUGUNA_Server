@@ -13,9 +13,7 @@ import io.github.tn1.server.entity.notification.NotificationRepository;
 import io.github.tn1.server.entity.tag_notification.TagNotification;
 import io.github.tn1.server.entity.tag_notification.TagNotificationRepository;
 import io.github.tn1.server.entity.user.User;
-import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyRegisteredTagException;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.NotYourNotificationException;
 import io.github.tn1.server.exception.NotYourNotificationTagException;
 import io.github.tn1.server.exception.NotificationNotFoundException;
@@ -31,14 +29,12 @@ import org.springframework.stereotype.Service;
 public class NotificationService {
 
 	private final UserFacade userFacade;
-	private final UserRepository userRepository;
 	private final TagNotificationRepository tagNotificationRepository;
 	private final NotificationRepository notificationRepository;
 
 	public void setNotificationTag(String tag) {
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
 		try {
 			tagNotificationRepository.save(
 					TagNotification.builder()
@@ -52,9 +48,8 @@ public class NotificationService {
 	}
 
 	public List<TagResponse> queryNotificationTag() {
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
 		return tagNotificationRepository.findByUser(user)
 				.stream()
 				.map(tag -> new TagResponse(tag.getId(), tag.getTag()))
@@ -65,24 +60,24 @@ public class NotificationService {
 		TagNotification tag;
 		tag = tagNotificationRepository.findById(tagId)
 				.orElseThrow(NotificationTagNotFoundException::new);
-		if(!tag.getUser().matchEmail(userFacade.getEmail()))
+
+		if(!tag.isOwner(userFacade.getCurrentEmail()))
 			throw new NotYourNotificationTagException();
+
 		tagNotificationRepository.delete(tag);
 	}
 
 	public CountResponse countOfNotification() {
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
 		return new CountResponse(
 				notificationRepository
 				.countByUserAndIsWatch(user, false));
 	}
 
 	public List<NotificationResponse> queryNotificationList(int page) {
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
 		return notificationRepository
 				.findByUser(user, PageRequest.of(page, 5))
 				.stream().map(notification ->
@@ -99,8 +94,7 @@ public class NotificationService {
 				.findById(notificationId)
 				.orElseThrow(NotificationNotFoundException::new);
 
-		if(!notification.getUser()
-				.matchEmail(userFacade.getEmail()))
+		if(!notification.isOwner(userFacade.getCurrentEmail()))
 			throw new NotYourNotificationException();
 
 		notification.watch();
