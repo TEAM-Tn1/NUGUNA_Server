@@ -41,7 +41,7 @@ public class CarrotFeedController {
 
 	@GetMapping("/users/{email}/carrot")
 	public List<CarrotResponse> querySpecificUserCarrot(@PathVariable("email") String email) {
-    	return feedService.querySpecificUserCarrot(email);
+    	return feedService.querySpecificUserCarrotFeed(email);
 	}
 
 }

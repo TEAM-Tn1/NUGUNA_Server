@@ -41,7 +41,7 @@ public class GroupFeedController {
 
 	@GetMapping("/users/{email}/group")
 	public List<GroupResponse> querySpecificUserGroup(@PathVariable("email") String email) {
-		return groupFeedService.querySpecificUserGroup(email);
+		return groupFeedService.querySpecificUserGroupFeed(email);
 	}
 
 }
