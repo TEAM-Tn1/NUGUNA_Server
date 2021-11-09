@@ -20,7 +20,6 @@ import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.group.GroupRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.DateIsBeforeException;
 import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
@@ -35,6 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GroupFeedService {
+
+	private static final RoomType GROUP_ROOM = RoomType.GROUP;
 
 	private final UserFacade userFacade;
 	private final FeedFacade feedFacade;
@@ -53,8 +54,7 @@ public class GroupFeedService {
 		if(request.getDate().isBefore(LocalDate.now()))
 			throw new DateIsBeforeException();
 
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		Feed feed = feedRepository.save(
 				Feed.builder()
@@ -82,7 +82,7 @@ public class GroupFeedService {
 				.feed(feed)
 				.user(user)
 				.photoUrl(null)
-				.type(RoomType.GROUP)
+				.type(GROUP_ROOM)
 				.build()
 		);
 
@@ -96,21 +96,20 @@ public class GroupFeedService {
 
 	@Transactional
 	public void modifyGroupFeed(ModifyGroupRequest request) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
-		Feed feed = feedRepository.findById(request.getFeedId())
-				.orElseThrow(FeedNotFoundException::new);
+		Feed feed = feedFacade.getFeedById(request.getFeedId());
 
-		if(!feed.getUser().matchEmail(user.getEmail()))
+		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		if(request.getDate().isBefore(LocalDate.now()))
 			throw new DateIsBeforeException();
 
-		feed.setTitle(request.getTitle())
-			.setPrice(request.getPrice())
-			.setDescription(request.getDescription());
+		feed
+				.changeTitle(request.getTitle())
+				.changePrice(request.getPrice())
+				.changeDescription(request.getDescription());
 
 		Group group = groupRepository.findByFeed(feed)
 				.orElseThrow(FeedNotFoundException::new);
@@ -118,11 +117,13 @@ public class GroupFeedService {
 		group.changeDate(request.getDate());
 	}
 
-	public List<GroupResponse> querySpecificUserGroup(String email) {
-		User currentUser = userRepository.findById(userFacade.getEmail())
+	public List<GroupResponse> querySpecificUserGroupFeed(String email) {
+		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
 				.orElse(null);
+
 		User user = userRepository.findById(email)
 				.orElseThrow(UserNotFoundException::new);
+
 		return feedRepository.findByUserAndIsUsedItem(user, false)
 				.stream().map(feed ->
 						feedFacade.feedToGroupResponse(feed, currentUser)
