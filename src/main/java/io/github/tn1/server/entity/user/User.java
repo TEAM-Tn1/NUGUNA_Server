@@ -119,11 +119,10 @@ public class User implements UserDetails {
         return this;
     }
 
-    public User writeInformation(String roomNumber, String accountNumber) {
+    public void writeInformation(String roomNumber, String accountNumber) {
         this.roomNumber = roomNumber;
         this.accountNumber = accountNumber;
-        return this;
-    }
+	}
 
     public UserInformationResponse getInformation(String email) {
     	if(email != null && email.equals(this.email)) {
@@ -133,13 +132,9 @@ public class User implements UserDetails {
     	return new UserInformationResponse(this.email, name, gcn, roomNumber, accountNumber);
     }
 
-    public boolean writeAllInformation() {
+    public boolean fillAllInformation() {
         return roomNumber != null && accountNumber != null;
     }
-
-    public boolean matchEmail(String email) {
-    	return this.email.equals(email);
-	}
 
     public void ableHideAccount() {
     	this.hideAccount = true;

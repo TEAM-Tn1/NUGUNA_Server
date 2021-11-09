@@ -83,4 +83,8 @@ public class Report extends BaseTimeEntity {
     	this.isCheck = true;
 	}
 
+	public boolean isNotReporter(String email) {
+		return !reporter.getEmail().equals(email);
+	}
+
 }

@@ -20,15 +20,12 @@ import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyLikedFeedException;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
-import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.FileEmptyException;
 import io.github.tn1.server.exception.LikeNotFoundException;
 import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.TooManyTagsException;
-import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
@@ -43,6 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FeedService {
 
+	private static final Integer MAX_FILE_COUNT = 5;
+
 	private final UserFacade userFacade;
 	private final FeedFacade feedFacade;
     private final S3Util s3Util;
@@ -53,28 +52,27 @@ public class FeedService {
     private final LikeRepository likeRepository;
 
 	public FeedResponse queryFeed(Long feedId) {
-    	User user = userRepository.findById(userFacade.getEmail())
+    	User user = userRepository.findById(userFacade.getCurrentEmail())
 				.orElse(null);
-    	Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
+
+    	Feed feed = feedFacade.getFeedById(feedId);
+
     	return feedFacade.feedToFeedResponse(feed, user);
 	}
 
 	@Transactional
 	public void uploadPhoto(List<MultipartFile> files, Long feedId) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
-		Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
+		Feed feed = feedFacade.getFeedById(feedId);
 
-		if(!feed.getUser().matchEmail(user.getEmail()))
+		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		if(files == null)
 			throw new FileEmptyException();
 
-		if(files.size() + feedMediumRepository.countByFeed(feed) > 5)
+		if(files.size() + feedMediumRepository.countByFeed(feed) > MAX_FILE_COUNT)
 			throw new TooManyFilesException();
 
 		files.forEach(file ->
@@ -87,14 +85,12 @@ public class FeedService {
 		addRoomPhoto(feed);
 	}
 
-	public void removeFeed(Long id) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+	public void removeFeed(Long feedId) {
+		User user = userFacade.getCurrentUser();
 
-		Feed feed = feedRepository.findById(id)
-				.orElseThrow(FeedNotFoundException::new);
+		Feed feed = feedFacade.getFeedById(feedId);
 
-		if(!feed.getUser().matchEmail(user.getEmail()))
+		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		List<String> photoLinks = new ArrayList<>();
@@ -105,13 +101,11 @@ public class FeedService {
 
 		photoLinks.forEach(this::removePhoto);
 
-		feedRepository.deleteById(id);
-
+		feedRepository.deleteById(feedId);
 	}
 
 	public TagResponse queryTag(Long feedId) {
-    	Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
+    	Feed feed = feedFacade.getFeedById(feedId);
 
     	return new TagResponse(
 				feedFacade.queryTag(feed)
@@ -120,13 +114,11 @@ public class FeedService {
 
 	@Transactional
 	public void modifyTag(ModifyTagRequest request) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
-		Feed feed = feedRepository.findById(request.getFeedId())
-				.orElseThrow(FeedNotFoundException::new);
+		Feed feed = feedFacade.getFeedById(request.getFeedId());
 
-		if(!feed.getUser().matchEmail(user.getEmail()))
+		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		if(request.getTags().size() > 5)
@@ -141,11 +133,9 @@ public class FeedService {
 
 	@Transactional
 	public void addLike(Long feedId) {
-    	Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
-    	User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
+    	Feed feed = feedFacade.getFeedById(feedId);
 
     	try {
 			likeRepository.save(
@@ -162,11 +152,9 @@ public class FeedService {
 
 	@Transactional
 	public void removeLike(Long feedId) {
-		Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
+		Feed feed = feedFacade.getFeedById(feedId);
 
 		likeRepository.delete(
 				likeRepository
@@ -177,7 +165,7 @@ public class FeedService {
 	}
 
 	public List<FeedPreviewResponse> queryFeed(int page, int range, String sort, boolean isUsedItem) {
-		User user = userRepository.findById(userFacade.getEmail())
+		User user = userRepository.findById(userFacade.getCurrentEmail())
 				.orElse(null);
 
 		PageRequest pageRequest;
@@ -196,8 +184,8 @@ public class FeedService {
 	}
 
 	public List<FeedPreviewResponse> queryLikeFeed(boolean isUsedItem) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
+		User user = userFacade.getCurrentUser();
+
 		return user.getLikes()
 				.stream().filter(like -> like.getFeed().isUsedItem() == isUsedItem)
 				.map(like ->
@@ -206,21 +194,22 @@ public class FeedService {
 	}
 
 	private void removePhoto(String fileName) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
 				.orElseThrow(MediumNotFoundException::new);
 
-		if(!medium.getFeed().getUser().matchEmail(user.getEmail()))
+		if(!medium.getFeed().isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		s3Util.delete(medium.getFileName());
+
 		feedMediumRepository.delete(medium);
 	}
 
 	private void addRoomPhoto(Feed feed) {
     	String photoUrl = feedFacade.getFeedPhotoUrl(feed);
+
     	feed.getRoom().forEach(room -> {
     		if(room.getPhotoUrl() == null)
     			room.initPhotoUrl(photoUrl);

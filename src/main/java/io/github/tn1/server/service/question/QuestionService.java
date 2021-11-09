@@ -6,8 +6,6 @@ import io.github.tn1.server.dto.question.response.QuestionResponse;
 import io.github.tn1.server.entity.question.Question;
 import io.github.tn1.server.entity.question.QuestionRepository;
 import io.github.tn1.server.entity.user.User;
-import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
 import io.github.tn1.server.exception.NotYourQuestionException;
 import io.github.tn1.server.exception.QuestionNotFoundException;
 import io.github.tn1.server.exception.QuestionResultNotFoundException;
@@ -21,13 +19,10 @@ import org.springframework.stereotype.Service;
 public class QuestionService {
 
 	private final UserFacade userFacade;
-	private final UserRepository userRepository;
 	private final QuestionRepository questionRepository;
 
 	public void postQuestion(QuestionRequest request) {
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		questionRepository.save(
 				Question.builder()
@@ -43,8 +38,7 @@ public class QuestionService {
 				.findById(request.getQuestionId())
 				.orElseThrow(QuestionNotFoundException::new);
 
-		if(!question.getUser()
-				.matchEmail(userFacade.getEmail()))
+		if(!question.isOwner(userFacade.getCurrentEmail()))
 			throw new NotYourQuestionException();
 
 		if(question.getQuestionResult() == null)

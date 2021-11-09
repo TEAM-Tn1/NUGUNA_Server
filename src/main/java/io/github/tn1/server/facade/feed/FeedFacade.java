@@ -9,6 +9,7 @@ import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
 import io.github.tn1.server.dto.feed.response.GroupResponse;
 import io.github.tn1.server.entity.feed.Feed;
+import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
@@ -16,6 +17,7 @@ import io.github.tn1.server.entity.feed.tag.Tag;
 import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
+import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.utils.fcm.FcmUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -27,8 +29,14 @@ public class FeedFacade {
 
 	private final FcmUtil fcmUtil;
 	private final LikeRepository likeRepository;
+	private final FeedRepository feedRepository;
 	private final FeedMediumRepository feedMediumRepository;
 	private final TagRepository tagRepository;
+
+	public Feed getFeedById(Long feedId) {
+		return feedRepository.findById(feedId)
+				.orElseThrow(FeedNotFoundException::new);
+	}
 
 	public FeedResponse feedToFeedResponse(Feed feed, User user) {
 		DefaultFeedResponse defaultFeedResponse =

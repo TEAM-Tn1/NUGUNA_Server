@@ -40,4 +40,8 @@ public class TagNotification {
         this.user = user;
     }
 
+	public boolean isOwner(String email) {
+		return user.getEmail().equals(email);
+	}
+
 }

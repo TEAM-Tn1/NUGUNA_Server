@@ -23,13 +23,11 @@ import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.AlreadyJoinRoomException;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
-import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.ItsYourFeedException;
 import io.github.tn1.server.exception.NotYourRoomException;
 import io.github.tn1.server.exception.RoomIsFullException;
 import io.github.tn1.server.exception.RoomNotFoundException;
-import io.github.tn1.server.exception.UserNotFoundException;
+import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +40,7 @@ import org.springframework.stereotype.Service;
 public class ChatService {
 
 	private final UserFacade userFacade;
+	private final FeedFacade feedFacade;
 	private final UserRepository userRepository;
 	private final FeedRepository feedRepository;
 	private final FeedMediumRepository feedMediumRepository;
@@ -53,15 +52,15 @@ public class ChatService {
 
 	@Transactional
 	public JoinResponse joinRoom(Long feedId) {
-		User currentUser = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(UserNotFoundException::new);
-		Feed feed = feedRepository.findById(feedId)
-				.orElseThrow(FeedNotFoundException::new);
+		User currentUser = userFacade.getCurrentUser();
+
+		Feed feed = feedFacade.getFeedById(feedId);
+
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
 		Room room;
 
-		if(feed.getUser().matchEmail(currentUser.getEmail()))
+		if(feed.isWriter(currentUser.getEmail()))
 			throw new ItsYourFeedException();
 
 		if(roomRepository.existsByFeedAndEmail(feed, currentUser.getEmail())){
@@ -102,7 +101,7 @@ public class ChatService {
 	}
 
 	public List<CarrotRoomResponse> queryCarrotRoom() {
-		return roomRepository.findByEmailAndType(userFacade.getEmail(),
+		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.CARROT)
 				.stream().map(room ->
 					new CarrotRoomResponse(room.getId(),
@@ -113,7 +112,7 @@ public class ChatService {
 	}
 
 	public List<GroupRoomResponse> queryGroupRoom() {
-		return roomRepository.findByEmailAndType(userFacade.getEmail(),
+		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.GROUP)
 				.stream().map(room ->
 						new GroupRoomResponse(room.getId(),
@@ -128,9 +127,7 @@ public class ChatService {
 	public List<QueryMessageResponse> queryMessage(QueryMessageRequest request, int page) {
 		Room room = roomRepository.findById(request.getRoomId())
 				.orElseThrow(RoomNotFoundException::new);
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		if(memberRepository
 				.findByUserAndRoom(user, room).isEmpty())
@@ -148,9 +145,7 @@ public class ChatService {
 	public void leaveRoom(String roomId) {
 		Room room = roomRepository.findById(roomId)
 				.orElseThrow(RoomNotFoundException::new);
-		User user = userRepository
-				.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		if(memberRepository
 				.findByUserAndRoom(user, room).isEmpty())

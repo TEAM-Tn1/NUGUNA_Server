@@ -82,17 +82,17 @@ public class Feed extends BaseTimeEntity {
         this.user = user;
     }
 
-    public Feed setTitle(String title) {
+    public Feed changeTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public Feed setDescription(String description) {
+    public Feed changeDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public Feed setPrice(Integer price) {
+    public Feed changePrice(Integer price) {
         this.price = price;
         return this;
     }
@@ -103,6 +103,10 @@ public class Feed extends BaseTimeEntity {
 
 	public void increaseCount() {
     	this.count++;
+	}
+
+	public boolean isWriter(String email) {
+    	return user.getEmail().equals(email);
 	}
 
 }

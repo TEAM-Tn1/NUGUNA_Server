@@ -3,6 +3,8 @@ package io.github.tn1.server.service.feed.carrot;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import io.github.tn1.server.dto.feed.request.ModifyCarrotRequest;
 import io.github.tn1.server.dto.feed.request.PostCarrotRequest;
 import io.github.tn1.server.dto.feed.response.CarrotResponse;
@@ -10,8 +12,6 @@ import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
-import io.github.tn1.server.exception.CredentialsNotFoundException;
-import io.github.tn1.server.exception.FeedNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyTagsException;
 import io.github.tn1.server.exception.UserNotFoundException;
@@ -32,12 +32,10 @@ public class CarrotFeedService {
 	private final UserRepository userRepository;
 
 	public void postCarrotFeed(PostCarrotRequest request) {
-
 		if(request.getTags() != null && request.getTags().size() > 5)
 			throw new TooManyTagsException();
 
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
 		Feed feed = feedRepository.save(
 				Feed.builder()
@@ -54,26 +52,23 @@ public class CarrotFeedService {
 
 	}
 
+	@Transactional
 	public void modifyCarrotFeed(ModifyCarrotRequest request) {
-		User user = userRepository.findById(userFacade.getEmail())
-				.orElseThrow(CredentialsNotFoundException::new);
+		User user = userFacade.getCurrentUser();
 
-		Feed feed = feedRepository.findById(request.getFeedId())
-				.orElseThrow(FeedNotFoundException::new);
+		Feed feed = feedFacade.getFeedById(request.getFeedId());
 
-		if(!feed.getUser().matchEmail(user.getEmail()))
+		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
 
 		feed
-				.setTitle(request.getTitle())
-				.setDescription(request.getDescription())
-				.setPrice(request.getPrice());
-
-		feedRepository.save(feed);
+				.changeTitle(request.getTitle())
+				.changeDescription(request.getDescription())
+				.changePrice(request.getPrice());
 	}
 
-	public List<CarrotResponse> querySpecificUserCarrot(String email) {
-		User currentUser = userRepository.findById(userFacade.getEmail())
+	public List<CarrotResponse> querySpecificUserCarrotFeed(String email) {
+		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
 				.orElse(null);
 		User user = userRepository.findById(email)
 				.orElseThrow(UserNotFoundException::new);
