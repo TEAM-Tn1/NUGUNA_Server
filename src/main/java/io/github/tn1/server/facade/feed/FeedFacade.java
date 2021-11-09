@@ -17,7 +17,6 @@ import io.github.tn1.server.entity.feed.tag.TagRepository;
 import io.github.tn1.server.entity.like.LikeRepository;
 import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.utils.fcm.FcmUtil;
-import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FeedFacade {
 
-	private final S3Util s3Util;
 	private final FcmUtil fcmUtil;
 	private final LikeRepository likeRepository;
 	private final FeedMediumRepository feedMediumRepository;
@@ -55,14 +53,12 @@ public class FeedFacade {
 	}
 
 	public FeedPreviewResponse feedToPreviewResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		FeedPreviewResponse response =
 				FeedPreviewResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.medium(getFeedPhotoUrl(feed))
 				.build();
 		if (!feed.isUsedItem()) {
 			response.setGroupInformation(
@@ -75,26 +71,22 @@ public class FeedFacade {
 	}
 
 	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		return CarrotResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.medium(getFeedPhotoUrl(feed))
 				.build();
 	}
 
 	public GroupResponse feedToGroupResponse(Feed feed, User user) {
-		FeedMedium medium = feedMediumRepository
-				.findTopByFeedOrderById(feed);
 		DefaultFeedResponse defaultFeedResponse =
 				getDefaultFeedResponse(feed, user);
 		Group group = feed.getGroup();
 
 		return GroupResponse.builder()
 				.defaultFeedResponse(defaultFeedResponse)
-				.medium(medium != null ? s3Util.getObjectUrl(medium.getFileName()) : null)
+				.medium(getFeedPhotoUrl(feed))
 				.currentHeadCount(group.getCurrentCount())
 				.headCount(group.getHeadCount())
 				.date(group.getRecruitmentDate())
@@ -127,7 +119,7 @@ public class FeedFacade {
 		FeedMedium medium = feedMediumRepository
 				.findTopByFeedOrderById(feed);
 
-		return s3Util.getObjectUrl(medium.getFileName());
+		return medium != null ? medium.getFileName() : null;
 	}
 
 	private DefaultFeedResponse getDefaultFeedResponse(Feed feed, User user) {
