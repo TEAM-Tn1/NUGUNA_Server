@@ -45,7 +45,7 @@ public class S3Util {
             throw new FileUploadFailException();
         }
 
-        return baseUrl + fileName;
+        return baseUrl + "/" + fileName;
     }
 
 	public void delete(String objectName) {
