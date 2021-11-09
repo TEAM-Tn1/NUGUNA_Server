@@ -52,4 +52,8 @@ public class NotificationEntity {
 		this.isWatch = true;
 	}
 
+	public boolean isOwner(String email) {
+		return user.getEmail().equals(email);
+	}
+
 }

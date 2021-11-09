@@ -55,4 +55,8 @@ public class Question extends BaseTimeEntity {
     	this.isCheck = true;
 	}
 
+	public boolean isOwner(String email) {
+		return user.getEmail().equals(email);
+	}
+
 }
