@@ -3,14 +3,11 @@ package io.github.tn1.server.facade.feed;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.github.tn1.server.dto.feed.response.CarrotResponse;
 import io.github.tn1.server.dto.feed.response.DefaultFeedResponse;
 import io.github.tn1.server.dto.feed.response.FeedPreviewResponse;
 import io.github.tn1.server.dto.feed.response.FeedResponse;
-import io.github.tn1.server.dto.feed.response.GroupResponse;
 import io.github.tn1.server.entity.feed.Feed;
 import io.github.tn1.server.entity.feed.FeedRepository;
-import io.github.tn1.server.entity.feed.group.Group;
 import io.github.tn1.server.entity.feed.medium.FeedMedium;
 import io.github.tn1.server.entity.feed.medium.FeedMediumRepository;
 import io.github.tn1.server.entity.feed.tag.Tag;
@@ -76,29 +73,6 @@ public class FeedFacade {
 			);
 		}
 		return response;
-	}
-
-	public CarrotResponse feedToCarrotResponse(Feed feed, User user) {
-		DefaultFeedResponse defaultFeedResponse =
-				getDefaultFeedResponse(feed, user);
-		return CarrotResponse.builder()
-				.defaultFeedResponse(defaultFeedResponse)
-				.medium(getFeedPhotoUrl(feed))
-				.build();
-	}
-
-	public GroupResponse feedToGroupResponse(Feed feed, User user) {
-		DefaultFeedResponse defaultFeedResponse =
-				getDefaultFeedResponse(feed, user);
-		Group group = feed.getGroup();
-
-		return GroupResponse.builder()
-				.defaultFeedResponse(defaultFeedResponse)
-				.medium(getFeedPhotoUrl(feed))
-				.currentHeadCount(group.getCurrentCount())
-				.headCount(group.getHeadCount())
-				.date(group.getRecruitmentDate())
-				.build();
 	}
 
 	public void addTag(String tag, Feed feed) {
