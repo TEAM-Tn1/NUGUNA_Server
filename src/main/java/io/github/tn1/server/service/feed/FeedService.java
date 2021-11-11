@@ -33,6 +33,7 @@ import io.github.tn1.server.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -200,6 +201,15 @@ public class FeedService {
 		User user = userRepository.findById(email)
 				.orElseThrow(UserNotFoundException::new);
 		return feedRepository.findByUserAndIsUsedItem(user, isUsedItem)
+				.stream().map(feed ->
+						feedFacade.feedToPreviewResponse(feed, currentUser)
+				).collect(Collectors.toList());
+	}
+
+	public List<FeedPreviewResponse> queryFeedByTitle(String title, boolean isUsedItem, Pageable pageable) {
+		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
+				.orElse(null);
+		return feedRepository.findByTitleContainsAndIsUsedItem(title, isUsedItem, pageable)
 				.stream().map(feed ->
 						feedFacade.feedToPreviewResponse(feed, currentUser)
 				).collect(Collectors.toList());
