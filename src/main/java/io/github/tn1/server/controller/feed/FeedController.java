@@ -51,6 +51,17 @@ public class FeedController {
 		return feedService.queryFeed(feedId);
 	}
 
+	@GetMapping("/{feed_id}/tags")
+	public TagResponse queryTag(@PathVariable("feed_id") Long feedId) {
+		return feedService.queryTag(feedId);
+	}
+
+	@GetMapping("/users/{email}")
+	public List<FeedPreviewResponse> querySpecificUserFeed(@PathVariable("email") String email,
+			@RequestParam("is_used_item") boolean isUsedItem) {
+		return feedService.querySpecificUserFeed(email, isUsedItem);
+	}
+
 	@PostMapping("/{feed_id}/photo")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void uploadPhoto(@RequestPart List<MultipartFile> files, @PathVariable("feed_id") Long feedId) {
@@ -61,11 +72,6 @@ public class FeedController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeFeed(@PathVariable(name = "feed_id") Long feedId) {
 		feedService.removeFeed(feedId);
-	}
-
-	@GetMapping("/{feed_id}/tags")
-	public TagResponse queryTag(@PathVariable("feed_id") Long feedId) {
-		return feedService.queryTag(feedId);
 	}
 
 	@PatchMapping("/tags")

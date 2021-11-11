@@ -67,15 +67,4 @@ public class CarrotFeedService {
 				.changePrice(request.getPrice());
 	}
 
-	public List<CarrotResponse> querySpecificUserCarrotFeed(String email) {
-		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
-				.orElse(null);
-		User user = userRepository.findById(email)
-				.orElseThrow(UserNotFoundException::new);
-		return feedRepository.findByUserAndIsUsedItem(user, true)
-				.stream().map(feed ->
-						feedFacade.feedToCarrotResponse(feed, currentUser)
-				).collect(Collectors.toList());
-	}
-
 }

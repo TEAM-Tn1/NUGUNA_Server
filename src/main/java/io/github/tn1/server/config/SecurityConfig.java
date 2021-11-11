@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/users/{email}").permitAll()
 
 				.antMatchers(HttpMethod.GET, "/feed/tag").permitAll()
-                .antMatchers(HttpMethod.GET, "/feed/users/{email}/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/feed/users/{email}").permitAll()
 				.antMatchers(HttpMethod.GET, "/feed/{feed_id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/feed").permitAll()
 
