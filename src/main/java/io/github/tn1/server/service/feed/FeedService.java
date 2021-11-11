@@ -26,6 +26,7 @@ import io.github.tn1.server.exception.MediumNotFoundException;
 import io.github.tn1.server.exception.NotYourFeedException;
 import io.github.tn1.server.exception.TooManyFilesException;
 import io.github.tn1.server.exception.TooManyTagsException;
+import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.feed.FeedFacade;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.utils.s3.S3Util;
@@ -190,6 +191,17 @@ public class FeedService {
 				.stream().filter(like -> like.getFeed().isUsedItem() == isUsedItem)
 				.map(like ->
 						feedFacade.feedToPreviewResponse(like.getFeed(), user)
+				).collect(Collectors.toList());
+	}
+
+	public List<FeedPreviewResponse> querySpecificUserFeed(String email, boolean isUsedItem) {
+		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
+				.orElse(null);
+		User user = userRepository.findById(email)
+				.orElseThrow(UserNotFoundException::new);
+		return feedRepository.findByUserAndIsUsedItem(user, isUsedItem)
+				.stream().map(feed ->
+						feedFacade.feedToPreviewResponse(feed, currentUser)
 				).collect(Collectors.toList());
 	}
 
