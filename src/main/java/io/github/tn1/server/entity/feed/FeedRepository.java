@@ -14,4 +14,5 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     List<Feed> findByUser(User user);
     List<Feed> findByUserAndIsUsedItem(User user, boolean isUsedItem);
     Page<Feed> findByIsUsedItem(boolean isUsedItem, Pageable pageable);
+    Page<Feed> findByTitleContainsAndIsUsedItem(String title, boolean isUsedItem, Pageable pageable);
 }
