@@ -11,6 +11,7 @@ import io.github.tn1.server.dto.feed.response.TagResponse;
 import io.github.tn1.server.service.feed.FeedService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,6 +61,13 @@ public class FeedController {
 	public List<FeedPreviewResponse> querySpecificUserFeed(@PathVariable("email") String email,
 			@RequestParam("is_used_item") boolean isUsedItem) {
 		return feedService.querySpecificUserFeed(email, isUsedItem);
+	}
+
+	@GetMapping("/search")
+	public List<FeedPreviewResponse> queryFeedByTitle(Pageable pageable,
+			@RequestParam("title") String title,
+			@RequestParam("is_used_item") boolean isUsedItem) {
+		return feedService.queryFeedByTitle(title, isUsedItem, pageable);
 	}
 
 	@PostMapping("/{feed_id}/photo")
