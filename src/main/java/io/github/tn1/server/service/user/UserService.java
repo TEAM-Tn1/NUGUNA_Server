@@ -20,6 +20,7 @@ import io.github.tn1.server.entity.user.User;
 import io.github.tn1.server.entity.user.UserRepository;
 import io.github.tn1.server.exception.ExpiredRefreshTokenException;
 import io.github.tn1.server.exception.InvalidTokenException;
+import io.github.tn1.server.exception.UserNotFoundException;
 import io.github.tn1.server.facade.user.UserFacade;
 import io.github.tn1.server.security.jwt.JwtTokenProvider;
 import io.github.tn1.server.utils.api.client.DsmAuthClient;
@@ -78,7 +79,8 @@ public class UserService {
 
         if(userRepository.findById(response.getEmail()).isPresent()) {
 			User user = userRepository.save(
-					userFacade.getCurrentUser()
+					userRepository.findById(response.getEmail())
+							.orElseThrow(UserNotFoundException::new)
 							.changeNameAndGcn(response.getName(), response.getGcn())
 			);
             if(user.fillAllInformation())
