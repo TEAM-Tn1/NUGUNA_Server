@@ -25,16 +25,16 @@ jobs:
         run: docker build -t tn1 .
 
       - name: Login to ECR
-          id: ecr
-          uses: elgohr/ecr-login-action@master
-          with:
-            access_key: ${{ secrets.AWS_ACCESS_KEY }}
-            secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            region: ${{ secrets.AWS_REGION }}
+        id: ecr
+        uses: elgohr/ecr-login-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
       - name: Publish to Registry
-          uses: elgohr/Publish-Docker-Github-Action@master
-          with:
-            name: tn1/tn1
-            username: ${{ steps.ecr.outputs.username }}
-            password: ${{ steps.ecr.outputs.password }}
-            registry: ${{ steps.ecr.outputs.registry }}
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: tn1/tn1
+          username: ${{ steps.ecr.outputs.username }}
+          password: ${{ steps.ecr.outputs.password }}
+          registry: ${{ steps.ecr.outputs.registry }}
