@@ -21,9 +21,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: build docker image
-        run: docker build -t tn1 .
-
       - name: Login to ECR
         id: ecr
         uses: elgohr/ecr-login-action@master
