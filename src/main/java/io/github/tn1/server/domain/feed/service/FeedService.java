@@ -1,34 +1,33 @@
 package io.github.tn1.server.domain.feed.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import io.github.tn1.server.domain.feed.domain.Feed;
+import io.github.tn1.server.domain.feed.domain.FeedMedium;
+import io.github.tn1.server.domain.feed.domain.repository.FeedMediumRepository;
+import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
+import io.github.tn1.server.domain.feed.domain.repository.TagRepository;
+import io.github.tn1.server.domain.feed.exception.AlreadyLikedFeedException;
+import io.github.tn1.server.domain.feed.exception.LikeNotFoundException;
+import io.github.tn1.server.domain.feed.exception.MediumNotFoundException;
+import io.github.tn1.server.domain.feed.exception.NotYourFeedException;
+import io.github.tn1.server.domain.feed.exception.TooManyTagsException;
+import io.github.tn1.server.domain.feed.facade.FeedFacade;
 import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyTagRequest;
 import io.github.tn1.server.domain.feed.presentation.dto.response.FeedPreviewResponse;
 import io.github.tn1.server.domain.feed.presentation.dto.response.FeedResponse;
 import io.github.tn1.server.domain.feed.presentation.dto.response.TagResponse;
-import io.github.tn1.server.domain.feed.domain.Feed;
-import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
-import io.github.tn1.server.domain.feed.domain.FeedMedium;
-import io.github.tn1.server.domain.feed.domain.repository.FeedMediumRepository;
-import io.github.tn1.server.domain.feed.domain.repository.TagRepository;
 import io.github.tn1.server.domain.like.domain.Like;
 import io.github.tn1.server.domain.like.domain.repository.LikeRepository;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.domain.repository.UserRepository;
-import io.github.tn1.server.domain.feed.exception.AlreadyLikedFeedException;
-import io.github.tn1.server.global.exception.FileEmptyException;
-import io.github.tn1.server.domain.feed.exception.LikeNotFoundException;
-import io.github.tn1.server.domain.feed.exception.MediumNotFoundException;
-import io.github.tn1.server.domain.feed.exception.NotYourFeedException;
-import io.github.tn1.server.global.exception.TooManyFilesException;
-import io.github.tn1.server.domain.feed.exception.TooManyTagsException;
 import io.github.tn1.server.domain.user.exception.UserNotFoundException;
-import io.github.tn1.server.domain.feed.facade.FeedFacade;
 import io.github.tn1.server.domain.user.facade.UserFacade;
+import io.github.tn1.server.global.exception.FileEmptyException;
+import io.github.tn1.server.global.exception.TooManyFilesException;
 import io.github.tn1.server.global.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
@@ -87,6 +86,7 @@ public class FeedService {
 		addRoomPhoto(feed);
 	}
 
+	@Transactional
 	public void removeFeed(Long feedId) {
 		User user = userFacade.getCurrentUser();
 
@@ -94,14 +94,6 @@ public class FeedService {
 
 		if(!feed.isWriter(user.getEmail()))
 			throw new NotYourFeedException();
-
-		List<String> photoLinks = new ArrayList<>();
-
-		for(FeedMedium medium : feed.getMedia()) {
-			photoLinks.add(medium.getFileName());
-		}
-
-		photoLinks.forEach(this::removePhoto);
 
 		feedRepository.deleteById(feedId);
 	}
