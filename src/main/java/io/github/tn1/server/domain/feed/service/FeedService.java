@@ -185,10 +185,10 @@ public class FeedService {
 				).collect(Collectors.toList());
 	}
 
-	public List<FeedPreviewResponse> queryLikeFeed(boolean isUsedItem) {
+	public List<FeedPreviewResponse> queryLikeFeed(boolean isUsedItem, Pageable pageable) {
 		User user = userFacade.getCurrentUser();
 
-		return user.getLikes()
+		return likeRepository.findByUser(user, pageable)
 				.stream().filter(like -> like.getFeed().isUsedItem() == isUsedItem)
 				.map(like ->
 						feedFacade.feedToPreviewResponse(like.getFeed(), user)

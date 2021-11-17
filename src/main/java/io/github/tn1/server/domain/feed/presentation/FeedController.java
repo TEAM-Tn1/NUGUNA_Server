@@ -42,9 +42,9 @@ public class FeedController {
 	}
 
 	@GetMapping("/me/like")
-	public List<FeedPreviewResponse> queryLikeFeedList(
+	public List<FeedPreviewResponse> queryLikeFeedList(Pageable pageable,
 			@RequestParam("is_used_item") boolean isUsedItem) {
-		return feedService.queryLikeFeed(isUsedItem);
+		return feedService.queryLikeFeed(isUsedItem, pageable);
 	}
 
 	@GetMapping("/{feed_id}")
