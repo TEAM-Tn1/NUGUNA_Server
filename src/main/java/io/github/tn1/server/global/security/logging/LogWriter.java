@@ -1,13 +1,11 @@
 package io.github.tn1.server.global.security.logging;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -17,16 +15,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
 @Component
 public class LogWriter {
 
-    @Value("${logging.name}")
+    @Value("${tn1.name}")
     private String logFileName;
 
-    @Value("${logging.file.path}")
+    @Value("${tn1.file.path}")
     private String logPath;
 
-    @Value("${logging.size}")
+    @Value("${tn1.size}")
     private int logSize;
 
     private File file;
