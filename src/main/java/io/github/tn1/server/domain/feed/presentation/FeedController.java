@@ -58,9 +58,10 @@ public class FeedController {
 	}
 
 	@GetMapping("/users/{email}")
-	public List<FeedPreviewResponse> querySpecificUserFeed(@PathVariable("email") String email,
+	public List<FeedPreviewResponse> querySpecificUserFeed(Pageable pageable,
+			@PathVariable("email") String email,
 			@RequestParam("is_used_item") boolean isUsedItem) {
-		return feedService.querySpecificUserFeed(email, isUsedItem);
+		return feedService.querySpecificUserFeed(email, isUsedItem, pageable);
 	}
 
 	@GetMapping("/search")
