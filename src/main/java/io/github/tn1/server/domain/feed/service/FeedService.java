@@ -195,12 +195,12 @@ public class FeedService {
 				).collect(Collectors.toList());
 	}
 
-	public List<FeedPreviewResponse> querySpecificUserFeed(String email, boolean isUsedItem) {
+	public List<FeedPreviewResponse> querySpecificUserFeed(String email, boolean isUsedItem, Pageable pageable) {
 		User currentUser = userRepository.findById(userFacade.getCurrentEmail())
 				.orElse(null);
 		User user = userRepository.findById(email)
 				.orElseThrow(UserNotFoundException::new);
-		return feedRepository.findByUserAndIsUsedItem(user, isUsedItem)
+		return feedRepository.findByUserAndIsUsedItem(user, isUsedItem, pageable)
 				.stream().map(feed ->
 						feedFacade.feedToPreviewResponse(feed, currentUser)
 				).collect(Collectors.toList());
