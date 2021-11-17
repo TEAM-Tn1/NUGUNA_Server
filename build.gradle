@@ -33,7 +33,7 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
 
-	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.5.4'
+	implementation 'com.corundumstudio.socketio:netty-socketio:1.7.19'
 
     implementation 'org.apache.poi:poi:3.16'
 
