@@ -29,11 +29,13 @@ public class ReportController {
 	private final ReportService reportService;
 
 	@PostMapping("/users")
+	@ResponseStatus(HttpStatus.CREATED)
 	public ReportResponse userReport(@RequestBody @Valid UserReportRequest request) {
 		return reportService.userReport(request);
 	}
 
 	@PostMapping("/feed")
+	@ResponseStatus(HttpStatus.CREATED)
 	public ReportResponse feedReport(@RequestBody @Valid FeedReportRequest request) {
 		return reportService.feedReport(request);
 	}
