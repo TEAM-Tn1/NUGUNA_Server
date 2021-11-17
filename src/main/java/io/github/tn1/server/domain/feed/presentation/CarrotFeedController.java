@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyCarrotRequest;
 import io.github.tn1.server.domain.feed.presentation.dto.request.PostCarrotRequest;
+import io.github.tn1.server.domain.feed.presentation.dto.response.PostFeedResponse;
 import io.github.tn1.server.domain.feed.service.carrot.CarrotFeedService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,8 @@ public class CarrotFeedController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void postCarrotFeed(@RequestBody @Valid PostCarrotRequest request) {
-        feedService.postCarrotFeed(request);
+    public PostFeedResponse postCarrotFeed(@RequestBody @Valid PostCarrotRequest request) {
+        return feedService.postCarrotFeed(request);
     }
 
     @PatchMapping

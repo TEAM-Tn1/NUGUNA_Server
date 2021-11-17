@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyGroupRequest;
 import io.github.tn1.server.domain.feed.presentation.dto.request.PostGroupRequest;
+import io.github.tn1.server.domain.feed.presentation.dto.response.PostFeedResponse;
 import io.github.tn1.server.domain.feed.service.group.GroupFeedService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,8 @@ public class GroupFeedController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void postGroupFeed(@RequestBody @Valid PostGroupRequest request) {
-		groupFeedService.postGroupFeed(request);
+	public PostFeedResponse postGroupFeed(@RequestBody @Valid PostGroupRequest request) {
+		return groupFeedService.postGroupFeed(request);
 	}
 
 	@PatchMapping

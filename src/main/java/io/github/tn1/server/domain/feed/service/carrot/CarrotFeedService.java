@@ -6,6 +6,7 @@ import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyCarrotReq
 import io.github.tn1.server.domain.feed.presentation.dto.request.PostCarrotRequest;
 import io.github.tn1.server.domain.feed.domain.Feed;
 import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
+import io.github.tn1.server.domain.feed.presentation.dto.response.PostFeedResponse;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.feed.exception.NotYourFeedException;
@@ -26,7 +27,7 @@ public class CarrotFeedService {
 	private final FeedRepository feedRepository;
 	private final UserRepository userRepository;
 
-	public void postCarrotFeed(PostCarrotRequest request) {
+	public PostFeedResponse postCarrotFeed(PostCarrotRequest request) {
 		if(request.getTags() != null && request.getTags().size() > 5)
 			throw new TooManyTagsException();
 
@@ -45,6 +46,7 @@ public class CarrotFeedService {
 		if(request.getTags() != null)
 			request.getTags().forEach(tag -> feedFacade.addTag(tag, feed));
 
+		return new PostFeedResponse(feed.getId());
 	}
 
 	@Transactional

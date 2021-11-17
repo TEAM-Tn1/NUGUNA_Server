@@ -4,24 +4,25 @@ import java.time.LocalDate;
 
 import javax.transaction.Transactional;
 
-import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyGroupRequest;
-import io.github.tn1.server.domain.feed.presentation.dto.request.PostGroupRequest;
 import io.github.tn1.server.domain.chat.domain.Member;
-import io.github.tn1.server.domain.chat.domain.repository.MemberRepository;
 import io.github.tn1.server.domain.chat.domain.Room;
+import io.github.tn1.server.domain.chat.domain.repository.MemberRepository;
 import io.github.tn1.server.domain.chat.domain.repository.RoomRepository;
 import io.github.tn1.server.domain.chat.domain.types.RoomType;
 import io.github.tn1.server.domain.feed.domain.Feed;
-import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
 import io.github.tn1.server.domain.feed.domain.Group;
+import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
 import io.github.tn1.server.domain.feed.domain.repository.GroupRepository;
-import io.github.tn1.server.domain.user.domain.User;
-import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.feed.exception.DateIsBeforeException;
 import io.github.tn1.server.domain.feed.exception.FeedNotFoundException;
 import io.github.tn1.server.domain.feed.exception.NotYourFeedException;
 import io.github.tn1.server.domain.feed.exception.TooManyTagsException;
 import io.github.tn1.server.domain.feed.facade.FeedFacade;
+import io.github.tn1.server.domain.feed.presentation.dto.request.ModifyGroupRequest;
+import io.github.tn1.server.domain.feed.presentation.dto.request.PostGroupRequest;
+import io.github.tn1.server.domain.feed.presentation.dto.response.PostFeedResponse;
+import io.github.tn1.server.domain.user.domain.User;
+import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +43,7 @@ public class GroupFeedService {
 	private final MemberRepository memberRepository;
 
 	@Transactional
-	public void postGroupFeed(PostGroupRequest request) {
+	public PostFeedResponse postGroupFeed(PostGroupRequest request) {
 
 		if(request.getTags() != null && request.getTags().size() > 5)
 			throw new TooManyTagsException();
@@ -88,6 +89,8 @@ public class GroupFeedService {
 				.user(user)
 				.build()
 		);
+
+		return new PostFeedResponse(feed.getId());
 	}
 
 	@Transactional
