@@ -1,8 +1,10 @@
 package io.github.tn1.server.domain.user.facade;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.user.exception.CredentialsNotFoundException;
+import io.github.tn1.server.global.socket.security.AuthenticationProperty;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,10 @@ public class UserFacade {
 
         return authentication.getName();
     }
+
+    public String getCurrentEmail(SocketIOClient client) {
+    	return client.get(AuthenticationProperty.USER_KEY);
+	}
 
     public User getCurrentUser() {
     	return userRepository
