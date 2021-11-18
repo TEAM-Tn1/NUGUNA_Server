@@ -35,4 +35,10 @@ public class UserFacade {
 				.orElseThrow(CredentialsNotFoundException::new);
 	}
 
+	public User getCurrentUser(SocketIOClient client) {
+    	return userRepository
+				.findById(getCurrentEmail(client))
+				.orElseThrow(CredentialsNotFoundException::new);
+	}
+
 }
