@@ -71,17 +71,17 @@ public class ChatService {
 		if(feed.isUsedItem()) {
 			room = roomRepository.save(
 					Room.builder()
-					.feed(feed)
-					.user(feed.getUser())
-					.type(RoomType.CARROT)
-					.photoUrl(medium != null ?
-							s3Util.getObjectUrl(medium.getFileName()) : null)
-					.build());
+							.feed(feed)
+							.user(feed.getUser())
+							.type(RoomType.CARROT)
+							.photoUrl(medium != null ?
+									s3Util.getObjectUrl(medium.getFileName()) : null)
+							.build());
 			memberRepository.save(
 					Member.builder()
-					.user(feed.getUser())
-					.room(room)
-					.build()
+							.user(feed.getUser())
+							.room(room)
+							.build()
 			);
 		} else {
 			if(feed.getGroup().getCurrentCount() >=
@@ -104,25 +104,29 @@ public class ChatService {
 	public List<CarrotRoomResponse> queryCarrotRoom() {
 		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.CARROT)
-				.stream().map(room ->
-					new CarrotRoomResponse(room.getId(),
-							room.getHeadUser().getName(),
-							null, // TODO: 2021-10-03  
-							room.getPhotoUrl())
-				).collect(Collectors.toList());
+				.stream().map(room -> {
+							Message message = messageRepository.findTopByRoom(room)
+									.orElse(null);
+							return new CarrotRoomResponse(room.getId(),
+									room.getHeadUser().getName(),
+									message != null ? message.getContent() : null,
+									room.getPhotoUrl());
+						}).collect(Collectors.toList());
 	}
 
 	public List<GroupRoomResponse> queryGroupRoom() {
 		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.GROUP)
-				.stream().map(room ->
-						new GroupRoomResponse(room.getId(),
-								room.getFeed().getTitle(),
-								null, // TODO: 2021-10-03
-								room.getPhotoUrl(),
-								room.getFeed().getGroup()
-										.getCurrentCount())
-				).collect(Collectors.toList());
+				.stream().map(room -> {
+					Message message = messageRepository.findTopByRoom(room)
+							.orElse(null);
+					return new GroupRoomResponse(room.getId(),
+							room.getFeed().getTitle(),
+							message != null ? message.getContent() : null,
+							room.getPhotoUrl(),
+							room.getFeed().getGroup()
+									.getCurrentCount());
+				}).collect(Collectors.toList());
 	}
 
 	public List<QueryMessageResponse> queryMessage(QueryMessageRequest request, int page) {
@@ -135,10 +139,10 @@ public class ChatService {
 
 		return messageRepository.findByRoom(room, PageRequest.of(page, 10))
 				.stream().map(message ->
-					new QueryMessageResponse(message.getContent(),
-							message.getType().name(), message.getMember().getUser().getEmail(),
-							message.getMember().getUser().getName(),  message.getSentAt())
-		).collect(Collectors.toList());
+						new QueryMessageResponse(message.getContent(),
+								message.getType().name(), message.getMember().getUser().getEmail(),
+								message.getMember().getUser().getName(),  message.getSentAt())
+				).collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -164,11 +168,11 @@ public class ChatService {
 
 		return messageRepository.save(
 				Message.builder()
-				.content(chatRequest.getMessage())
-				.room(room)
-				.member(member)
-				.type(MessageType.SEND)
-				.build()
+						.content(chatRequest.getMessage())
+						.room(room)
+						.member(member)
+						.type(MessageType.SEND)
+						.build()
 		);
 	}
 

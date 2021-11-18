@@ -1,5 +1,7 @@
 package io.github.tn1.server.domain.chat.domain.repository;
 
+import java.util.Optional;
+
 import io.github.tn1.server.domain.chat.domain.Message;
 import io.github.tn1.server.domain.chat.domain.Room;
 
@@ -9,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 	Page<Message> findByRoom(Room room, Pageable pageable);
+	Optional<Message> findTopByRoom(Room room);
 }
