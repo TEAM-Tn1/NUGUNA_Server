@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -13,10 +14,18 @@ import javax.persistence.ManyToOne;
 
 import io.github.tn1.server.domain.chat.domain.types.MessageType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Getter
+@Builder
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_message")
 public class Message {
@@ -27,6 +36,7 @@ public class Message {
 	@Column(length = 512)
 	private String content;
 
+	@CreatedDate
 	private LocalDateTime sentAt;
 
 	@Enumerated(EnumType.STRING)
