@@ -1,0 +1,37 @@
+package io.github.tn1.server.domain.chat.presentation;
+
+import com.corundumstudio.socketio.SocketIOClient;
+import com.corundumstudio.socketio.SocketIOServer;
+import io.github.tn1.server.domain.chat.domain.Message;
+import io.github.tn1.server.domain.chat.presentation.dto.request.ChatRequest;
+import io.github.tn1.server.domain.chat.service.ChatRoomService;
+import io.github.tn1.server.domain.chat.service.ChatService;
+import io.github.tn1.server.domain.chat.service.ChatSocketService;
+import io.github.tn1.server.domain.user.domain.User;
+import io.github.tn1.server.domain.user.facade.UserFacade;
+import io.github.tn1.server.global.socket.annotation.SocketController;
+import io.github.tn1.server.global.socket.annotation.SocketMapping;
+import lombok.RequiredArgsConstructor;
+
+@SocketController
+@RequiredArgsConstructor
+public class ChatSocketController {
+
+	private final ChatRoomService chatRoomService;
+	private final ChatSocketService chatSocketService;
+	private final UserFacade userFacade;
+	private final ChatService chatService;
+
+	@SocketMapping(endpoint = "subscribe", requestCls = String.class)
+	public void subscribeRoom(SocketIOClient client, String roomId) {
+		chatRoomService.subscribeRoom(client, roomId);
+	}
+
+	@SocketMapping(endpoint = "message", requestCls = ChatRequest.class)
+	public void sendMessage(SocketIOClient client, SocketIOServer server, ChatRequest request) {
+		User user = userFacade.getCurrentUser(client);
+		Message message = chatService.saveMessage(request, user);
+		chatSocketService.sendChatMessage(message, request.getRoomId(), server);
+	}
+
+}
