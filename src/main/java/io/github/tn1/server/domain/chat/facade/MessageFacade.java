@@ -8,7 +8,6 @@ import io.github.tn1.server.domain.chat.domain.repository.MessageRepository;
 import io.github.tn1.server.domain.chat.domain.types.MessageType;
 import io.github.tn1.server.domain.chat.exception.NotYourRoomException;
 import io.github.tn1.server.domain.user.domain.User;
-import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ public class MessageFacade {
 
 	private final MessageRepository messageRepository;
 	private final MemberRepository memberRepository;
-	private final UserFacade userFacade;
 
 	public Message saveMessage(User user, MessageType type, Room room, String content) {
 		Member member = memberRepository.findByUserAndRoom(user, room)
@@ -32,6 +30,11 @@ public class MessageFacade {
 				.content(content)
 				.build()
 		);
+	}
+
+	public void setNullByMember(Member member) {
+		messageRepository
+				.setNullByMember(member.getId());
 	}
 
 }
