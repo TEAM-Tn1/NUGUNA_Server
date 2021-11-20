@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import io.github.tn1.server.domain.chat.presentation.dto.request.LeaveRequest;
 import io.github.tn1.server.domain.chat.presentation.dto.request.QueryMessageRequest;
 import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
@@ -12,13 +11,10 @@ import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageRe
 import io.github.tn1.server.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,12 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
 	private final ChatService chatService;
-
-	@DeleteMapping("/room")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void leaveRoom(@RequestBody @Valid LeaveRequest request) {
-		chatService.leaveRoom(request.getRoomId());
-	}
 
 	@GetMapping("/carrot")
 	public List<CarrotRoomResponse> queryCarrotRoom() {
