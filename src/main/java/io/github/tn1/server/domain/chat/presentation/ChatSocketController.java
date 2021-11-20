@@ -38,6 +38,11 @@ public class ChatSocketController {
 		}
 	}
 
+	@SocketMapping(endpoint = "leave", requestCls = String.class)
+	public void leaveRoom(SocketIOClient client, SocketIOServer server, String roomId) {
+		chatRoomService.leaveRoom(client, server, roomId);
+	}
+
 	@SocketMapping(endpoint = "message", requestCls = ChatRequest.class)
 	public void sendMessage(SocketIOClient client, SocketIOServer server, ChatRequest request) {
 		if(request.getRoomId() == null)

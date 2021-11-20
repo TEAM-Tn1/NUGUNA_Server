@@ -3,8 +3,6 @@ package io.github.tn1.server.domain.chat.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import io.github.tn1.server.domain.chat.domain.Member;
 import io.github.tn1.server.domain.chat.domain.Message;
 import io.github.tn1.server.domain.chat.domain.Room;
@@ -20,8 +18,6 @@ import io.github.tn1.server.domain.chat.presentation.dto.request.QueryMessageReq
 import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageResponse;
-import io.github.tn1.server.domain.feed.domain.repository.FeedMediumRepository;
-import io.github.tn1.server.domain.feed.facade.FeedFacade;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -81,22 +77,6 @@ public class ChatService {
 								message.getType().name(), message.getMember().getUser().getEmail(),
 								message.getMember().getUser().getName(),  message.getSentAt())
 				).collect(Collectors.toList());
-	}
-
-	@Transactional
-	public void leaveRoom(String roomId) {
-		Room room = roomFacade.getRoomById(roomId);
-		User user = userFacade.getCurrentUser();
-
-		if(memberRepository
-				.findByUserAndRoom(user, room).isEmpty())
-			throw new NotYourRoomException();
-
-		if(room.isGroupRoom())
-			room.getFeed().getGroup().decreaseCurrentCount();
-
-		memberRepository.delete(memberRepository
-				.findByUserAndRoom(user, room).get());
 	}
 
 	public Message saveMessage(ChatRequest chatRequest, User user) {
