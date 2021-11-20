@@ -12,9 +12,11 @@ import io.github.tn1.server.domain.chat.domain.repository.RoomRepository;
 import io.github.tn1.server.domain.chat.domain.types.MessageType;
 import io.github.tn1.server.domain.chat.domain.types.RoomType;
 import io.github.tn1.server.domain.chat.exception.AlreadyJoinRoomException;
+import io.github.tn1.server.domain.chat.exception.NotYourRoomException;
 import io.github.tn1.server.domain.chat.exception.RoomIsFullException;
 import io.github.tn1.server.domain.chat.exception.RoomNotFoundException;
 import io.github.tn1.server.domain.chat.facade.MessageFacade;
+import io.github.tn1.server.domain.chat.facade.RoomFacade;
 import io.github.tn1.server.domain.chat.presentation.dto.MessageDto;
 import io.github.tn1.server.domain.feed.domain.Feed;
 import io.github.tn1.server.domain.feed.facade.FeedFacade;
@@ -32,9 +34,10 @@ public class ChatRoomService {
 
 	private final UserFacade userFacade;
 	private final FeedFacade feedFacade;
+	private final RoomFacade roomFacade;
+	private final MessageFacade messageFacade;
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
-	private final MessageFacade messageFacade;
 
 	public void subscribeRoom(SocketIOClient client, String roomId) {
 		client.joinRoom(roomId);
@@ -91,20 +94,48 @@ public class ChatRoomService {
 		Message message = messageFacade.saveMessage(currentUser, MessageType.JOIN, room,
 				currentUser.getName() + " 님이 입장하셨습니다.");
 
+		sendEvent(client, server, message, currentUser, room.getId());
+	}
+
+	@Transactional
+	public void leaveRoom(SocketIOClient client, SocketIOServer server, String roomId) {
+		Room room = roomFacade.getRoomById(roomId);
+		User currentUser = userFacade.getCurrentUser(client);
+		Member member = memberRepository
+				.findByUserAndRoom(currentUser, room)
+				.orElse(null);
+
+		if(member == null)
+			throw new NotYourRoomException();
+
+		if(room.isGroupRoom())
+			room.getFeed().getGroup().decreaseCurrentCount();
+
+		Message message = messageFacade.saveMessage(currentUser, MessageType.LEAVE, room,
+				currentUser.getName() + " 님이 퇴장하셨습니다.");
+
+		messageFacade.setNullByMember(member);
+
+		memberRepository.delete(member);
+
+		sendEvent(client, server, message, currentUser, room.getId());
+	}
+
+	private void sendEvent(SocketIOClient client, SocketIOServer server, Message message, User user, String roomId) {
 		MessageDto messageDto = MessageDto.builder()
 				.content(message.getContent())
-				.email(currentUser.getEmail())
-				.name(currentUser.getName())
+				.email(user.getEmail())
+				.name(user.getName())
 				.sentAt(message.getSentAt().toString())
 				.type(message.getType())
 				.build();
 
-		server.getRoomOperations(room.getId())
+		server.getRoomOperations(roomId)
 				.getClients()
 				.forEach(member ->
 						member.sendEvent(Name.Move.name(), messageDto)
 				);
-		client.sendEvent(Name.Room.name(), room.getId());
+		client.sendEvent(Name.Room.name(), roomId);
 	}
 
 }
