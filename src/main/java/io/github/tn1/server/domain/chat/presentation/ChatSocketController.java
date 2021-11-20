@@ -3,11 +3,13 @@ package io.github.tn1.server.domain.chat.presentation;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import io.github.tn1.server.domain.chat.domain.Message;
+import io.github.tn1.server.domain.chat.exception.InvalidNumberFormatException;
 import io.github.tn1.server.domain.chat.presentation.dto.request.ChatRequest;
 import io.github.tn1.server.domain.chat.service.ChatRoomService;
 import io.github.tn1.server.domain.chat.service.ChatService;
 import io.github.tn1.server.domain.chat.service.ChatSocketService;
 import io.github.tn1.server.domain.user.domain.User;
+import io.github.tn1.server.domain.user.exception.UserNotFoundException;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import io.github.tn1.server.global.socket.annotation.SocketController;
 import io.github.tn1.server.global.socket.annotation.SocketMapping;
@@ -27,11 +29,22 @@ public class ChatSocketController {
 		chatRoomService.subscribeRoom(client, roomId);
 	}
 
+	@SocketMapping(endpoint = "join", requestCls = String.class)
+	public void joinRoom(SocketIOClient client, SocketIOServer server, String feedId) {
+		try {
+			chatRoomService.joinRoom(client, server, Long.parseLong(feedId));
+		} catch (NumberFormatException e) {
+			throw new InvalidNumberFormatException();
+		}
+	}
+
 	@SocketMapping(endpoint = "message", requestCls = ChatRequest.class)
 	public void sendMessage(SocketIOClient client, SocketIOServer server, ChatRequest request) {
+		if(request.getRoomId() == null)
+			throw new UserNotFoundException();
 		User user = userFacade.getCurrentUser(client);
 		Message message = chatService.saveMessage(request, user);
-		chatSocketService.sendChatMessage(message, request.getRoomId(), server);
+		chatSocketService.sendChatMessage(message, user, request.getRoomId(), server);
 	}
 
 }
