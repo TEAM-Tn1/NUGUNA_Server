@@ -94,6 +94,8 @@ public class ChatRoomService {
 		Message message = messageFacade.saveMessage(currentUser, MessageType.JOIN, room,
 				currentUser.getName() + " 님이 입장하셨습니다.");
 
+		client.joinRoom(room.getId());
+
 		sendEvent(client, server, message, currentUser, room.getId());
 	}
 
@@ -117,6 +119,8 @@ public class ChatRoomService {
 		messageFacade.setNullByMember(member);
 
 		memberRepository.delete(member);
+
+		client.leaveRoom(room.getId());
 
 		sendEvent(client, server, message, currentUser, room.getId());
 	}

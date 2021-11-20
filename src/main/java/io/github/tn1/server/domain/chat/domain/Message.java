@@ -53,4 +53,5 @@ public class Message {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_id")
 	private Room room;
+
 }
