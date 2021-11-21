@@ -44,6 +44,11 @@ public class ChatRoomService {
 		client.sendEvent(Name.Subscribe.name(), "Subscribe Success");
 	}
 
+	public void unsubscribeRoom(SocketIOClient client, String roomId) {
+		client.leaveRoom(roomId);
+		client.sendEvent(Name.Subscribe.name(), "Unsubscribe Success");
+	}
+
 	@Transactional
 	public void joinRoom(SocketIOClient client, SocketIOServer server, Long feedId) {
 		User currentUser = userFacade.getCurrentUser(client);
