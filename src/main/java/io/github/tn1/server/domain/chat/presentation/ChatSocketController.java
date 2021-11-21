@@ -11,7 +11,6 @@ import io.github.tn1.server.domain.chat.service.ChatSocketService;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.exception.UserNotFoundException;
 import io.github.tn1.server.domain.user.facade.UserFacade;
-import io.github.tn1.server.global.socket.Name;
 import io.github.tn1.server.global.socket.annotation.SocketController;
 import io.github.tn1.server.global.socket.annotation.SocketMapping;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,11 @@ public class ChatSocketController {
 	private final ChatSocketService chatSocketService;
 	private final UserFacade userFacade;
 	private final ChatService chatService;
+
+	@SocketMapping(endpoint = "subscribe-all")
+	public void subscribeAllRoom(SocketIOClient client) {
+		chatRoomService.subscribeAllRoom(client);
+	}
 
 	@SocketMapping(endpoint = "unsubscribe-all")
 	public void unsubscribeAllRoom(SocketIOClient client) {

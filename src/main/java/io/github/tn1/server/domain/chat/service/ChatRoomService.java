@@ -39,6 +39,13 @@ public class ChatRoomService {
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
 
+	public void subscribeAllRoom(SocketIOClient client) {
+		String email = userFacade.getCurrentEmail(client);
+		roomRepository.findIdByEmail(email)
+				.forEach(client::joinRoom);
+		client.sendEvent(Name.Subscribe.name(), "Subscribe All Success");
+	}
+
 	public void unsubscribeAllRoom(SocketIOClient client) {
 		client.getAllRooms()
 				.forEach(client::leaveRoom);
