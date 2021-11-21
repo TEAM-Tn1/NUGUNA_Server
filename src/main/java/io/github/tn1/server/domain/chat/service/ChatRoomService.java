@@ -23,7 +23,7 @@ import io.github.tn1.server.domain.feed.facade.FeedFacade;
 import io.github.tn1.server.domain.report.exception.ItsYourFeedException;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
-import io.github.tn1.server.global.socket.Name;
+import io.github.tn1.server.global.socket.SocketProperty;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -43,23 +43,23 @@ public class ChatRoomService {
 		String email = userFacade.getCurrentEmail(client);
 		roomRepository.findIdByEmail(email)
 				.forEach(client::joinRoom);
-		client.sendEvent(Name.Subscribe.name(), "Subscribe All Success");
+		sendSubEvent(client, "Subscribe All Success");
 	}
 
 	public void unsubscribeAllRoom(SocketIOClient client) {
 		client.getAllRooms()
 				.forEach(client::leaveRoom);
-		client.sendEvent(Name.Subscribe.name(), "Unsubscribe All Success");
+		sendSubEvent(client, "Unsubscribe All Success");
 	}
 
 	public void subscribeRoom(SocketIOClient client, String roomId) {
 		client.joinRoom(roomId);
-		client.sendEvent(Name.Subscribe.name(), "Subscribe Success");
+		sendSubEvent(client, "Subscribe Success");
 	}
 
 	public void unsubscribeRoom(SocketIOClient client, String roomId) {
 		client.leaveRoom(roomId);
-		client.sendEvent(Name.Subscribe.name(), "Unsubscribe Success");
+		sendSubEvent(client,"Unsubscribe Success");
 	}
 
 	@Transactional
@@ -114,7 +114,7 @@ public class ChatRoomService {
 
 		client.joinRoom(room.getId());
 
-		sendEvent(client, server, message, currentUser, room.getId());
+		sendMoveEvent(client, server, message, currentUser, room.getId());
 	}
 
 	@Transactional
@@ -140,10 +140,10 @@ public class ChatRoomService {
 
 		client.leaveRoom(room.getId());
 
-		sendEvent(client, server, message, currentUser, room.getId());
+		sendMoveEvent(client, server, message, currentUser, room.getId());
 	}
 
-	private void sendEvent(SocketIOClient client, SocketIOServer server, Message message, User user, String roomId) {
+	private void sendMoveEvent(SocketIOClient client, SocketIOServer server, Message message, User user, String roomId) {
 		MessageDto messageDto = MessageDto.builder()
 				.roomId(roomId)
 				.content(message.getContent())
@@ -156,9 +156,13 @@ public class ChatRoomService {
 		server.getRoomOperations(roomId)
 				.getClients()
 				.forEach(member ->
-						member.sendEvent(Name.Move.name(), messageDto)
+						member.sendEvent(SocketProperty.MOVE_KEY, messageDto)
 				);
-		client.sendEvent(Name.Room.name(), roomId);
+		client.sendEvent(SocketProperty.ROOM_KEY, roomId);
+	}
+
+	private void sendSubEvent(SocketIOClient client, String message) {
+		client.sendEvent(SocketProperty.SUBSCRIBE_KEY, message);
 	}
 
 }

@@ -6,6 +6,7 @@ import io.github.tn1.server.domain.chat.presentation.dto.MessageDto;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import io.github.tn1.server.global.socket.Name;
+import io.github.tn1.server.global.socket.SocketProperty;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ChatSocketService {
 		server.getRoomOperations(roomId)
 				.getClients()
 				.forEach(client ->
-					client.sendEvent(Name.Message.name(), messageDto)
+					client.sendEvent(SocketProperty.MESSAGE_KEY, messageDto)
 				);
 	}
 
