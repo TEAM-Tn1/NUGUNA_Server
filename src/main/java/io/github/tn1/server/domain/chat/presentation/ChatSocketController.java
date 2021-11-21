@@ -29,6 +29,11 @@ public class ChatSocketController {
 		chatRoomService.subscribeRoom(client, roomId);
 	}
 
+	@SocketMapping(endpoint = "unsubscribe", requestCls = String.class)
+	public void unsubscribeRoom(SocketIOClient client, String roomId) {
+		chatRoomService.unsubscribeRoom(client, roomId);
+	}
+
 	@SocketMapping(endpoint = "join", requestCls = String.class)
 	public void joinRoom(SocketIOClient client, SocketIOServer server, String feedId) {
 		try {
