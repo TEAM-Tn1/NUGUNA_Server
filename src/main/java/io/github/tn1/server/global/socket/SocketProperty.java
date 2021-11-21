@@ -8,18 +8,12 @@ public class SocketProperty {
 
 	public static final String MESSAGE_KEY = "message";
 
-	public static final String JOIN_KEY = "join";
+	public static final String ROOM_KEY = "room";
 
-	public static final String REJOIN_KEY = "rejoin";
+	public static final String MOVE_KEY = "move";
 
-	public static final String RESIGN_KEY = "resign";
+	public static final String SUBSCRIBE_KEY = "subscribe";
 
 	public static final String ERROR_KEY = "error";
-
-	public static final String CREATE_PLAN_KEY = "plan.create";
-
-	public static final String JOIN_PLAN_KEY = "plan.join";
-
-	public static final String RESIGN_PLAN_KEY = "plan.resign";
 
 }

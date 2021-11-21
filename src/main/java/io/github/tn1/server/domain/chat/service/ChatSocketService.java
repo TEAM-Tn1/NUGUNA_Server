@@ -4,8 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import io.github.tn1.server.domain.chat.domain.Message;
 import io.github.tn1.server.domain.chat.presentation.dto.MessageDto;
 import io.github.tn1.server.domain.user.domain.User;
-import io.github.tn1.server.domain.user.facade.UserFacade;
-import io.github.tn1.server.global.socket.Name;
+import io.github.tn1.server.global.socket.SocketProperty;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ChatSocketService {
-
-	private final UserFacade userFacade;
 
 	public void sendChatMessage(Message message, User user, String roomId, SocketIOServer server) {
 		MessageDto messageDto = MessageDto.builder()
@@ -28,7 +25,7 @@ public class ChatSocketService {
 		server.getRoomOperations(roomId)
 				.getClients()
 				.forEach(client ->
-					client.sendEvent(Name.Message.name(), messageDto)
+					client.sendEvent(SocketProperty.MESSAGE_KEY, messageDto)
 				);
 	}
 
