@@ -10,6 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MessageDto {
 
+	private final String roomId;
+
 	private final String content;
 
 	private final String sentAt;
