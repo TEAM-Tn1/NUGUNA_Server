@@ -39,6 +39,12 @@ public class ChatRoomService {
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
 
+	public void unsubscribeAllRoom(SocketIOClient client) {
+		client.getAllRooms()
+				.forEach(client::leaveRoom);
+		client.sendEvent(Name.Subscribe.name(), "Unsubscribe All Success");
+	}
+
 	public void subscribeRoom(SocketIOClient client, String roomId) {
 		client.joinRoom(roomId);
 		client.sendEvent(Name.Subscribe.name(), "Subscribe Success");
@@ -132,6 +138,7 @@ public class ChatRoomService {
 
 	private void sendEvent(SocketIOClient client, SocketIOServer server, Message message, User user, String roomId) {
 		MessageDto messageDto = MessageDto.builder()
+				.roomId(roomId)
 				.content(message.getContent())
 				.email(user.getEmail())
 				.name(user.getName())
