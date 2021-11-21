@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface SocketMapping {
 	String endpoint();
 
-	Class<?> requestCls();
+	Class<?> requestCls() default Void.class;
 }
