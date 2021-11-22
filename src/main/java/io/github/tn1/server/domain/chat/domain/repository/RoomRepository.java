@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface RoomRepository extends CrudRepository<Room, String> {
 	Optional<Room> findByFeed(Feed feed);
 
-	@Query("select r.id from tbl_room r join tbl_room_member m on m.user.email = :email where r.id = m.room.id")
-	List<String> findIdByEmail(String email);
+	@Query("select r.id from tbl_room r join tbl_room_member m on m.user.email = :email where r.id = m.room.id and r.type = :type")
+	List<String> findIdEmailAndType(String email, RoomType type);
 
 	@Query("select r from tbl_room r join tbl_room_member m on m.user.email = :email where r.id = m.room.id and r.type = :type")
 	List<Room> findByEmailAndType(String email, RoomType type);
