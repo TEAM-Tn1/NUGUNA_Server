@@ -16,6 +16,7 @@ public class ChatSocketService {
 	public void sendChatMessage(Message message, User user, String roomId, SocketIOServer server) {
 		MessageDto messageDto = MessageDto.builder()
 				.roomId(roomId)
+				.messageId(message.getId())
 				.content(message.getContent())
 				.email(user.getEmail())
 				.name(user.getName())
