@@ -122,7 +122,7 @@ public class UserService {
     }
 
     public UserInformationResponse queryInformation(String email) {
-        return userFacade.getCurrentUser()
+        return userFacade.getUserByEmail(email)
                 .getInformation(userFacade.getCurrentEmail());
     }
 
