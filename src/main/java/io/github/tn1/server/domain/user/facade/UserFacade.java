@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.user.exception.CredentialsNotFoundException;
+import io.github.tn1.server.domain.user.exception.UserNotFoundException;
 import io.github.tn1.server.global.socket.security.AuthenticationProperty;
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +40,12 @@ public class UserFacade {
     	return userRepository
 				.findById(getCurrentEmail(client))
 				.orElseThrow(CredentialsNotFoundException::new);
+	}
+
+	public User getUserByEmail(String email) {
+    	return userRepository
+				.findById(email)
+				.orElseThrow(UserNotFoundException::new);
 	}
 
 }
