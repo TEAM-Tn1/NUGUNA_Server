@@ -43,7 +43,7 @@ public class SocketExceptionListener implements ExceptionListener {
 	private void runExceptionHandling(Exception e, SocketIOClient client) {
 		final ErrorResponse message;
 
-		if (e.getCause() instanceof ServerException) {
+		if (e instanceof ServerException) {
 			ServerException serverException = (ServerException)e.getCause();
 			message = ErrorResponse.builder()
 					.message(serverException.getErrorCode().getMessage())
