@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class QueryMessageResponse {
 
+	private final Long messageId;
 	private final String message;
 	private final String type;
 	private final String email;

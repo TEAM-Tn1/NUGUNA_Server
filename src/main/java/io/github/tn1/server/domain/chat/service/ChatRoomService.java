@@ -146,6 +146,7 @@ public class ChatRoomService {
 	private void sendMoveEvent(SocketIOClient client, SocketIOServer server, Message message, User user, String roomId) {
 		MessageDto messageDto = MessageDto.builder()
 				.roomId(roomId)
+				.messageId(message.getId())
 				.content(message.getContent())
 				.email(user.getEmail())
 				.name(user.getName())
