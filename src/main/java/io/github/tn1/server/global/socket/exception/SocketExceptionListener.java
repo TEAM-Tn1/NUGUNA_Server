@@ -53,7 +53,7 @@ public class SocketExceptionListener implements ExceptionListener {
 			e.printStackTrace();
 			message = ErrorResponse.builder()
 					.status(500)
-					.message(e.getCause().toString())
+					.message("Internal Server Error")
 					.build();
 		}
 
