@@ -15,7 +15,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class RequestLogger extends OncePerRequestFilter {

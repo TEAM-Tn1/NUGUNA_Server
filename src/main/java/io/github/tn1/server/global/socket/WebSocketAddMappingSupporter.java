@@ -1,6 +1,9 @@
 package io.github.tn1.server.global.socket;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,18 +11,23 @@ import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import io.github.tn1.server.global.security.logging.LogWriter;
 import io.github.tn1.server.global.socket.annotation.SocketController;
 import io.github.tn1.server.global.socket.annotation.SocketMapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
+
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class WebSocketAddMappingSupporter {
 
 	private final ConfigurableListableBeanFactory beanFactory;
+	private final LogWriter logWriter;
 	private SocketIOServer socketIOServer;
 
 	public void addListeners(SocketIOServer socketIOServer) {
@@ -42,6 +50,12 @@ public class WebSocketAddMappingSupporter {
 			Class<?> dtoClass = socketMapping.requestCls();
 
 			socketIOServer.addEventListener(endpoint, dtoClass, ((client, data, ackSender) -> {
+				String requestTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+						.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+				String log = String.format("%s :: [%s]",
+						requestTime, method.getName());
+				logWriter.writeLog(log);
+				System.out.println(log);
 				List<Object> args = new ArrayList<>();
 				for (Class<?> params : method.getParameterTypes()) {                        // Controller 메소드의 파라미터들
 					if (params.equals(SocketIOServer.class)) args.add(socketIOServer);      // SocketIOServer 면 주입
