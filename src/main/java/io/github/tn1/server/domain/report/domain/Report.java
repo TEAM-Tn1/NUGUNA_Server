@@ -33,7 +33,7 @@ public class Report extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ReportType reportType;
 
-    @Column(length = 15)
+    @Column(length = 30)
     private String title;
 
     @Column(length = 1000)
