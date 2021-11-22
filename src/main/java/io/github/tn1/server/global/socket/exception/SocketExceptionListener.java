@@ -44,7 +44,8 @@ public class SocketExceptionListener implements ExceptionListener {
 		final ErrorResponse message;
 
 		if (e instanceof ServerException) {
-			ServerException serverException = (ServerException)e.getCause();
+			ServerException serverException = (ServerException)e;
+			
 			message = ErrorResponse.builder()
 					.message(serverException.getErrorCode().getMessage())
 					.status(serverException.getErrorCode().getStatus())
