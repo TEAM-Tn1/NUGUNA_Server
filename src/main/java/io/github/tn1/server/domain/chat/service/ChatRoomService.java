@@ -12,6 +12,7 @@ import io.github.tn1.server.domain.chat.domain.repository.RoomRepository;
 import io.github.tn1.server.domain.chat.domain.types.MessageType;
 import io.github.tn1.server.domain.chat.domain.types.RoomType;
 import io.github.tn1.server.domain.chat.exception.AlreadyJoinRoomException;
+import io.github.tn1.server.domain.chat.exception.InvalidEnumConstantException;
 import io.github.tn1.server.domain.chat.exception.NotYourRoomException;
 import io.github.tn1.server.domain.chat.exception.RoomIsFullException;
 import io.github.tn1.server.domain.chat.exception.RoomNotFoundException;
@@ -39,9 +40,16 @@ public class ChatRoomService {
 	private final RoomRepository roomRepository;
 	private final MemberRepository memberRepository;
 
-	public void subscribeAllRoom(SocketIOClient client) {
+	public void subscribeAllRoom(SocketIOClient client, String roomType) {
 		String email = userFacade.getCurrentEmail(client);
-		roomRepository.findIdByEmail(email)
+		RoomType type;
+		try {
+			type = RoomType.valueOf(roomType);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidEnumConstantException();
+		}
+
+		roomRepository.findIdEmailAndType(email, type)
 				.forEach(client::joinRoom);
 		sendSubEvent(client, "Subscribe All Success");
 	}
