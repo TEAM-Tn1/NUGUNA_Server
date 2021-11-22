@@ -24,9 +24,9 @@ public class ChatSocketController {
 	private final UserFacade userFacade;
 	private final ChatService chatService;
 
-	@SocketMapping(endpoint = "subscribe-all")
-	public void subscribeAllRoom(SocketIOClient client) {
-		chatRoomService.subscribeAllRoom(client);
+	@SocketMapping(endpoint = "subscribe-all", requestCls = String.class)
+	public void subscribeAllRoom(SocketIOClient client, String roomType) {
+		chatRoomService.subscribeAllRoom(client, roomType);
 	}
 
 	@SocketMapping(endpoint = "unsubscribe-all")
