@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
 	propertyReferenceExceptionHandler(PropertyReferenceException e) {
     	return new ResponseEntity<>(new ErrorResponse(400,
 				e.getMessage()), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(MultipartException.class)
+	public ResponseEntity<ErrorResponse> multipartExceptionExceptionHandler(MultipartException e) {
+    	return new ResponseEntity<>(new ErrorResponse(400,
+				"Not Multipart File"), HttpStatus.BAD_REQUEST);
 	}
 
 }
