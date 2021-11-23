@@ -52,8 +52,4 @@ public class S3Util {
 		amazonS3.deleteObject(bucket, objectName);
 	}
 
-	public String getObjectUrl(String objectName) {
-    	return amazonS3.getUrl(bucket, objectName).toString();
-	}
-
 }

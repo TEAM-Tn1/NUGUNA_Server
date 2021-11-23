@@ -80,9 +80,7 @@ public class ReportAdminService {
 		return new ReportInformationResponse(
 				report.getContents(),
 				report.getReportMedium() == null ? null :
-						s3Util.getObjectUrl(
-								report.getReportMedium().getPath()
-						)
+						report.getReportMedium().getPath()
 		);
 	}
 
