@@ -147,7 +147,7 @@ public class ReportAdminService {
 		LocalDate blackDate = report.getDefendant().getBlackDate();
 
 		return new UserBlackDateResponse(
-				blackDate.isBefore(LocalDate.now()) ?
+				blackDate == null || blackDate.isBefore(LocalDate.now()) ?
 						null : blackDate
 		);
 	}
