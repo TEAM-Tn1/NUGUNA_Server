@@ -50,6 +50,13 @@ public class SocketExceptionListener implements ExceptionListener {
 					.message(serverException.getErrorCode().getMessage())
 					.status(serverException.getErrorCode().getStatus())
 					.build();
+		} else if(e.getCause() instanceof ServerException) {
+			ServerException serverException = (ServerException)e.getCause();
+
+			message = ErrorResponse.builder()
+					.message(serverException.getErrorCode().getMessage())
+					.status(serverException.getErrorCode().getStatus())
+					.build();
 		} else {
 			e.printStackTrace();
 			message = ErrorResponse.builder()
