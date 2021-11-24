@@ -152,6 +152,7 @@ public class ReportAdminService {
 		);
 	}
 
+	@Transactional
 	public void updateUserBlackDate(Long reportId, UpdateUserBlackDateRequest request) {
 		Report report = queryUserReport(reportId);
 
