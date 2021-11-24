@@ -14,7 +14,6 @@ import io.github.tn1.server.domain.chat.domain.types.RoomType;
 import io.github.tn1.server.domain.chat.exception.NotYourRoomException;
 import io.github.tn1.server.domain.chat.facade.RoomFacade;
 import io.github.tn1.server.domain.chat.presentation.dto.request.ChatRequest;
-import io.github.tn1.server.domain.chat.presentation.dto.request.QueryMessageRequest;
 import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageResponse;
@@ -63,8 +62,8 @@ public class ChatService {
 				}).collect(Collectors.toList());
 	}
 
-	public List<QueryMessageResponse> queryMessage(QueryMessageRequest request, int page) {
-		Room room = roomFacade.getRoomById(request.getRoomId());
+	public List<QueryMessageResponse> queryMessage(String roomId, int page) {
+		Room room = roomFacade.getRoomById(roomId);
 		User user = userFacade.getCurrentUser();
 
 		if(memberRepository
