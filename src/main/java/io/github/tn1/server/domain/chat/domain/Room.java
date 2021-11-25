@@ -2,6 +2,7 @@ package io.github.tn1.server.domain.chat.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -67,6 +68,12 @@ public class Room {
 
 	public boolean isGroupRoom() {
 		return type.equals(RoomType.GROUP);
+	}
+
+	public Member otherMember(String email) {
+		return member.stream()
+				.filter(m -> !m.getUser().getEmail().equals(email))
+				.collect(Collectors.toList()).get(0);
 	}
 
 }
