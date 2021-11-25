@@ -45,4 +45,16 @@ public class Member {
 		this.user = user;
 	}
 
+	public String getEmail() {
+		if(user == null)
+			return null;
+		return user.getEmail();
+	}
+
+	public String getName() {
+		if(user == null)
+			return null;
+		return user.getName();
+	}
+
 }

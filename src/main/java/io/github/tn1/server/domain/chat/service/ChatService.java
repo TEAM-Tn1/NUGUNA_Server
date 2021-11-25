@@ -73,8 +73,8 @@ public class ChatService {
 		return messageRepository.findByRoom(room, PageRequest.of(page, 10))
 				.stream().map(message ->
 						new QueryMessageResponse(message.getId(), message.getContent(),
-								message.getType().name(), message.getMember().getUser().getEmail(),
-								message.getMember().getUser().getName(),  message.getSentAt())
+								message.getType().name(), message.getEmail(),
+								message.getName(),  message.getSentAt())
 				).collect(Collectors.toList());
 	}
 
