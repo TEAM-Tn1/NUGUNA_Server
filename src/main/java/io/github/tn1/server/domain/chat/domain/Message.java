@@ -55,10 +55,14 @@ public class Message {
 	private Room room;
 
 	public String getEmail() {
+		if(member == null)
+			return null;
 		return member.getEmail();
 	}
 
 	public String getName() {
+		if(member == null)
+			return null;
 		return member.getName();
 	}
 
