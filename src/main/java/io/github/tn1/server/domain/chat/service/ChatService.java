@@ -22,6 +22,7 @@ import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -70,7 +71,7 @@ public class ChatService {
 				.findByUserAndRoom(user, room).isEmpty())
 			throw new NotYourRoomException();
 
-		return messageRepository.findByRoom(room, PageRequest.of(page, 10))
+		return messageRepository.findByRoom(room, PageRequest.of(page, 10, Sort.by("id").descending()))
 				.stream().map(message ->
 						new QueryMessageResponse(message.getId(), message.getContent(),
 								message.getType().name(), message.getEmail(),
