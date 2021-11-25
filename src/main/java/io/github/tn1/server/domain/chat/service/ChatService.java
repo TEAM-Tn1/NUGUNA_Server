@@ -42,7 +42,8 @@ public class ChatService {
 							Message message = messageRepository.findTopByRoom(room.getId())
 									.orElse(null);
 							return new CarrotRoomResponse(room.getId(),
-									room.otherMember(userFacade.getCurrentEmail()).getName(),
+									room.otherMember(userFacade.getCurrentEmail()) != null ?
+											room.otherMember(userFacade.getCurrentEmail()).getName() : null,
 									message != null ? message.getContent() : null,
 									room.getPhotoUrl());
 						}).collect(Collectors.toList());

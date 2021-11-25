@@ -1,6 +1,7 @@
 package io.github.tn1.server.domain.chat.domain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,9 +72,12 @@ public class Room {
 	}
 
 	public Member otherMember(String email) {
-		return member.stream()
+		List<Member> memberList = member.stream()
 				.filter(m -> !m.getUser().getEmail().equals(email))
-				.collect(Collectors.toList()).get(0);
+				.collect(Collectors.toList());
+		if(memberList.size() >= 2)
+			return memberList.get(0);
+		return null;
 	}
 
 }
