@@ -1,5 +1,6 @@
 package io.github.tn1.server.domain.chat.service;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import io.github.tn1.server.domain.chat.domain.Message;
 import io.github.tn1.server.domain.chat.presentation.dto.MessageDto;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatSocketService {
 
-	public void sendChatMessage(Message message, User user, String roomId, SocketIOServer server) {
+	public void sendChatMessage(Message message, User user, String roomId, SocketIOClient sendClient, SocketIOServer server) {
 		MessageDto messageDto = MessageDto.builder()
 				.roomId(roomId)
 				.messageId(message.getId())
@@ -28,6 +29,7 @@ public class ChatSocketService {
 				.forEach(client ->
 					client.sendEvent(SocketProperty.MESSAGE_KEY, messageDto)
 				);
+		sendClient.sendEvent(SocketProperty.MESSAGE_KEY, messageDto);
 	}
 
 }
