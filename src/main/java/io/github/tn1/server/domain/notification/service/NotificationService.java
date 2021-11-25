@@ -5,23 +5,24 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import io.github.tn1.server.domain.notification.presentation.dto.response.CountResponse;
-import io.github.tn1.server.domain.notification.presentation.dto.response.NotificationResponse;
-import io.github.tn1.server.domain.notification.presentation.dto.response.TagResponse;
 import io.github.tn1.server.domain.notification.domain.NotificationEntity;
 import io.github.tn1.server.domain.notification.domain.repository.NotificationRepository;
-import io.github.tn1.server.domain.tag_notification.TagNotification;
-import io.github.tn1.server.domain.tag_notification.TagNotificationRepository;
-import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.notification.exception.AlreadyRegisteredTagException;
 import io.github.tn1.server.domain.notification.exception.NotYourNotificationException;
 import io.github.tn1.server.domain.notification.exception.NotYourNotificationTagException;
 import io.github.tn1.server.domain.notification.exception.NotificationNotFoundException;
 import io.github.tn1.server.domain.notification.exception.NotificationTagNotFoundException;
+import io.github.tn1.server.domain.notification.presentation.dto.response.CountResponse;
+import io.github.tn1.server.domain.notification.presentation.dto.response.NotificationResponse;
+import io.github.tn1.server.domain.notification.presentation.dto.response.TagResponse;
+import io.github.tn1.server.domain.tag_notification.TagNotification;
+import io.github.tn1.server.domain.tag_notification.TagNotificationRepository;
+import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -79,7 +80,7 @@ public class NotificationService {
 		User user = userFacade.getCurrentUser();
 
 		return notificationRepository
-				.findByUser(user, PageRequest.of(page, 5))
+				.findByUser(user, PageRequest.of(page, 10, Sort.by("id").descending()))
 				.stream().map(notification ->
 				new NotificationResponse(
 						notification.getId(), notification.getTitle(),
