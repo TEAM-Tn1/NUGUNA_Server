@@ -13,7 +13,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 	Page<Message> findByRoom(Room room, Pageable pageable);
-	Optional<Message> findTopByRoom(Room room);
+
+	@Query(value = "SELECT * FROM tbl_message m WHERE m.room_id = :roomId ORDER BY id DESC LIMIT 1", nativeQuery = true)
+	Optional<Message> findTopByRoom(String roomId);
 
 	@Modifying
 	@Query("update tbl_message m set m.member = null where m.member.id = :memberId")
