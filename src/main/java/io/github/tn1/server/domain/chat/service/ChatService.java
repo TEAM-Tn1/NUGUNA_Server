@@ -39,7 +39,7 @@ public class ChatService {
 		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.CARROT)
 				.stream().map(room -> {
-							Message message = messageRepository.findTopByRoom(room)
+							Message message = messageRepository.findTopByRoom(room.getId())
 									.orElse(null);
 							return new CarrotRoomResponse(room.getId(),
 									room.otherMember(userFacade.getCurrentEmail()).getName(),
@@ -52,7 +52,7 @@ public class ChatService {
 		return roomRepository.findByEmailAndType(userFacade.getCurrentEmail(),
 				RoomType.GROUP)
 				.stream().map(room -> {
-					Message message = messageRepository.findTopByRoom(room)
+					Message message = messageRepository.findTopByRoom(room.getId())
 							.orElse(null);
 					return new GroupRoomResponse(room.getId(),
 							room.getFeed().getTitle(),
