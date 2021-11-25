@@ -54,4 +54,12 @@ public class Message {
 	@JoinColumn(name = "room_id")
 	private Room room;
 
+	public String getEmail() {
+		return member.getEmail();
+	}
+
+	public String getName() {
+		return member.getName();
+	}
+
 }
