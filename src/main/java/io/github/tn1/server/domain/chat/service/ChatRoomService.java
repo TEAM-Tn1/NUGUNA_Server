@@ -61,6 +61,7 @@ public class ChatRoomService {
 	}
 
 	public void subscribeRoom(SocketIOClient client, String roomId) {
+		client.leaveRoom(roomId);
 		client.joinRoom(roomId);
 		sendSubEvent(client, "Subscribe Success");
 	}
