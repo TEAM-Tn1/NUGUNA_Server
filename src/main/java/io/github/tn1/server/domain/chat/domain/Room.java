@@ -75,8 +75,7 @@ public class Room {
 		List<Member> memberList = member.stream()
 				.filter(m -> !m.getUser().getEmail().equals(email))
 				.collect(Collectors.toList());
-		System.out.println(memberList.size());
-		if(memberList.size() <= 2)
+		if(memberList.size() >= 1)
 			return memberList.get(0);
 		return null;
 	}
