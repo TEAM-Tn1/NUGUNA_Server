@@ -1,14 +1,13 @@
 package io.github.tn1.server.domain.question.service;
 
-import io.github.tn1.server.domain.question.presentation.dto.request.QuestionDetailRequest;
-import io.github.tn1.server.domain.question.presentation.dto.request.QuestionRequest;
-import io.github.tn1.server.domain.question.presentation.dto.response.QuestionResponse;
 import io.github.tn1.server.domain.question.domain.Question;
 import io.github.tn1.server.domain.question.domain.repository.QuestionRepository;
-import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.question.exception.NotYourQuestionException;
 import io.github.tn1.server.domain.question.exception.QuestionNotFoundException;
 import io.github.tn1.server.domain.question.exception.QuestionResultNotFoundException;
+import io.github.tn1.server.domain.question.presentation.dto.request.QuestionRequest;
+import io.github.tn1.server.domain.question.presentation.dto.response.QuestionResponse;
+import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 
@@ -33,9 +32,9 @@ public class QuestionService {
 		);
 	}
 
-	public QuestionResponse queryQuestionDetail(QuestionDetailRequest request) {
+	public QuestionResponse queryQuestionDetail(Long questionId) {
 		Question question = questionRepository
-				.findById(request.getQuestionId())
+				.findById(questionId)
 				.orElseThrow(QuestionNotFoundException::new);
 
 		if(!question.isOwner(userFacade.getCurrentEmail()))
