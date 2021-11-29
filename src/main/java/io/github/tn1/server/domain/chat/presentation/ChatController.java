@@ -5,6 +5,7 @@ import java.util.List;
 import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageResponse;
+import io.github.tn1.server.domain.chat.presentation.dto.response.RoomInformationResponse;
 import io.github.tn1.server.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +34,11 @@ public class ChatController {
 	@GetMapping("/content")
 	public List<QueryMessageResponse> queryMessage(@RequestParam("page") int page, @RequestParam("room_id") String roomId) {
 		return chatService.queryMessage(roomId, page);
+	}
+	
+	@GetMapping("/information")
+	public RoomInformationResponse queryInformation(@RequestParam("room_id") String roomId) {
+		return chatService.queryInformation(roomId);
 	}
 
 }
