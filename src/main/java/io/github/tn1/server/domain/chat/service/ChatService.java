@@ -17,6 +17,7 @@ import io.github.tn1.server.domain.chat.presentation.dto.request.ChatRequest;
 import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageResponse;
+import io.github.tn1.server.domain.chat.presentation.dto.response.RoomInformationResponse;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -93,6 +94,20 @@ public class ChatService {
 						.type(MessageType.SEND)
 						.build()
 		);
+	}
+
+	public RoomInformationResponse queryInformation(String roomId) {
+		User user = userFacade.getCurrentUser();
+		Room room = roomFacade.getRoomById(roomId);
+		memberRepository.findByUserAndRoom(user, room)
+				.orElseThrow(NotYourRoomException::new);
+
+		if(room.getType().equals(RoomType.CARROT)) {
+			return new RoomInformationResponse(room.otherMember(userFacade.getCurrentEmail()) != null ?
+					room.otherMember(userFacade.getCurrentEmail()).getName() : null, 0);
+		}
+
+		return new RoomInformationResponse(room.getFeed().getTitle(), room.getFeed().getCount());
 	}
 
 }
