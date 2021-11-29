@@ -1,30 +1,29 @@
 package io.github.tn1.server.domain.report.service;
 
-import io.github.tn1.server.domain.report.presentation.dto.request.FeedReportRequest;
-import io.github.tn1.server.domain.report.presentation.dto.request.ReasonRequest;
-import io.github.tn1.server.domain.report.presentation.dto.request.UserReportRequest;
-import io.github.tn1.server.domain.report.presentation.dto.response.ReasonResponse;
-import io.github.tn1.server.domain.report.presentation.dto.response.ReportResponse;
 import io.github.tn1.server.domain.feed.domain.Feed;
 import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
+import io.github.tn1.server.domain.feed.exception.FeedNotFoundException;
+import io.github.tn1.server.domain.report.domain.FeedReport;
 import io.github.tn1.server.domain.report.domain.Report;
+import io.github.tn1.server.domain.report.domain.ReportMedium;
+import io.github.tn1.server.domain.report.domain.repository.FeedReportRepository;
+import io.github.tn1.server.domain.report.domain.repository.ReportMediumRepository;
 import io.github.tn1.server.domain.report.domain.repository.ReportRepository;
 import io.github.tn1.server.domain.report.domain.types.ReportType;
-import io.github.tn1.server.domain.report.domain.FeedReport;
-import io.github.tn1.server.domain.report.domain.repository.FeedReportRepository;
-import io.github.tn1.server.domain.report.domain.ReportMedium;
-import io.github.tn1.server.domain.report.domain.repository.ReportMediumRepository;
-import io.github.tn1.server.domain.user.domain.User;
-import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.report.exception.AlreadyReportedUserException;
-import io.github.tn1.server.domain.feed.exception.FeedNotFoundException;
 import io.github.tn1.server.domain.report.exception.NotYourReportException;
 import io.github.tn1.server.domain.report.exception.ReportNotFoundException;
 import io.github.tn1.server.domain.report.exception.ReportResultNotFoundException;
 import io.github.tn1.server.domain.report.exception.SelfReportException;
-import io.github.tn1.server.global.exception.TooManyFilesException;
+import io.github.tn1.server.domain.report.presentation.dto.request.FeedReportRequest;
+import io.github.tn1.server.domain.report.presentation.dto.request.UserReportRequest;
+import io.github.tn1.server.domain.report.presentation.dto.response.ReasonResponse;
+import io.github.tn1.server.domain.report.presentation.dto.response.ReportResponse;
+import io.github.tn1.server.domain.user.domain.User;
+import io.github.tn1.server.domain.user.domain.repository.UserRepository;
 import io.github.tn1.server.domain.user.exception.UserNotFoundException;
 import io.github.tn1.server.domain.user.facade.UserFacade;
+import io.github.tn1.server.global.exception.TooManyFilesException;
 import io.github.tn1.server.global.utils.s3.S3Util;
 import lombok.RequiredArgsConstructor;
 
@@ -131,9 +130,9 @@ public class ReportService {
 		);
 	}
 
-	public ReasonResponse queryReport(ReasonRequest request) {
+	public ReasonResponse queryReport(Long reportId) {
 		Report report = reportRepository
-				.findById(request.getReportId())
+				.findById(reportId)
 				.orElseThrow(ReportNotFoundException::new);
 
 		if(report.isNotReporter(userFacade.getCurrentEmail()))
