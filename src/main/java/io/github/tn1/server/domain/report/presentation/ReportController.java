@@ -3,7 +3,6 @@ package io.github.tn1.server.domain.report.presentation;
 import javax.validation.Valid;
 
 import io.github.tn1.server.domain.report.presentation.dto.request.FeedReportRequest;
-import io.github.tn1.server.domain.report.presentation.dto.request.ReasonRequest;
 import io.github.tn1.server.domain.report.presentation.dto.request.UserReportRequest;
 import io.github.tn1.server.domain.report.presentation.dto.response.ReasonResponse;
 import io.github.tn1.server.domain.report.presentation.dto.response.ReportResponse;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,8 +47,8 @@ public class ReportController {
 	}
 
 	@GetMapping
-	public ReasonResponse queryReport(@RequestBody @Valid ReasonRequest request) {
-		return reportService.queryReport(request);
+	public ReasonResponse queryReport(@RequestParam("report_id") Long reportId) {
+		return reportService.queryReport(reportId);
 	}
 
 }
