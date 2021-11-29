@@ -12,7 +12,6 @@ import io.github.tn1.server.domain.feed.domain.repository.FeedRepository;
 import io.github.tn1.server.domain.feed.domain.repository.TagRepository;
 import io.github.tn1.server.domain.feed.exception.AlreadyLikedFeedException;
 import io.github.tn1.server.domain.feed.exception.LikeNotFoundException;
-import io.github.tn1.server.domain.feed.exception.MediumNotFoundException;
 import io.github.tn1.server.domain.feed.exception.NotYourFeedException;
 import io.github.tn1.server.domain.feed.exception.TooManyTagsException;
 import io.github.tn1.server.domain.feed.facade.FeedFacade;
@@ -118,7 +117,7 @@ public class FeedService {
 		if(request.getTags().size() > 5)
 			throw new TooManyTagsException();
 
-		tagRepository.deleteByFeed(feed);
+		tagRepository.deleteByFeedId(feed.getId());
 
 		for(String tag : request.getTags()) {
 			feedFacade.addTag(tag, feed);
@@ -205,20 +204,6 @@ public class FeedService {
 				.stream().map(feed ->
 						feedFacade.feedToPreviewResponse(feed, currentUser)
 				).collect(Collectors.toList());
-	}
-
-	private void removePhoto(String fileName) {
-		User user = userFacade.getCurrentUser();
-
-		FeedMedium medium = feedMediumRepository.findByFileName(fileName)
-				.orElseThrow(MediumNotFoundException::new);
-
-		if(!medium.getFeed().isWriter(user.getEmail()))
-			throw new NotYourFeedException();
-
-		s3Util.delete(medium.getFileName());
-
-		feedMediumRepository.delete(medium);
 	}
 
 	private void addRoomPhoto(Feed feed) {
