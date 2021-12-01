@@ -18,6 +18,7 @@ import io.github.tn1.server.domain.chat.presentation.dto.response.CarrotRoomResp
 import io.github.tn1.server.domain.chat.presentation.dto.response.GroupRoomResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.QueryMessageResponse;
 import io.github.tn1.server.domain.chat.presentation.dto.response.RoomInformationResponse;
+import io.github.tn1.server.domain.chat.presentation.dto.response.RoomResponse;
 import io.github.tn1.server.domain.user.domain.User;
 import io.github.tn1.server.domain.user.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,7 @@ public class ChatService {
 				.stream().map(room -> {
 							Message message = messageRepository.findTopByRoom(room.getId())
 									.orElse(null);
-							return new CarrotRoomResponse(room.getId(),
-									room.otherMember(userFacade.getCurrentEmail()) != null ?
-											room.otherMember(userFacade.getCurrentEmail()).getName() : null,
-									message != null ? message.getContent() : null,
-									room.getPhotoUrl());
+							return new CarrotRoomResponse(new RoomResponse(room, message, userFacade.getCurrentEmail()));
 						}).collect(Collectors.toList());
 	}
 
@@ -56,12 +53,8 @@ public class ChatService {
 				.stream().map(room -> {
 					Message message = messageRepository.findTopByRoom(room.getId())
 							.orElse(null);
-					return new GroupRoomResponse(room.getId(),
-							room.getFeed().getTitle(),
-							message != null ? message.getContent() : null,
-							room.getPhotoUrl(),
-							room.getFeed().getGroup()
-									.getCurrentCount());
+					return new GroupRoomResponse(new RoomResponse(room, message, userFacade.getCurrentEmail()),
+							room.getCurrentCount());
 				}).collect(Collectors.toList());
 	}
 
@@ -107,7 +100,7 @@ public class ChatService {
 					room.otherMember(userFacade.getCurrentEmail()).getName() : null, 0);
 		}
 
-		return new RoomInformationResponse(room.getFeed().getTitle(), room.getFeed().getCount());
+		return new RoomInformationResponse(room.getTitle(), room.getCurrentCount());
 	}
 
 }

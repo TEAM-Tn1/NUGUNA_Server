@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import io.github.tn1.server.domain.chat.exception.RoomNotFoundException;
 import io.github.tn1.server.global.entity.BaseTimeEntity;
 import io.github.tn1.server.domain.chat.domain.Room;
 import io.github.tn1.server.domain.like.domain.Like;
@@ -104,6 +105,12 @@ public class Feed extends BaseTimeEntity {
 
 	public boolean isWriter(String email) {
     	return user.getEmail().equals(email);
+	}
+
+	public int getCurrentCount() {
+    	if(!isUsedItem)
+    		throw new RoomNotFoundException();
+    	return group.getCurrentCount();
 	}
 
 }

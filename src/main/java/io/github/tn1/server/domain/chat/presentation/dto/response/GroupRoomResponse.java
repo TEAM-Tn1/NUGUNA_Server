@@ -1,5 +1,6 @@
 package io.github.tn1.server.domain.chat.presentation.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,10 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GroupRoomResponse {
 
-	private String roomId;
-	private String roomName;
-	private String lastMessage;
-	private String photoUrl;
-	private int count;
+	@JsonUnwrapped
+	private final RoomResponse response;
+
+	private final int count;
 
 }
