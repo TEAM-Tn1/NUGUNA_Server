@@ -80,4 +80,12 @@ public class Room {
 		return null;
 	}
 
+	public String getTitle() {
+		return feed.getTitle();
+	}
+
+	public int getCurrentCount() {
+		return feed.getCurrentCount();
+	}
+
 }
