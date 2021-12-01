@@ -108,7 +108,7 @@ public class FcmUtil {
 				SendDto.builder()
 						.user(question.getUser())
 						.title("문의")
-						.message(question.getTitle() + "글에 답변에 달렸습니다.")
+						.message("[ " + question.getTitle() + " ] 글에 답변이 달렸습니다.")
 						.key("question_id")
 						.data(question.getId().toString())
 						.build()
