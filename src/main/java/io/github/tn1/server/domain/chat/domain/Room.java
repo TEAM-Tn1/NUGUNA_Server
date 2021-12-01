@@ -55,6 +55,9 @@ public class Room {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.REMOVE)
 	private final Set<Member> member = new HashSet<>();
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.REMOVE)
+	private final Set<Message> messages = new HashSet<>();
+
 	@Builder
 	public Room(User user, Feed feed, RoomType type, String photoUrl) {
 		this.headUser = user;
