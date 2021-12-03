@@ -15,12 +15,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import io.github.tn1.server.domain.chat.exception.RoomNotFoundException;
-import io.github.tn1.server.global.entity.BaseTimeEntity;
 import io.github.tn1.server.domain.chat.domain.Room;
+import io.github.tn1.server.domain.feed.exception.InvalidRoomTypeException;
 import io.github.tn1.server.domain.like.domain.Like;
 import io.github.tn1.server.domain.report.domain.FeedReport;
 import io.github.tn1.server.domain.user.domain.User;
+import io.github.tn1.server.global.entity.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -108,8 +108,8 @@ public class Feed extends BaseTimeEntity {
 	}
 
 	public int getCurrentCount() {
-    	if(!isUsedItem)
-    		throw new RoomNotFoundException();
+    	if(isUsedItem)
+    		throw new InvalidRoomTypeException();
     	return group.getCurrentCount();
 	}
 
