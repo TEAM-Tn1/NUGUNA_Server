@@ -64,7 +64,7 @@ public class ChatSocketController {
 			throw new UserNotFoundException();
 		User user = userFacade.getCurrentUser(client);
 		Message message = chatService.saveMessage(request, user);
-		chatSocketService.sendChatMessage(message, user, request.getRoomId(), client, server);
+		chatSocketService.sendChatMessage(message, user, request.getRoomId(), server);
 	}
 
 }
