@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatSocketService {
 
-	public void sendChatMessage(Message message, User user, String roomId, SocketIOClient sendClient, SocketIOServer server) {
+	public void sendChatMessage(Message message, User user, String roomId, SocketIOServer server) {
 		MessageDto messageDto = MessageDto.builder()
 				.roomId(roomId)
 				.messageId(message.getId())
@@ -29,7 +29,6 @@ public class ChatSocketService {
 				.forEach(client ->
 					client.sendEvent(SocketProperty.MESSAGE_KEY, messageDto)
 				);
-		sendClient.sendEvent(SocketProperty.MESSAGE_KEY, messageDto);
 	}
 
 }
