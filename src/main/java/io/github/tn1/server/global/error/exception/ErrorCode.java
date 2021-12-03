@@ -19,6 +19,7 @@ public enum ErrorCode {
 	DATE_IS_BEFORE(400, "Date is before"),
 	INVALID_NUMBER_FORMAT(400, "Invalid number format."),
 	INVALID_ENUM_CONSTANT(400, "Invalid enum constant."),
+	INVALID_ROOM_TYPE(400, "Invalid room type."),
     INVALID_TOKEN(401, "Invalid token."),
     EXPIRED_ACCESS_TOKEN(401, "Expired access token."),
     EXPIRED_REFRESH_TOKEN(401, "Expired refresh token."),
